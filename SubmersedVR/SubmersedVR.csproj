@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>SubmersedVR</AssemblyName>
+    <Description>A VR Conversion Mod for Subnautica</Description>
+    <Version>0.1.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <!-- NOTE: Change this to your own directoy when building -->
+    <SubnauticaDir>V:\SteamLibrary\steamapps\common\Subnautica</SubnauticaDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.0" />
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="2019.4.36" IncludeAssets="compile" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>$(SubnauticaDir)\BepInEx\core\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp" Publicize="true">
+      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass" Publicize="true">
+      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" BeforeTargets="PostBuildEvent">
+    <ItemGroup>
+      <InstallPlugin Include="$(MSBuildProjectDirectory)\bin\Debug\$(TargetFramework)\$(AssemblyName).dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(InstallPlugin)" DestinationFolder="$(SubnauticaDir)\BepInEx\plugins" />
+  </Target>
+</Project>
