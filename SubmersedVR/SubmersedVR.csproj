@@ -23,11 +23,30 @@
     <Reference Include="0Harmony">
       <HintPath>$(SubnauticaDir)\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
+    <!-- Main Game Assemblies -->
     <Reference Include="Assembly-CSharp" Publicize="true">
       <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass" Publicize="true">
       <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+
+    <!-- UnityEngine: UI and TextMeshPro. Missing from the BepInEx/Nuget Package. -->
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+
+    <!-- SteamVR + SteamVR Actions: Currenlty prebuilt, should be built from source later -->
+    <Reference Include="SteamVR">
+      <HintPath>SteamVR/SteamVR.dll</HintPath>
+      <Aliases>SteamVRRef</Aliases>
+    </Reference>
+    <Reference Include="SteamVR_Actions">
+      <HintPath>SteamVR/SteamVR_Actions.dll</HintPath>
+      <Aliases>SteamVRActions</Aliases>
     </Reference>
   </ItemGroup>
 

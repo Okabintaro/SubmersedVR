@@ -33,7 +33,7 @@ Credits/Thanks
 This mod began as modifications and fixes for the [SN1MC] Mod from [ihatetn931] and later was mostly rewritten and cleaned up for this project.
 Lots of thanks to him opening up the source code for me to get into VR Modding.
 
-Further there are some fixes and improvements cherry-picked from the [Subnautica VR Enhancements Mod] by [IWhoI].
+Furthermore, there are some fixes and improvements cherry-picked from the [Subnautica VR Enhancements Mod] by [IWhoI].
 
 Another thanks goes to the great VR modding work from [Raicuparta]. I looked at their mods code quite often when I was stuck and probably will again in the future.
 

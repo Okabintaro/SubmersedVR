@@ -7,10 +7,10 @@ namespace SubmersedVR
 {
     // Main plguin/entry point of the mod
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-    public class SubmersedVR : BaseUnityPlugin
+    public class Mod : BaseUnityPlugin
     {
         public static ManualLogSource logger;
-        public static SubmersedVR instance;
+        public static Mod instance;
 
         private void Awake()
         {
@@ -20,12 +20,10 @@ namespace SubmersedVR
             }
             Harmony harmony = new Harmony(PluginInfo.PLUGIN_GUID);
             harmony.PatchAll();
-            Logger.LogWarning($"Applying {PluginInfo.PLUGIN_NAME} patches applied");
+            Logger.LogInfo($"{PluginInfo.PLUGIN_NAME} patches applied!");
 
             logger = Logger;
             instance = this;
-
-            // TODO: Reinit SteamVR?
         }
     }
 }
