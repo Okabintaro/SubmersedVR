@@ -336,7 +336,6 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(ArmsController), nameof(ArmsController.StartInspectObjectAsync))]
     public static class DontInspectObjectAnimation
     {
-        [HarmonyPostfix]
         public static bool Prefix(ArmsController __instance)
         {
             return false;

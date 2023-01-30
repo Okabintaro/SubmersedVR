@@ -19,11 +19,11 @@ namespace SubmersedVR
                 Logger.LogWarning($"Game was not started in VR. Don't load and apply {PluginInfo.PLUGIN_NAME} patches.");
                 return;
             }
+            logger = Logger;
             Harmony harmony = new Harmony(PluginInfo.PLUGIN_GUID);
             harmony.PatchAll();
             Logger.LogInfo($"{PluginInfo.PLUGIN_NAME} patches applied!");
 
-            logger = Logger;
             instance = this;
         }
     }
