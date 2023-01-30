@@ -6,18 +6,18 @@ namespace SubmersedVR
 {
     public class Settings
     {
-		public delegate void BooleanChanged(bool newValue);
+        public delegate void BooleanChanged(bool newValue);
 
         public static bool IsDebugEnabled;
-		public static event BooleanChanged IsDebugChanged;
+        public static event BooleanChanged IsDebugChanged;
 
         public static bool AlwaysShowControllers;
-		public static event BooleanChanged AlwaysShowControllersChanged;
+        public static event BooleanChanged AlwaysShowControllersChanged;
 
         public static bool AlwaysShowLaserPointer;
-		public static event BooleanChanged AlwaysShowLaserPointerChanged;
+        public static event BooleanChanged AlwaysShowLaserPointerChanged;
 
-		// Saves or loads all public static properties as settings using the given serializer
+        // Saves or loads all public static properties as settings using the given serializer
         internal static void Serialize(GameSettings.ISerializer serializer)
         {
             string ns = nameof(SubmersedVR);
@@ -49,18 +49,19 @@ namespace SubmersedVR
             }
         }
 
-		internal static void AddMenu(uGUI_OptionsPanel panel) {
-			int tab = panel.AddTab("Submersed VR");
-			panel.AddHeading(tab, "Debug Options");
-			panel.AddToggleOption(tab, "Debug Mode", IsDebugEnabled, (value) => {IsDebugEnabled = value; IsDebugChanged(value);}, "Enables Debug Overlays and Logs.");
-			panel.AddToggleOption(tab, "Always Show Controllers", AlwaysShowControllers, (value) => {AlwaysShowControllers = value; AlwaysShowControllersChanged(value);}, "Shows the controllers at all times.");
-			panel.AddToggleOption(tab, "Always Show Laserpointer", AlwaysShowLaserPointer, (value) => {AlwaysShowLaserPointer = value; AlwaysShowLaserPointerChanged(value);}, "Show the laserpointer at all times.");
-		}
+        internal static void AddMenu(uGUI_OptionsPanel panel)
+        {
+            int tab = panel.AddTab("Submersed VR");
+            panel.AddHeading(tab, "Debug Options");
+            panel.AddToggleOption(tab, "Debug Mode", IsDebugEnabled, (value) => { IsDebugEnabled = value; IsDebugChanged(value); }, "Enables Debug Overlays and Logs.");
+            panel.AddToggleOption(tab, "Always Show Controllers", AlwaysShowControllers, (value) => { AlwaysShowControllers = value; AlwaysShowControllersChanged(value); }, "Shows the controllers at all times.");
+            panel.AddToggleOption(tab, "Always Show Laserpointer", AlwaysShowLaserPointer, (value) => { AlwaysShowLaserPointer = value; AlwaysShowLaserPointerChanged(value); }, "Show the laserpointer at all times.");
+        }
     }
 
     #region Patches
 
-	// This enables the mod to save and load settings, by serializing our settings from the class above.
+    // This enables the mod to save and load settings, by serializing our settings from the class above.
     [HarmonyPatch(typeof(GameSettings), nameof(GameSettings.SerializeSettings))]
     static class SerializeModSettings
     {
@@ -70,13 +71,13 @@ namespace SubmersedVR
         }
     }
 
-	// This hooks into the tab creation to create the options menu.
-	[HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.AddTabs))]
+    // This hooks into the tab creation to create the options menu.
+    [HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.AddTabs))]
     static class CreateOptionsTab
     {
         public static void Postfix(uGUI_OptionsPanel __instance)
         {
-			Settings.AddMenu(__instance);
+            Settings.AddMenu(__instance);
         }
     }
 

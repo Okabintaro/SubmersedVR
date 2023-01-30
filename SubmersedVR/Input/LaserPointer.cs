@@ -53,11 +53,13 @@ namespace SubmersedVR
             lineRenderer.startWidth = 0.004f;
             lineRenderer.endWidth = 0.005f;
 
-            if (useUILayer) {
+            if (useUILayer)
+            {
                 pointerDot.layer = LayerMask.NameToLayer("UI");
                 lineRenderer.gameObject.layer = LayerMask.NameToLayer("UI");
             }
-            if (disableAfterCreation) {
+            if (disableAfterCreation)
+            {
                 Show(false, false);
             }
         }
@@ -69,7 +71,8 @@ namespace SubmersedVR
             pointerDot.transform.position = end;
         }
 
-        private void Show(bool on, bool showDot) {
+        private void Show(bool on, bool showDot)
+        {
             this.lineRenderer.enabled = on;
             this.pointerDot.SetActive(showDot);
         }
@@ -87,7 +90,8 @@ namespace SubmersedVR
         void Update()
         {
             // TODO: I know this is shitty, gotta refactor this
-            if(disableAfterCreation) {
+            if (disableAfterCreation)
+            {
                 return;
             }
 
@@ -97,7 +101,7 @@ namespace SubmersedVR
             }
             var uiHitRelativeTime = Time.unscaledTime - inputModule.lastValidRaycastTime;
             var uiHitDistance = inputModule.lastRaycastResult.distance;
-            var uiWasHit = uiHitDistance != 0 && uiHitRelativeTime < hideTimeout; 
+            var uiWasHit = uiHitDistance != 0 && uiHitRelativeTime < hideTimeout;
 
             var worldHitRelativeTime = Time.unscaledTime - worldTargetTime;
             var worldWasHit = doWorldRaycasts && worldTarget != null && worldHitRelativeTime < hideTimeout;
@@ -109,7 +113,9 @@ namespace SubmersedVR
                 pointerDot.SetActive(false);
                 length = uiHitDistance;
                 // TODO: Hide World Laserpointer similar to UI one after a timeout
-            } else if (worldWasHit) {
+            }
+            else if (worldWasHit)
+            {
                 pointerDot.SetActive(true);
                 length = this.worldTargetDistance;
             }

@@ -2,15 +2,18 @@ using HarmonyLib;
 using UnityEngine;
 using TMPro;
 
-namespace SubmersedVR {
+namespace SubmersedVR
+{
     // This behaves like ErrorMesage.Show(), but is designed to not spam with changing values
     // I used this to debug/view certain positions in the UI
-    class DebugPanel : MonoBehaviour {
+    class DebugPanel : MonoBehaviour
+    {
 
         TextMeshProUGUI entry;
         public static DebugPanel main;
 
-        void Start() {
+        void Start()
+        {
             var prefabMessage = ErrorMessage.main.prefabMessage;
             GameObject obj = Object.Instantiate(prefabMessage);
             entry = obj.GetComponent<TextMeshProUGUI>();
@@ -19,22 +22,27 @@ namespace SubmersedVR {
             entry.text = "";
 
             main = this;
-            Settings.IsDebugChanged += (isOn) => {
+            Settings.IsDebugChanged += (isOn) =>
+            {
                 this.enabled = isOn;
             };
         }
 
-        void OnDisable() {
+        void OnDisable()
+        {
             entry.text = "";
             entry.enabled = false;
         }
 
-        void OnEnable() {
+        void OnEnable()
+        {
             entry.enabled = true;
         }
 
-        public static void Show(string message) {
-            if (DebugPanel.main == null) {
+        public static void Show(string message)
+        {
+            if (DebugPanel.main == null)
+            {
                 return;
             }
             DebugPanel.main.entry.text = message;

@@ -21,14 +21,16 @@ namespace SubmersedVR
         public float wheelRadius = 100.0f;
 
         public float threshold = 0.025f;
-        public float angleOffset = -Mathf.PI/2.0f;
+        public float angleOffset = -Mathf.PI / 2.0f;
 
         public int lastSlot = -1;
         private int currentSlot = -2;
         private Canvas canvas;
 
-        private int nSlots {
-            get {
+        private int nSlots
+        {
+            get
+            {
                 return icons.Length;
             }
         }
@@ -44,7 +46,8 @@ namespace SubmersedVR
             canvas.enabled = false;
         }
 
-        new void Start() {
+        new void Start()
+        {
             var qs = FindObjectsOfType<uGUI_QuickSlots>().First(obj => obj.name == "QuickSlots");
             Mod.logger.LogInfo($"[nameof{this.GetType()}] Start, stealing stuff from on {qs.name}");
             materialBackground = qs.materialBackground;
@@ -65,7 +68,8 @@ namespace SubmersedVR
             OnSelect(this.target.GetActiveSlotID());
         }
 
-        void ArangeIconsInCircle(float radius) {
+        void ArangeIconsInCircle(float radius)
+        {
             for (int i = 0; i < nSlots; i++)
             {
                 var pos = CirclePosition(i, nSlots, radius);
@@ -74,7 +78,8 @@ namespace SubmersedVR
             }
         }
 
-        int DetermineSlot(float angle) {
+        int DetermineSlot(float angle)
+        {
             return Mathf.RoundToInt((angle / (2 * Mathf.PI)) * nSlots) % nSlots;
         }
 
@@ -97,10 +102,11 @@ namespace SubmersedVR
                 var projected = new Vector2(pX, pY);
 
                 // var relPos = transform.position - controllerTarget.position;
-                var angle =  Mathf.Atan2(projected.y, projected.x);
+                var angle = Mathf.Atan2(projected.y, projected.x);
                 angle += angleOffset;
-                if (angle < 0.0f) {
-                    angle += 2*Mathf.PI;
+                if (angle < 0.0f)
+                {
+                    angle += 2 * Mathf.PI;
                 }
 
                 var distance = projected.sqrMagnitude;
@@ -111,15 +117,19 @@ namespace SubmersedVR
                 // var angleWithOffset = angle + angleOffset;
                 // TODO: Test if this works with vehicles too
                 // TODO: Probably should use events to determine current slot, extending interface methods
-                if (doSwitch) {
+                if (doSwitch)
+                {
                     lastSlot = currentSlot;
                     currentSlot = DetermineSlot(angle);
-                    if(currentSlot != lastSlot) {
+                    if (currentSlot != lastSlot)
+                    {
                         QuickSlots qs = GetTarget() as QuickSlots;
                         qs.Select(currentSlot);
                         SteamVR_Actions.subnautica_HapticsRight.Execute(0.0f, 0.1f, 10f, 0.5f, SteamVR_Input_Sources.Any);
                     }
-                } else {
+                }
+                else
+                {
                     QuickSlots qs = GetTarget() as QuickSlots;
                     qs.Deselect();
                 }
@@ -169,7 +179,7 @@ namespace SubmersedVR
         {
             float stepSize = 2 * Mathf.PI / nSlots;
             float angle = i * stepSize;
-            angle += Mathf.PI/2.0f; // Offset by 90°, so the layout is better with item 1 being at the top
+            angle += Mathf.PI / 2.0f; // Offset by 90°, so the layout is better with item 1 being at the top
             return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
         }
     }

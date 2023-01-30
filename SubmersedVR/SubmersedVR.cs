@@ -14,7 +14,8 @@ namespace SubmersedVR
 
         private void Awake()
         {
-            if (!XRSettings.enabled) {
+            if (!XRSettings.enabled)
+            {
                 Logger.LogWarning($"Game was not started in VR. Don't load and apply {PluginInfo.PLUGIN_NAME} patches.");
                 return;
             }

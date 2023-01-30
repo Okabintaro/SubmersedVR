@@ -12,9 +12,12 @@ namespace SubmersedVR
 
     // Raycast from the middle of the event "camera" on the controller for accurate laserpointing
     [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.GetCursorScreenPosition))]
-    class RaycastPointerPosition {
-        public static void Postfix(ref Vector2 __result, FPSInputModule __instance) {
-            if (VRCameraRig.instance == null || VRCameraRig.instance.UIControllerCamera == null) {
+    class RaycastPointerPosition
+    {
+        public static void Postfix(ref Vector2 __result, FPSInputModule __instance)
+        {
+            if (VRCameraRig.instance == null || VRCameraRig.instance.UIControllerCamera == null)
+            {
                 return;
             }
 
@@ -24,24 +27,28 @@ namespace SubmersedVR
         }
     }
 
-   // Since we do the dragging/raycasting in worldspace now the drag threshold has to be way lower.
-   // Can't change the EventSystem.pixelThreshold because that is only integer.
-   [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.ShouldStartDrag))]
-   class SetDragThresholdHacky {
-       public static bool Prefix(ref bool __result, Vector2 pressPos, Vector2 currentPos, float threshold, bool useDragThreshold) {
-           // TODO: This has to be dependent on canvas scale, way to high for big pda, too low for small pda
-           threshold = 0.04f;
-           __result = !useDragThreshold || (pressPos - currentPos).sqrMagnitude >= threshold * threshold;
-           return false;
-      }
-   }
+    // Since we do the dragging/raycasting in worldspace now the drag threshold has to be way lower.
+    // Can't change the EventSystem.pixelThreshold because that is only integer.
+    [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.ShouldStartDrag))]
+    class SetDragThresholdHacky
+    {
+        public static bool Prefix(ref bool __result, Vector2 pressPos, Vector2 currentPos, float threshold, bool useDragThreshold)
+        {
+            // TODO: This has to be dependent on canvas scale, way to high for big pda, too low for small pda
+            threshold = 0.04f;
+            __result = !useDragThreshold || (pressPos - currentPos).sqrMagnitude >= threshold * threshold;
+            return false;
+        }
+    }
 
     // Instead of saving the screen space position of the pointer, we save the world space one. Needed to fix things like drag & drop.
     [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.UpdateMouseState))]
-    static class UseWorldSpacePointerPosition {
-        public static void Prefix(FPSInputModule __instance, PointerEventData leftData) {
+    static class UseWorldSpacePointerPosition
+    {
+        public static void Prefix(FPSInputModule __instance, PointerEventData leftData)
+        {
             leftData.position = __instance.lastRaycastResult.worldPosition;
-       }
+        }
     }
 
 #if false
@@ -80,8 +87,10 @@ namespace SubmersedVR
     // TODO: Not sure if needed. Is the GamepadInputModule used?
     // Wonder if it actually conflicts with the FPSInputModule or not
     [HarmonyPatch(typeof(GamepadInputModule), nameof(GamepadInputModule.IsInputAllowed))]
-    static class AllowGamepadUnfocused {
-        public static bool Prefix(ref bool __result) {
+    static class AllowGamepadUnfocused
+    {
+        public static bool Prefix(ref bool __result)
+        {
             __result = !WaitScreen.IsWaiting; // && Application.isFocused;
             return false;
         }

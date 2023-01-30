@@ -47,9 +47,11 @@ namespace SubmersedVR
             foreach (CodeInstruction ins in instructions)
             {
                 // Instead of the call to the enabled property we just push 0/false on to the stack to skip the if
-                if (ins.Calls(AccessTools.DeclaredPropertyGetter(typeof(XRSettings), nameof(XRSettings.enabled)))) {
+                if (ins.Calls(AccessTools.DeclaredPropertyGetter(typeof(XRSettings), nameof(XRSettings.enabled))))
+                {
                     yield return new CodeInstruction(OpCodes.Ldc_I4_0);
-                } else
+                }
+                else
                     yield return ins;
             }
         }

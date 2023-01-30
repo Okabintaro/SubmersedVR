@@ -9,10 +9,12 @@ namespace SubmersedVR
     using SteamVRActions.Valve.VR;
 
     #region Patches
-    static class SteamVrGameInput {
-		public static bool ShouldIgnore(GameInput.Button button) {
-			return button == GameInput.Button.Slot1 || button == GameInput.Button.Slot2 || button == GameInput.Button.Slot3 || button == GameInput.Button.Slot4 || button == GameInput.Button.Slot5 || button == GameInput.Button.AutoMove || button == GameInput.Button.UIClear;
-		}
+    static class SteamVrGameInput
+    {
+        public static bool ShouldIgnore(GameInput.Button button)
+        {
+            return button == GameInput.Button.Slot1 || button == GameInput.Button.Slot2 || button == GameInput.Button.Slot3 || button == GameInput.Button.Slot4 || button == GameInput.Button.Slot5 || button == GameInput.Button.AutoMove || button == GameInput.Button.UIClear;
+        }
     }
 
 
@@ -21,7 +23,8 @@ namespace SubmersedVR
     {
         static bool Prefix(GameInput.Button button, ref bool __result)
         {
-            if (SteamVrGameInput.ShouldIgnore(button)) {
+            if (SteamVrGameInput.ShouldIgnore(button))
+            {
                 return false;
             }
 
@@ -35,7 +38,8 @@ namespace SubmersedVR
     {
         static bool Prefix(GameInput.Button button, ref bool __result)
         {
-            if (SteamVrGameInput.ShouldIgnore(button)) {
+            if (SteamVrGameInput.ShouldIgnore(button))
+            {
                 return false;
             }
 
@@ -49,7 +53,8 @@ namespace SubmersedVR
     {
         static bool Prefix(GameInput.Button button, ref bool __result)
         {
-            if (SteamVrGameInput.ShouldIgnore(button)) {
+            if (SteamVrGameInput.ShouldIgnore(button))
+            {
                 return false;
             }
 
@@ -60,7 +65,8 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAvailableDevices))]
     public static class ControllerOnly
     {
-        public static bool Prefix() {
+        public static bool Prefix()
+        {
             GameInput.lastDevice = GameInput.Device.Controller;
             return false;
         }
@@ -71,7 +77,8 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateControllerAvailable))]
     public static class ControllerAlwaysAvailable
     {
-        public static bool Prefix() {
+        public static bool Prefix()
+        {
             GameInput.controllerAvailable = true;
             return false;
         }
@@ -79,56 +86,60 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateKeyboardAvailable))]
     public static class KeyboardNeverAvialable
     {
-        public static bool Prefix() {
+        public static bool Prefix()
+        {
             GameInput.keyboardAvailable = false;
             return false;
         }
     }
 
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetAnalogValueForButton))]
-    public static class SteamVrGetAnalogValue {
-        public static bool Prefix(GameInput.Button button, ref float __result) {
+    public static class SteamVrGetAnalogValue
+    {
+        public static bool Prefix(GameInput.Button button, ref float __result)
+        {
             Vector2 vec;
             bool isPressed = false;
             float value = 0.0f;
-            switch (button) {
+            switch (button)
+            {
                 case GameInput.Button.MoveForward:
                     vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.y > 0.0f ? vec.y : 0.0f;
                     break;
-                 case GameInput.Button.MoveBackward:
+                case GameInput.Button.MoveBackward:
                     vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.y < 0.0f ? -vec.y : 0.0f;
                     break;
-                 case GameInput.Button.MoveRight:
+                case GameInput.Button.MoveRight:
                     vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.x > 0.0f ? vec.x : 0.0f;
                     break;
-                 case GameInput.Button.MoveLeft:
+                case GameInput.Button.MoveLeft:
                     vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.x < 0.0f ? -vec.x : 0.0f;
                     break;
-                 case GameInput.Button.MoveUp:
+                case GameInput.Button.MoveUp:
                     isPressed = SteamVR_Actions.subnautica.MoveUp.GetState(SteamVR_Input_Sources.Any);
-                    value = isPressed ? 1.0f : 0.0f; 
+                    value = isPressed ? 1.0f : 0.0f;
                     break;
-                 case GameInput.Button.MoveDown:
+                case GameInput.Button.MoveDown:
                     isPressed = SteamVR_Actions.subnautica.MoveDown.GetState(SteamVR_Input_Sources.Any);
-                    value = isPressed ? 1.0f : 0.0f; 
+                    value = isPressed ? 1.0f : 0.0f;
                     break;
                 case GameInput.Button.LookUp:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.y > 0.0f ? vec.y : 0.0f;
                     break;
-                 case GameInput.Button.LookDown:
+                case GameInput.Button.LookDown:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.y < 0.0f ? -vec.y : 0.0f;
                     break;
-                 case GameInput.Button.LookRight:
+                case GameInput.Button.LookRight:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.x > 0.0f ? vec.x : 0.0f;
                     break;
-                 case GameInput.Button.LookLeft:
+                case GameInput.Button.LookLeft:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.x < 0.0f ? -vec.x : 0.0f;
                     break;
@@ -145,7 +156,8 @@ namespace SubmersedVR
     {
         static bool Prefix(GameInput __instance, bool useKeyboard, bool useController)
         {
-            if (Settings.IsDebugEnabled) {
+            if (Settings.IsDebugEnabled)
+            {
                 // DebugPanel.Show($"{GameInput.axisValues[0]}, {GameInput.axisValues[1]}, {GameInput.axisValues[2]}, {GameInput.axisValues[3]}, {GameInput.axisValues[4]}, {GameInput.axisValues[5]}\nAvailable: {GameInput.controllerAvailable} -> Primary: {GameInput.GetPrimaryDevice()} IsGamePad: {GameInput.IsPrimaryDeviceGamepad()}");
                 DebugPanel.Show($"{GameInput.GetMoveDirection()}");
             }
@@ -154,7 +166,7 @@ namespace SubmersedVR
     }
 
 
-// Previous attempt which tried to emulate controllers, not as clean and not needed
+    // Previous attempt which tried to emulate controllers, not as clean and not needed
 #if false
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAxisValues))]
     public static class SteamVrUpdateAxisValues

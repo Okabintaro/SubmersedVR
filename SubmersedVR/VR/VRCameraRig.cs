@@ -123,10 +123,12 @@ namespace SubmersedVR
         private TransformOffset _targetTransform;
         public TransformOffset TargetTransform
         {
-            get {
+            get
+            {
                 return _targetTransform;
             }
-            set {
+            set
+            {
                 _targetTransform = value;
                 value.Apply(laserPointerUI.transform);
                 value.Apply(laserPointer.transform);
@@ -145,7 +147,8 @@ namespace SubmersedVR
             this.rigParentTarget = target;
         }
 
-        public void SetupControllers() {
+        public void SetupControllers()
+        {
             // TODO: Naming is inconsistent, clean this mess up, only need 1/2 pointers?
             leftController = new GameObject(nameof(leftController)).WithParent(transform);
             rightController = new GameObject(nameof(rightController)).WithParent(transform);
@@ -216,7 +219,8 @@ namespace SubmersedVR
             vrCamera.gameObject.tag = "MainCamera";
         }
 
-        public void Start() {
+        public void Start()
+        {
             SetupControllers();
             StartCoroutine(DelayedRecenter(1.0f));
         }
@@ -241,10 +245,11 @@ namespace SubmersedVR
             modelL.layer = LayerID.UI;
             modelR.layer = LayerID.UI;
 
-            Settings.AlwaysShowControllersChanged += (_) => {UpdateShowControllers();};
+            Settings.AlwaysShowControllersChanged += (_) => { UpdateShowControllers(); };
         }
 
-        public void UpdateShowControllers() {
+        public void UpdateShowControllers()
+        {
             var inMainMenu = !uGUI.isMainLevel;
             bool alwaysShow = Settings.AlwaysShowControllers;
             modelL.SetActive(alwaysShow || inMainMenu);
@@ -317,7 +322,8 @@ namespace SubmersedVR
             uiCamera = camera;
         }
 
-        void SetupPDA() {
+        void SetupPDA()
+        {
             // Move the quickslots to bottom of PDA bottom left and make it bigger
             var pda = uGUI_PDA.main;
             var targetParent = pda.tabInventory.transform;
@@ -336,8 +342,9 @@ namespace SubmersedVR
             button.button.transform.parent = targetParent;
             button.button.gameObject.gameObject.name = "PauseMenuButton";
             button.text.text = "Pause Menu";
-            button.button.onClick.RemoveAllListeners(); 
-            button.button.onClick.AddListener(() => {
+            button.button.onClick.RemoveAllListeners();
+            button.button.onClick.AddListener(() =>
+            {
                 IngameMenu.main.Open();
             });
             // Move it to the bottom right
@@ -380,7 +387,8 @@ namespace SubmersedVR
                 uiRig.transform.rotation = transform.rotation;
             }
 
-            if (false && Settings.IsDebugEnabled) {
+            if (false && Settings.IsDebugEnabled)
+            {
                 RaycastResult? uiTarget = fpsInput?.lastRaycastResult;
                 DebugPanel.Show($"World Target: {worldTarget?.name}({worldTargetDistance})\nUI Target:{uiTarget?.gameObject?.name}({uiTarget?.distance})\nFocused: {EventSystem.current.isFocused}");
             }
@@ -453,7 +461,8 @@ namespace SubmersedVR
         {
             // TODO: Clean this up
             var canvas = __instance.GetComponent<Canvas>();
-            if (canvas == null) {
+            if (canvas == null)
+            {
                 return true;
             }
             if (canvas.renderMode == RenderMode.ScreenSpaceOverlay || (canvas.renderMode == RenderMode.ScreenSpaceCamera && canvas.worldCamera == null))
@@ -573,8 +582,10 @@ namespace SubmersedVR
     }
 
     [HarmonyPatch(typeof(uGUI), nameof(uGUI.UpdateLevelIdentifier))]
-    static class OnMainLevelChanged {
-        public static void Postfix(uGUI __instance) {
+    static class OnMainLevelChanged
+    {
+        public static void Postfix(uGUI __instance)
+        {
             VRCameraRig.instance.UpdateShowControllers();
         }
     }

@@ -49,7 +49,7 @@ static class IGM_Awake_Patch
             {
                 VRUtil.Recenter();
             });
-            
+
         }
     }
 }

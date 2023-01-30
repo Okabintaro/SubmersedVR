@@ -30,12 +30,14 @@ namespace SubmersedVR
         public Vector3 Pos { get; }
         public Vector3 Angles { get; }
         public override string ToString() => $"TransformOffset(Pos=({Pos.x:f3}, {Pos.y:f3}, {Pos.z:f3}), Angles=({Angles.x:f3}, {Angles.y:f3}, {Angles.z:f3}))";
-        internal string SwitchString(string type) {
+        internal string SwitchString(string type)
+        {
             FormattableString str = $"case {type} _: return new TransformOffset(new Vector3({Pos.x:f3}f, {Pos.y:f3}f, {Pos.z:f3}f), new Vector3({Angles.x:f3}f, {Angles.y:f3}f, {Angles.z:f3}f));";
             return str.ToString(CultureInfo.InvariantCulture);
         }
 
-        public void Apply(Transform tf) {
+        public void Apply(Transform tf)
+        {
             tf.localPosition = Pos;
             tf.localEulerAngles = Angles;
         }
@@ -43,14 +45,15 @@ namespace SubmersedVR
     }
 
     // The following four methods are used to calibrate offsets of items/tools in hands
-    class OffsetCalibrationTool {
+    class OffsetCalibrationTool
+    {
 
         SteamVR_Action_Boolean holdToMoveAction;
         SteamVR_Action_Boolean saveTransformAction;
         Transform target;
         Transform parent;
 
-        private OffsetCalibrationTool() {}
+        private OffsetCalibrationTool() { }
 
         public OffsetCalibrationTool(Transform target, SteamVR_Action_Boolean holdToMoveAction, SteamVR_Action_Boolean saveTransformAction)
         {
@@ -60,36 +63,45 @@ namespace SubmersedVR
         }
 
         private bool _enabled = false;
-        public bool enabled {
-            set {
-                if (value == _enabled) {
+        public bool enabled
+        {
+            set
+            {
+                if (value == _enabled)
+                {
                     return;
                 }
-                if (value) {
+                if (value)
+                {
                     holdToMoveAction.onStateDown += UnparentTarget;
                     holdToMoveAction.onStateUp += ReparentTarget;
                     saveTransformAction.onStateDown += SaveTransform;
-                } else {
+                }
+                else
+                {
                     holdToMoveAction.onStateDown -= UnparentTarget;
                     holdToMoveAction.onStateUp -= ReparentTarget;
                     saveTransformAction.onStateDown -= SaveTransform;
                 }
                 _enabled = value;
             }
-            get {
+            get
+            {
                 return _enabled;
             }
         }
 
         // Unparent Target, so we can finetune the position
-        public void UnparentTarget(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource) {
+        public void UnparentTarget(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        {
             parent = target.parent;
             var tool = global::Player.main.armsController.lastTool;
             target.SetParent(null, true);
         }
 
         // Reparent the target to hand/controller again
-        public void ReparentTarget(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource) {
+        public void ReparentTarget(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        {
             target.SetParent(parent, true);
             var angles = target.localEulerAngles;
             // var snapAngle = 15;
@@ -99,7 +111,8 @@ namespace SubmersedVR
 
         // Save the transform by logging it to a logfile
         // TODO: Could use an event?
-        public void SaveTransform(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource) {
+        public void SaveTransform(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        {
             // Print it out for putting it into the mod
             var tool = global::Player.main.armsController.lastTool;
             string offset = new TransformOffset(target).SwitchString(tool.GetType().Name);
@@ -109,12 +122,15 @@ namespace SubmersedVR
     }
 
     // Define all the Offsets
-    static class ToolOffset {
+    static class ToolOffset
+    {
         // Default Offset when no tool is Equipped
         public static TransformOffset Hand = new TransformOffset(new Vector3(0.05f, 0.1f, -0.1f), new Vector3(0.0f, 180.0f, 270.0f));
 
-        internal static TransformOffset GetHandOffset(this PlayerTool tool) {
-            switch (tool) {
+        internal static TransformOffset GetHandOffset(this PlayerTool tool)
+        {
+            switch (tool)
+            {
                 case FireExtinguisher _: return new TransformOffset(new Vector3(0.062f, 0.077f, -0.148f), new Vector3(40.736f, 139.849f, 249.888f));
                 case Seaglide _: return new TransformOffset(new Vector3(0.055f, 0.101f, -0.125f), new Vector3(24.986f, 153.649f, 265.740f));
                 case Gravsphere _: return new TransformOffset(new Vector3(-0.010f, 0.114f, -0.125f), new Vector3(10.485f, 158.948f, 244.422f));
@@ -138,8 +154,10 @@ namespace SubmersedVR
             };
         }
 
-        internal static TransformOffset GetAimOffset(this PlayerTool tool) {
-            switch (tool) {
+        internal static TransformOffset GetAimOffset(this PlayerTool tool)
+        {
+            switch (tool)
+            {
                 case BuilderTool _: return new TransformOffset(new Vector3(-0.021f, -0.040f, 0.030f), new Vector3(73.312f, 342.306f, 323.270f));
                 case ScannerTool _: return new TransformOffset(new Vector3(0.008f, -0.106f, -0.016f), new Vector3(73.923f, 62.973f, 42.123f));
                 case FireExtinguisher _: return new TransformOffset(new Vector3(0.003f, -0.101f, -0.054f), new Vector3(64.181f, 10.062f, 346.755f));
@@ -200,7 +218,8 @@ namespace SubmersedVR
             var laserPointer = VRCameraRig.instance.laserPointerUI.transform;
             calibrationTool = new OffsetCalibrationTool(laserPointer, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
             calibrationTool.enabled = Settings.IsDebugEnabled;
-            Settings.IsDebugChanged += (enabled) => {
+            Settings.IsDebugChanged += (enabled) =>
+            {
                 calibrationTool.enabled = enabled;
             };
 
@@ -347,17 +366,17 @@ namespace SubmersedVR
     }
 
     // This makes it so the Builder tool aims with the laser pointer
-	[HarmonyPatch(typeof(Builder), nameof(Builder.GetAimTransform))]
-	public static class Builder_GetAimTransform__Patch
-	{
-		[HarmonyPrefix]
-		static bool Prefix(ref Transform __result)
-		{
-			// TODO: Introduce VRCameraRig.aimTransform
-			__result = VRCameraRig.instance.laserPointer.transform;
-			return false;
-		}
-	}
+    [HarmonyPatch(typeof(Builder), nameof(Builder.GetAimTransform))]
+    public static class Builder_GetAimTransform__Patch
+    {
+        [HarmonyPrefix]
+        static bool Prefix(ref Transform __result)
+        {
+            // TODO: Introduce VRCameraRig.aimTransform
+            __result = VRCameraRig.instance.laserPointer.transform;
+            return false;
+        }
+    }
 
     #endregion
 }
