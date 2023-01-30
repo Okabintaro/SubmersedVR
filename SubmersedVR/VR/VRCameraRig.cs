@@ -141,9 +141,8 @@ namespace SubmersedVR
             return VRCameraRig.instance.laserPointer.transform;
         }
 
-        public void ParentTo(Transform target)
+        public void SetCameraTrackTarget(Transform target)
         {
-            // GetComponent<ParentConstraint>().ParentTo(target, Vector3.zero);
             this.rigParentTarget = target;
         }
 
@@ -378,7 +377,7 @@ namespace SubmersedVR
             FindObjectsOfType<uGUI_CanvasScaler>().ForEach(cs => cs.SetDirty());
         }
 
-        public void Update()
+        public void LateUpdate()
         {
             // Move the camera rig to the player each frame and rotate the uiRig accordingly
             if (rigParentTarget != null)
@@ -544,9 +543,8 @@ namespace SubmersedVR
         [HarmonyPostfix]
         public static void Postfix(ArmsController __instance)
         {
-            // TODO/DOING: Fixing this
             Camera mainCamera = SNCameraRoot.main.mainCam;
-            VRCameraRig.instance.ParentTo(mainCamera.transform.parent);
+            VRCameraRig.instance.SetCameraTrackTarget(mainCamera.transform.parent);
             VRCameraRig.instance.StealCamera(SNCameraRoot.main.mainCamera);
             CoroutineHost.StartCoroutine(VRCameraRig.instance.SetupGameCameras());
         }
