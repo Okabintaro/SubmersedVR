@@ -53,9 +53,14 @@ namespace SubmersedVR
         {
             int tab = panel.AddTab("Submersed VR");
             panel.AddHeading(tab, "Debug Options");
-            panel.AddToggleOption(tab, "Debug Mode", IsDebugEnabled, (value) => { IsDebugEnabled = value; IsDebugChanged(value); }, "Enables Debug Overlays and Logs.");
-            panel.AddToggleOption(tab, "Always Show Controllers", AlwaysShowControllers, (value) => { AlwaysShowControllers = value; AlwaysShowControllersChanged(value); }, "Shows the controllers at all times.");
-            panel.AddToggleOption(tab, "Always Show Laserpointer", AlwaysShowLaserPointer, (value) => { AlwaysShowLaserPointer = value; AlwaysShowLaserPointerChanged(value); }, "Show the laserpointer at all times.");
+            panel.AddToggleOption(tab, "Debug Overlays", IsDebugEnabled, (value) => { IsDebugEnabled = value; IsDebugChanged(value); }, "Enables Debug Overlays and Logs.");
+            panel.AddToggleOption(tab, "Always show controllers", AlwaysShowControllers, (value) => { AlwaysShowControllers = value; AlwaysShowControllersChanged(value); }, "Shows the controllers at all times.");
+            panel.AddToggleOption(tab, "Always show laserpointer", AlwaysShowLaserPointer, (value) => { AlwaysShowLaserPointer = value; AlwaysShowLaserPointerChanged(value); }, "Show the laserpointer at all times.");
+
+            panel.AddHeading(tab, "Hidden/Advanced VR Settings(Those can cause Motion Sickness!)");
+            panel.AddToggleOption(tab, "Enable pitching(Looking Up/Down) while diving", !VROptions.disableInputPitch, (value) => { VROptions.disableInputPitch = !value; }, "This allows you to pitch up and down using the right thumbstick when diving. Can be very disorienting! I recommend to keep this disabled!");
+            panel.AddToggleOption(tab, "Enable desktop cinematics", VROptions.enableCinematics, (value) => { VROptions.enableCinematics = value; }, "Enables the games cinematics. Warning! Those move around your head and can cause motion sickness!");
+            panel.AddToggleOption(tab, "Skip intro", VROptions.skipIntro, (value) => { VROptions.skipIntro = value; }, "Skip the intro when starting a new game.");
         }
     }
 
@@ -71,6 +76,18 @@ namespace SubmersedVR
         }
     }
 
+    // Save the advanced VR Settings
+    [HarmonyPatch(typeof(GameSettings), nameof(GameSettings.SerializeVRSettings))]
+    static class SerializeAdvancedVRSettings
+    {
+        public static void Postfix(GameSettings.ISerializer serializer)
+        {
+            VROptions.enableCinematics = serializer.Serialize($"VR/{nameof(VROptions.enableCinematics)}", VROptions.enableCinematics);
+            VROptions.disableInputPitch = serializer.Serialize($"VR/{nameof(VROptions.disableInputPitch)}", VROptions.disableInputPitch);
+            VROptions.skipIntro = serializer.Serialize($"VR/{nameof(VROptions.skipIntro)}", VROptions.skipIntro);
+        }
+    }
+
     // This hooks into the tab creation to create the options menu.
     [HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.AddTabs))]
     static class CreateOptionsTab
@@ -78,6 +95,18 @@ namespace SubmersedVR
         public static void Postfix(uGUI_OptionsPanel __instance)
         {
             Settings.AddMenu(__instance);
+        }
+    }
+
+
+    // GameOptions.GetVRAnimationMode returns true whenever we want to play the simplified VR Animations instead of the desktop ones
+    [HarmonyPatch(typeof(GameOptions), nameof(GameOptions.GetVrAnimationMode))]
+    class EnableCinematicsIfSet
+    {
+        static bool Prefix(ref bool __result)
+        {
+            __result = !VROptions.enableCinematics;
+            return false;
         }
     }
 
