@@ -7,6 +7,7 @@ namespace SubmersedVR
     extern alias SteamVRActions;
     using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
+    using System.Linq;
 
     #region Patches
     static class SteamVrGameInput
@@ -162,6 +163,27 @@ namespace SubmersedVR
                 DebugPanel.Show($"{GameInput.GetMoveDirection()}");
             }
             return false;
+        }
+    }
+
+    // This makes GameInput.AnyKeyDown() return true incase any boolean action is pressed. Is needed for the intro skip and credits.
+    // But hmm, where is the any key on the controllers? (https://www.youtube.com/watch?v=st6-DgWeuos)
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.AnyKeyDown))]
+    public static class SteamVRPressAnyKey
+    {
+        static void Postfix(GameInput __instance, ref bool __result)
+        {
+            if (__result) {
+                return;
+            }
+
+            foreach (var action in SteamVR_Input.actionsBoolean)
+            {
+                if (action.GetStateDown(SteamVR_Input_Sources.Any)) {
+                    __result = true;
+                    break;
+                }
+            }
         }
     }
 
