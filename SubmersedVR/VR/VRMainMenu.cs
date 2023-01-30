@@ -14,6 +14,9 @@ namespace SubmersedVR
             VRCameraRig.instance.StealUICamera(uiCamera);
             Camera mainCamera = GameObject.FindGameObjectsWithTag("MainCamera").First(c => c.name.Equals("Main Camera")).GetComponent<Camera>();
             VRCameraRig.instance.StealCamera(mainCamera);
+
+            var screenCanvas = uGUI.main.screenCanvas.gameObject;
+            screenCanvas.WithParent(uiCamera.transform).ResetTransform();
         }
     }
 

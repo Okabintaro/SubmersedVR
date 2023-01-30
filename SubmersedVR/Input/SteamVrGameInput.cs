@@ -7,17 +7,27 @@ namespace SubmersedVR
     extern alias SteamVRActions;
     using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
-    using System.Linq;
 
     #region Patches
     static class SteamVrGameInput
     {
+        public static bool InputLocked = false;
+
         public static bool ShouldIgnore(GameInput.Button button)
         {
-            return button == GameInput.Button.Slot1 || button == GameInput.Button.Slot2 || button == GameInput.Button.Slot3 || button == GameInput.Button.Slot4 || button == GameInput.Button.Slot5 || button == GameInput.Button.AutoMove || button == GameInput.Button.UIClear;
+            return InputLocked
+                || button == GameInput.Button.Slot1
+                || button == GameInput.Button.Slot2
+                || button == GameInput.Button.Slot3
+                || button == GameInput.Button.Slot4
+                || button == GameInput.Button.Slot5
+                || button == GameInput.Button.AutoMove
+                || button == GameInput.Button.UIClear;
         }
     }
 
+    // The following three patches map the steamvr actions to the button states
+    // TODO: They could be optimized by using a switch instead of the GetStateDown(string) lookup
 
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonDown))]
     public static class SteamVrGetButtonDown
@@ -63,11 +73,15 @@ namespace SubmersedVR
             return false;
         }
     }
+
+    // Make the game believe to be controllerd by controllers only
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAvailableDevices))]
     public static class ControllerOnly
     {
         public static bool Prefix()
         {
+            // Choose XBox, since it has the ABXY from Quest controllers
+            GameInput.chosenControllerLayout = GameInput.ControllerLayout.Xbox360;
             GameInput.lastDevice = GameInput.Device.Controller;
             return false;
         }
@@ -99,6 +113,11 @@ namespace SubmersedVR
     {
         public static bool Prefix(GameInput.Button button, ref float __result)
         {
+            if (SteamVrGameInput.InputLocked)
+            {
+                __result = 0.0f;
+                return false;
+            }
             Vector2 vec;
             bool isPressed = false;
             float value = 0.0f;
@@ -173,13 +192,15 @@ namespace SubmersedVR
     {
         static void Postfix(GameInput __instance, ref bool __result)
         {
-            if (__result) {
+            if (__result)
+            {
                 return;
             }
 
             foreach (var action in SteamVR_Input.actionsBoolean)
             {
-                if (action.GetStateDown(SteamVR_Input_Sources.Any)) {
+                if (action.GetStateDown(SteamVR_Input_Sources.Any))
+                {
                     __result = true;
                     break;
                 }

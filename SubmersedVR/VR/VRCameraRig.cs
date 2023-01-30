@@ -279,6 +279,7 @@ namespace SubmersedVR
             uiRig.transform.SetPositionAndRotation(camera.transform.position, camera.transform.rotation);
             if (uiCamera != null)
             {
+                uiCamera.transform.DetachChildren();
                 Destroy(uiCamera.gameObject);
             }
 
@@ -361,7 +362,7 @@ namespace SubmersedVR
             rig.StealCamera(SNCameraRoot.main.mainCamera);
             yield return new WaitForSeconds(1.0f);
             rig.StealUICamera(SNCameraRoot.main.guiCamera, true);
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.1f);
 
             var screenCanvas = uGUI.main.screenCanvas.gameObject;
             screenCanvas.WithParent(uiCamera.transform).ResetTransform();
@@ -545,7 +546,6 @@ namespace SubmersedVR
         {
             Camera mainCamera = SNCameraRoot.main.mainCam;
             VRCameraRig.instance.SetCameraTrackTarget(mainCamera.transform.parent);
-            VRCameraRig.instance.StealCamera(SNCameraRoot.main.mainCamera);
             CoroutineHost.StartCoroutine(VRCameraRig.instance.SetupGameCameras());
         }
     }
