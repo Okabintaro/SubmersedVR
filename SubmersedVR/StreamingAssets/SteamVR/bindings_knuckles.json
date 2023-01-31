@@ -3,27 +3,6 @@
    "alias_info" : {},
    "app_key" : "steam.app.264710",
    "bindings" : {
-      "/actions/buggy" : {
-         "chords" : [],
-         "haptics" : [],
-         "poses" : [],
-         "skeleton" : [],
-         "sources" : []
-      },
-      "/actions/default" : {
-         "chords" : [],
-         "haptics" : [],
-         "poses" : [],
-         "skeleton" : [],
-         "sources" : []
-      },
-      "/actions/platformer" : {
-         "chords" : [],
-         "haptics" : [],
-         "poses" : [],
-         "skeleton" : [],
-         "sources" : []
-      },
       "/actions/subnautica" : {
          "haptics" : [
             {
@@ -222,7 +201,7 @@
    "controller_type" : "knuckles",
    "description" : "",
    "interaction_profile" : "",
-   "name" : "SubmersedVR Knuckles Default",
+   "name" : "Default SubmersedVR Bindings for Knuckles(Index Controllers)",
    "options" : {},
    "simulated_actions" : []
 }

@@ -3,27 +3,6 @@
    "alias_info" : {},
    "app_key" : "steam.app.264710",
    "bindings" : {
-      "/actions/buggy" : {
-         "chords" : [],
-         "haptics" : [],
-         "poses" : [],
-         "skeleton" : [],
-         "sources" : []
-      },
-      "/actions/default" : {
-         "chords" : [],
-         "haptics" : [],
-         "poses" : [],
-         "skeleton" : [],
-         "sources" : []
-      },
-      "/actions/platformer" : {
-         "chords" : [],
-         "haptics" : [],
-         "poses" : [],
-         "skeleton" : [],
-         "sources" : []
-      },
       "/actions/subnautica" : {
          "chords" : [],
          "haptics" : [
@@ -226,7 +205,7 @@
    "controller_type" : "oculus_touch",
    "description" : "",
    "interaction_profile" : "",
-   "name" : "SubmersedVR Oculus Default",
+   "name" : "Default SubmersedVR Bindings for Oculus Touch",
    "options" : {},
    "simulated_actions" : []
 }

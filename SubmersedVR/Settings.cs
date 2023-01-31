@@ -17,6 +17,7 @@ namespace SubmersedVR
         public static bool AlwaysShowLaserPointer;
         public static event BooleanChanged AlwaysShowLaserPointerChanged;
 
+        public static bool DisableQuickslotCycling = true;
         // Saves or loads all public static properties as settings using the given serializer
         internal static void Serialize(GameSettings.ISerializer serializer)
         {
@@ -52,6 +53,9 @@ namespace SubmersedVR
         internal static void AddMenu(uGUI_OptionsPanel panel)
         {
             int tab = panel.AddTab("Submersed VR");
+            panel.AddHeading(tab, "Control Tweaks");
+            panel.AddToggleOption(tab, "Disable QuickSlots Prev/Next Cycling", DisableQuickslotCycling, (value) => { DisableQuickslotCycling = value; }, "This disabled the Cycle Next/Prev actions for tools and upgrades. Still works for battery swapping.");
+
             panel.AddHeading(tab, "Debug Options");
             panel.AddToggleOption(tab, "Debug Overlays", IsDebugEnabled, (value) => { IsDebugEnabled = value; IsDebugChanged(value); }, "Enables Debug Overlays and Logs.");
             panel.AddToggleOption(tab, "Always show controllers", AlwaysShowControllers, (value) => { AlwaysShowControllers = value; AlwaysShowControllersChanged(value); }, "Shows the controllers at all times.");

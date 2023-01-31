@@ -208,6 +208,14 @@ namespace SubmersedVR
         }
     }
 
+    // Disable CycleNext/CylcePrev for QuickSlots
+    // TODO: Not sure if this is a good idea
+    [HarmonyPatch(typeof(uGUI_QuickSlots), nameof(uGUI_QuickSlots.HandleInput))]
+    public static class IgnoreQuickSlotCyclingWhenReloading {
+        public static bool Prefix(uGUI_QuickSlots __instance) {
+            return !Settings.DisableQuickslotCycling;
+        }
+    }
 
     // Previous attempt which tried to emulate controllers, not as clean and not needed
 #if false

@@ -91,13 +91,11 @@
     },
     {
       "name": "/actions/subnautica/in/CycleNext",
-      "type": "boolean",
-      "requirement": "optional"
+      "type": "boolean"
     },
     {
       "name": "/actions/subnautica/in/CyclePrev",
-      "type": "boolean",
-      "requirement": "optional"
+      "type": "boolean"
     },
     {
       "name": "/actions/subnautica/in/UISubmit",
@@ -139,11 +137,13 @@
     },
     {
       "name": "/actions/subnautica/in/UILeft",
-      "type": "boolean"
+      "type": "boolean",
+      "requirement": "optional"
     },
     {
       "name": "/actions/subnautica/in/UIRight",
-      "type": "boolean"
+      "type": "boolean",
+      "requirement": "optional"
     },
     {
       "name": "/actions/subnautica/in/UIUp",
@@ -253,8 +253,8 @@
       "/actions/subnautica/in/LookDown": "Look Down",
       "/actions/subnautica/in/LookLeft": "Look Left",
       "/actions/subnautica/in/LookRight": "Look Right",
-      "/actions/subnautica/in/CycleNext": "Select Next Tool/Upgrade(QuickSlots)",
-      "/actions/subnautica/in/CyclePrev": "Select Previous Tool/Upgrade(QuickSlots)",
+      "/actions/subnautica/in/CycleNext": "Cycle Next Tool/Upgrade/Battery",
+      "/actions/subnautica/in/CyclePrev": "Cycle Previous Tool/Upgrade/Battery",
       "/actions/subnautica/in/UICancel": "Cancel(UI)",
       "/actions/subnautica/in/UIMenu": "Open Pause Menu (There is a button in PDA too)",
       "/actions/subnautica/in/UIAssign": "Assign to Quick Slot(UI)",
@@ -274,11 +274,11 @@
       "/actions/subnautica/in/UISubmit": "Submit",
       "/actions/subnautica/in/MoveUp": "Move Up",
       "/actions/subnautica/in/MoveDown": "Move Down",
-      "/actions/subnautica/in/UILeft": "UI Go Left(for e.g. Battery Swap)",
-      "/actions/subnautica/in/UIRight": "UI Go Right(for e.g. Battery Swap)",
+      "/actions/subnautica/in/UILeft": "UI Go Left",
+      "/actions/subnautica/in/UIRight": "UI Go Right",
       "/actions/subnautica/in/UIUp": "UI Go Up",
       "/actions/subnautica/in/UIDown": "UI Go Down",
-      "/actions/subnautica/in/UIClear": "UI Clear (for Quickslot?)"
+      "/actions/subnautica/in/UIClear": "Pin Recipe (UIClear?)"
     }
   ]
 }
