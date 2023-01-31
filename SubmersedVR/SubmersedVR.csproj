@@ -58,11 +58,15 @@
     <ItemGroup>
       <InstallPlugin Include="$(MSBuildProjectDirectory)\bin\Debug\$(TargetFramework)\$(AssemblyName).dll" />
       <BindingsFolder Include="$(SubnauticaDir)\Subnautica_Data\StreamingAssets\SteamVR" />
+      <ManagedFolder Include="$(SubnauticaDir)\Subnautica_Data\Managed" />
     </ItemGroup>
     <Copy SourceFiles="@(InstallPlugin)" DestinationFolder="$(SubnauticaDir)\BepInEx\plugins" />
     <MakeDir Directories="@(BindingsFolder)"/>
-    <Copy SourceFiles="StreamingAssets\SteamVR\actions.json" DestinationFolder="@(BindingsFolder)" />
-    <Copy SourceFiles="StreamingAssets\SteamVR\bindings_oculus_touch.json" DestinationFolder="@(BindingsFolder)" />
-    <Copy SourceFiles="StreamingAssets\SteamVR\bindings_knuckles.json" DestinationFolder="@(BindingsFolder)" />
+    <Copy SourceFiles="StreamingAssets\SteamVR\actions.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
+    <Copy SourceFiles="StreamingAssets\SteamVR\bindings_oculus_touch.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
+    <Copy SourceFiles="StreamingAssets\SteamVR\bindings_knuckles.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
+    <MakeDir Directories="@(ManagedFolder)"/>
+    <Copy SourceFiles="SteamVR\SteamVR.dll" DestinationFolder="@(ManagedFolder)" SkipUnchangedFiles="true"/>
+    <Copy SourceFiles="SteamVR\SteamVR_Actions.dll" DestinationFolder="@(ManagedFolder)" SkipUnchangedFiles="true"/>
   </Target>
 </Project>
