@@ -21,8 +21,7 @@ namespace SubmersedVR
                 || button == GameInput.Button.Slot3
                 || button == GameInput.Button.Slot4
                 || button == GameInput.Button.Slot5
-                || button == GameInput.Button.AutoMove
-                || button == GameInput.Button.UIClear;
+                || button == GameInput.Button.AutoMove;
         }
     }
 
