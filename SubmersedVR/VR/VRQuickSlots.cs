@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Linq;
-using UnityEngine.UI;
+using HarmonyLib;
 
 namespace SubmersedVR
 {
@@ -18,9 +18,9 @@ namespace SubmersedVR
         private SteamVR_Action_Boolean action;
 
         private Transform controllerTarget;
-        public float wheelRadius = 100.0f;
+        public float wheelRadius = 90.0f;
 
-        public float threshold = 0.025f;
+        public float threshold = 0.02f;
         public float angleOffset = -Mathf.PI / 2.0f;
 
         public int lastSlot = -1;
@@ -66,6 +66,17 @@ namespace SubmersedVR
             base.Init(newTarget);
             ArangeIconsInCircle(wheelRadius);
             OnSelect(this.target.GetActiveSlotID());
+        }
+
+        new void OnSelect(int slotID) {
+            if (target == null) {
+                return;
+            }
+            base.OnSelect(slotID);
+            if (slotID >= 0) {
+                var pos = CirclePosition(slotID, nSlots, radius);
+                selector.rectTransform.anchoredPosition = new Vector3(pos.x, pos.y, 0);
+            }
         }
 
         void ArangeIconsInCircle(float radius)
@@ -123,15 +134,25 @@ namespace SubmersedVR
                     currentSlot = DetermineSlot(angle);
                     if (currentSlot != lastSlot)
                     {
-                        QuickSlots qs = GetTarget() as QuickSlots;
-                        qs.Select(currentSlot);
+                        var targetSlots = GetTarget();
+                        if (targetSlots == null) {
+                            return;
+                        }
+                        targetSlots.SlotKeyDown(currentSlot);
                         SteamVR_Actions.subnautica_HapticsRight.Execute(0.0f, 0.1f, 10f, 0.5f, SteamVR_Input_Sources.Any);
                     }
                 }
                 else
                 {
-                    QuickSlots qs = GetTarget() as QuickSlots;
-                    qs.Deselect();
+                    var targetSlots = GetTarget();
+                    if (targetSlots == null) {
+                        return;
+                    }
+                    // NOTE: you can't deselect in vehicles
+                    if (targetSlots is QuickSlots) {
+                        targetSlots.DeselectSlots();
+                        currentSlot = -2;
+                    }
                 }
 
                 // DebugPanel.Show($"y:{projected.y:f3} x:{projected.x:f3} -> {angle:f3}\n {distance:f3} -> {doSwitch}\n {angle:f3} -> {currentSlot}");
@@ -143,11 +164,17 @@ namespace SubmersedVR
         {
             canvas.enabled = true;
             transform.position = controllerTarget.transform.position;
+            bool isVehicleSlot = GetTarget() is Vehicle;
 
             // TODO: This still could use some tweaking, maybe just align with the controller
             var targetPos = VRCameraRig.instance.uiCamera.transform.position;
             SteamVR_Actions.subnautica_HapticsRight.Execute(0.0f, 0.1f, 10f, 0.5f, SteamVR_Input_Sources.Any);
-            targetPos.y = transform.position.y;
+
+            // Don't rotate the wheel up/down when not in vehicle.
+            if (!isVehicleSlot) {
+                targetPos.y = transform.position.y;
+            }
+
             this.transform.LookAt(targetPos);
 
             currentSlot = -2;
@@ -183,4 +210,25 @@ namespace SubmersedVR
             return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
         }
     }
+
+#region Patches
+
+    // Switch to the vehicle quickslots when entering a vehicle and back to the player quickslots when exiting
+    [HarmonyPatch]
+    public static class QuickSlots_Patch
+    {
+        [HarmonyPatch(typeof(Vehicle), nameof(Vehicle.OnPilotModeBegin))]
+        public static void Postfix(Vehicle __instance)
+        {
+            VRCameraRig.instance.VrQuickSlots.SetTarget(__instance);
+        }
+
+        [HarmonyPatch(typeof(Vehicle), nameof(Vehicle.OnPilotModeEnd))]
+        public static void Postfix()
+        {
+            VRCameraRig.instance.VrQuickSlots.SetTarget(null);
+        }
+    }
+#endregion
+
 }

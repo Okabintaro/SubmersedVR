@@ -121,6 +121,8 @@ namespace SubmersedVR
         // This transfroms forward vector determines where the equiped tool will be aiming
         public static readonly TransformOffset DefaultTargetTransform = new TransformOffset(Vector3.zero, new Vector3(45, 0, 0));
         private TransformOffset _targetTransform;
+        public VRQuickSlots VrQuickSlots;
+
         public TransformOffset TargetTransform
         {
             get
@@ -309,9 +311,8 @@ namespace SubmersedVR
                 // Set all canvas scalers to static, which makes UI better usable
                 FindObjectsOfType<uGUI_CanvasScaler>().Where(obj => !obj.name.Contains("PDA")).ForEach(cs => cs.vrMode = uGUI_CanvasScaler.Mode.Static);
                 SetupPDA();
-                var qs = new GameObject("VRQuickSlots").ResetTransform().AddComponent<VRQuickSlots>();
-                // TODO: Rethink bindings
-                qs.Setup(SteamVR_Actions.subnautica_OpenQuickSlotWheel);
+                VrQuickSlots = new GameObject("VRQuickSlots").ResetTransform().AddComponent<VRQuickSlots>();
+                VrQuickSlots.Setup(SteamVR_Actions.subnautica_OpenQuickSlotWheel);
             }
             else
             {
@@ -565,7 +566,6 @@ namespace SubmersedVR
             rig.SetWorldTarget(__instance.activeTarget, __instance.activeHitDistance);
         }
     }
-
 
     // Don't disable the the automatic camera tracking of the UI Camera in the Main Game
     [HarmonyPatch(typeof(ManagedCanvasUpdate), nameof(ManagedCanvasUpdate.GetUICamera))]
