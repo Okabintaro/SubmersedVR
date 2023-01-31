@@ -284,6 +284,8 @@ namespace SubmersedVR
                     var newBounds = new Bounds(Vector3.zero, new Vector3(3.0f, 3.0f, 3.0f));
                     mr.localBounds = newBounds;
                     mr.allowOcclusionWhenDynamic = false;
+                    // TODO: This actually fixes the culling, but still not sure why the bbox doesn't work
+                    mr.updateWhenOffscreen = true;
                 });
                 // Disable body rendering
                 var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("body") || r.name.Contains("vest"));
