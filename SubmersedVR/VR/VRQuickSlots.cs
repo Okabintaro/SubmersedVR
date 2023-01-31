@@ -202,6 +202,15 @@ namespace SubmersedVR
             setup = true;
         }
 
+        new void OnDestroy() {
+            Mod.logger.LogDebug($"Destroying {nameof(VRQuickSlots)}...");
+            base.OnDestroy();
+            if (setup) {
+                action.onStateDown -= Activate;
+                action.onStateUp -= Deactivate;
+            }
+        }
+
         private static Vector2 CirclePosition(int i, int nSlots, float radius = 10.0f)
         {
             float stepSize = 2 * Mathf.PI / nSlots;
