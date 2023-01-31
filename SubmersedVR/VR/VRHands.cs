@@ -12,6 +12,7 @@ namespace SubmersedVR
     extern alias SteamVRRef;
     using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
+    using System.Collections.Generic;
 
     public struct TransformOffset
     {
@@ -373,11 +374,70 @@ namespace SubmersedVR
         [HarmonyPrefix]
         static bool Prefix(ref Transform __result)
         {
-            // TODO: Introduce VRCameraRig.aimTransform
             __result = VRCameraRig.instance.laserPointer.transform;
             return false;
         }
     }
+
+    // Make the stasis rifle/or sphere shoot with the hands rotation
+    // NOTE: This is easier than patching StasisRifle.Fire() but but might break some mods?
+    [HarmonyPatch(typeof(StasisSphere), nameof(StasisSphere.Shoot))]
+    public static class OverrideStasisRifleAim
+    {
+        static bool Prefix(ref Quaternion rotation)
+        {
+            rotation = VRCameraRig.instance.laserPointer.transform.rotation;
+            return true;
+        }
+    }
+
+
+    // Make the Propulsion canon aim with the laser pointer/target transform
+    [HarmonyPatch(typeof(PropulsionCannon), nameof(PropulsionCannon.GetObjectPosition))]
+    public static class OverridePropulsionObjectPosition
+    {
+        public static Camera GetAimCamera() {
+            return VRCameraRig.instance?.laserPointer.eventCamera;
+        }
+
+        // Replace the first line/instruction in GetObjectPosition() that is Camera camera = MainCamera.camera, with our own above.
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var m = new CodeMatcher(instructions);
+            m.Start().SetInstruction(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
+            return m.InstructionEnumeration();
+        }
+    }
+
+    // Make the Propulsion canon shoot with the laser pointer/target transform
+    [HarmonyPatch(typeof(PropulsionCannon), nameof(PropulsionCannon.OnShoot))]
+    public static class OverridePropulsionShootDirection
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var m = new CodeMatcher(instructions);
+            m.MatchForward(false, new CodeMatch[] {new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera))))});
+            m.SetInstruction(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
+            return m.InstructionEnumeration();
+        }
+    }
+
+    // Make the Propulsion canon shoot with the laser pointer/target transform
+    [HarmonyPatch(typeof(RepulsionCannon), nameof(RepulsionCannon.OnToolUseAnim))]
+    public static class OverrideRePropulsionShootDirection
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var m = new CodeMatcher(instructions);
+            m.MatchForward(false, new CodeMatch[] {new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera))))});
+            m.SetInstructionAndAdvance(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
+            m.MatchForward(false, new CodeMatch[] {new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera))))});
+            m.SetInstruction(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
+            return m.InstructionEnumeration();
+        }
+    }
+
+
 
     #endregion
 }
