@@ -210,15 +210,6 @@ namespace SubmersedVR
         }
     }
 
-    // Disable CycleNext/CylcePrev for QuickSlots
-    // TODO: Not sure if this is a good idea
-    [HarmonyPatch(typeof(uGUI_QuickSlots), nameof(uGUI_QuickSlots.HandleInput))]
-    public static class IgnoreQuickSlotCyclingWhenReloading {
-        public static bool Prefix(uGUI_QuickSlots __instance) {
-            return !Settings.DisableQuickslotCycling;
-        }
-    }
-
     // This makes it so the crafting menu from the fabricators actually use the controller buttons
     // [HarmonyPatch(typeof(uGUI_CraftingMenu), "OnPointerClick")]
     [HarmonyPatch(typeof(uGUI_CraftingMenu))]
