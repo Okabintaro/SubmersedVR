@@ -3,29 +3,51 @@ SubmersedVR
 
 **NOTE: This mod is still work in progress. Please don't expect a polished or bugfree experience(yet).**
 
-A Mod that aims to improve the VR Support of the game [Subnautica], aiming for maximum immersion with support for tracked motion controllers.
+A mod aiming to make [Subnautica] an immersive VR game by moderinizing its VR Support.
 
-If you wan't to play the game in it's original VR Mode with a traditional XBox or PS4 Controller, i recommend using the [Subnautica VR Enhancements Mod].
+If you wan't to play the game in it's original VR Mode with a traditional XBox or PS4 Controller, I recommend using the [Subnautica VR Enhancements Mod] instead.
 
-Requirements
-------------
+Installation/Setup
+-------------------
 
-- A SteamVR Compatible Headset and Motion Controllers
-
-Installation
--------------
-
-TODO
+- Make sure you have [BepInEx for Subnautica](https://github.com/toebeann/BepInEx.Subnautica) installed and setup
+- Download the latest Version from [Github Releases](https://github.com/Okabintaro/SubmersedVR/releases)
+- Copy the contents of the Zip file into your Subnautica folder e.g. `C:\SteamLibrary\steamapps\common\Subnautica`
+    - You can find the location of your game in steam by right clicking it -> Properties -> Local Files -> Browse.
+- Start the game within SteamVR. **The Oculus Runtime won't work and is not supported!**
+    - For Airlink Users: You can force the SteamVR runtime by adding `-vrmode openvr` to the launch options in steam and launching it via SteamVR.
 
 Development Setup
 -----------------
 
-TODO
+- Install the [.net SDK](https://dotnet.microsoft.com/download)
+- Change the `SubnauticaDir` Property in `SubmersedVR/SubmersedVR.csproj` to the Subnautica Installation
+- Run `dotnet restore` to fetch all dependencies and setup the project
+- Run `dotnet build` to build and install the mod
+
+### For VSCode
+
+- Install C# Extension
+- (Tip/Optional) [Enable Decompilation support](https://github.com/OmniSharp/omnisharp-roslyn/pull/1751):
+    Set `RoslynExtensionsOptions:EnableDecompilationSupport` to true in omnisharp.json
+
+### For Visual Studio
+
+- You should be able to simply open up the `SubmersedVR/SubmersedVR.csproj`.
 
 FAQ
 ---
 
-TODO
+#### I found a bug, where do I report it?
+
+Please report it on the [Github Issues](https://github.com/Okabintaro/SubmersedVR/issues).
+
+#### What features are planed for the future? I have an idea!
+
+We want to keep track of future releases and features/ideas on [Github Issues](https://github.com/Okabintaro/SubmersedVR/issues) aswell. Feel free to suggest changes if it's not already reported yet.
+#### Will this work with Below Zero?
+
+No. At least not yet. We might see how hard it is to port it to Below Zero, but it's not a priority right now.
 
 Credits/Thanks
 --------------
