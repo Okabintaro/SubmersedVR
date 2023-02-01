@@ -41,6 +41,16 @@ namespace SubmersedVR
             return obj;
         }
 
+        public static T GetOrAddComponent<T>(this GameObject go) where T : Component
+        {
+            T component = go.GetComponent<T>();
+            if (component == null)
+            {
+                component = go.AddComponent<T>();
+            }
+            return component;
+        }
+
         public static ParentConstraint ParentTo(this ParentConstraint parentConstraint, Transform target, Vector3 translationOffset)
         {
             // Remove old sources
@@ -234,8 +244,6 @@ namespace SubmersedVR
 
         private void SetupControllerModels()
         {
-            // Create two cubes to show controller positions
-            // TODO: Replace with actual models from steamvr
             modelL = new GameObject(nameof(modelL)).WithParent(leftControllerUI).ResetTransform();
             modelR = new GameObject(nameof(modelR)).WithParent(rightControllerUI).ResetTransform();
 
@@ -321,6 +329,7 @@ namespace SubmersedVR
                 camera.transform.localRotation = Quaternion.identity;
             }
             uiCamera = camera;
+            VRHud.Setup(uiCamera, rightControllerUI.transform);
         }
 
         void SetupPDA()
@@ -365,29 +374,25 @@ namespace SubmersedVR
             rig.StealUICamera(SNCameraRoot.main.guiCamera, true);
             yield return new WaitForSeconds(0.1f);
 
-            var screenCanvas = uGUI.main.screenCanvas.gameObject;
-            screenCanvas.WithParent(uiCamera.transform).ResetTransform();
             var clipCamera = FindObjectsOfType<Camera>().First(cam => cam.name == "Clip Camera");
             clipCamera.gameObject.WithParent(vrCamera.transform).ResetTransform();
-
-            // Steal Reticle and attach to the right hand
-            var handReticle = HandReticle.main.gameObject.WithParent(rightControllerUI.transform);
-            handReticle.AddComponent<Canvas>().worldCamera = uiCamera;
-            handReticle.transform.localEulerAngles = new Vector3(90, 0, 0);
-            handReticle.transform.localPosition = new Vector3(0, 0, 0.05f);
-            handReticle.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
             FindObjectsOfType<uGUI_CanvasScaler>().ForEach(cs => cs.SetDirty());
+
         }
 
         public void LateUpdate()
         {
             // Move the camera rig to the player each frame and rotate the uiRig accordingly
+            // TODO: This probably has to be changed for roomscale tracking.
+            // Right now if you move too far away from the center, you will rotate the camera with the center as a pivot.
             if (rigParentTarget != null)
             {
                 this.transform.SetPositionAndRotation(rigParentTarget.position, rigParentTarget.rotation);
                 uiRig.transform.rotation = transform.rotation;
             }
+        }
 
+        void DebugRaycasts() {
             if (false && Settings.IsDebugEnabled)
             {
                 RaycastResult? uiTarget = fpsInput?.lastRaycastResult;

@@ -229,13 +229,13 @@ namespace SubmersedVR
         [HarmonyPatch(typeof(Vehicle), nameof(Vehicle.OnPilotModeBegin))]
         public static void Postfix(Vehicle __instance)
         {
-            VRCameraRig.instance.VrQuickSlots.SetTarget(__instance);
+            VRCameraRig.instance?.VrQuickSlots?.SetTarget(__instance);
         }
 
         [HarmonyPatch(typeof(Vehicle), nameof(Vehicle.OnPilotModeEnd))]
         public static void Postfix()
         {
-            VRCameraRig.instance.VrQuickSlots.SetTarget(null);
+            VRCameraRig.instance?.VrQuickSlots?.SetTarget(null);
         }
     }
 #endregion
