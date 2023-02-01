@@ -5,7 +5,7 @@ namespace SubmersedVR{
     // Tweaks regarding the HUD of the game
     static class VRHud {
         private static Transform screenCanvas;
-        private static Transform overlays;
+        private static Transform overlayCanvas;
         private static Transform hud;
         private static bool hudSetup = false;
 
@@ -36,7 +36,7 @@ namespace SubmersedVR{
             Mod.logger.LogInfo($"Setting up HUD for {uiCamera.name}");
 
             screenCanvas = uGUI.main.screenCanvas.gameObject.transform;
-            overlays = uGUI.main.overlays.gameObject.transform;
+            overlayCanvas = uGUI.main.overlays.gameObject.transform.parent;
             hud = uGUI.main.hud.transform;
 
             if (staticHudCanvas == null) {
@@ -55,7 +55,7 @@ namespace SubmersedVR{
             staticHudCanvas.worldCamera = uiCamera;
 
             screenCanvas.parent = uiCamera.transform;
-            overlays.parent = uiCamera.transform;
+            overlayCanvas.parent = uiCamera.transform;
 
             // Steal Reticle and attach to the right hand
             var handReticle = HandReticle.main.gameObject.WithParent(rightControllerUI.transform);
