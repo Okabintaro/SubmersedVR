@@ -263,6 +263,26 @@ namespace SubmersedVR
         }
     }
 
+    // Make the builder gun rotation use custom steamvr actions
+    [HarmonyPatch(typeof(Builder), nameof(Builder.CalculateAdditiveRotationFromInput))]
+    public static class BuilderRotateUseCustomActions
+    {
+        static bool Prefix(float additiveRotation, ref float __result)
+        {
+            if (SteamVR_Actions.subnautica_BuilderRotateRight.GetState(SteamVR_Input_Sources.Any))
+            {
+                additiveRotation = MathExtensions.RepeatAngle(additiveRotation - Builder.GetDeltaTimeForAdditiveRotation() * Builder.additiveRotationSpeed);
+            }
+            else if (SteamVR_Actions.subnautica_BuilderRotateLeft.GetState(SteamVR_Input_Sources.Any))
+            {
+                additiveRotation = MathExtensions.RepeatAngle(additiveRotation + Builder.GetDeltaTimeForAdditiveRotation() * Builder.additiveRotationSpeed);
+            }
+            __result = additiveRotation;
+            return false;
+        }
+    }
+
+
     // Previous attempt which tried to emulate controllers, not as clean and not needed
 #if false
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAxisValues))]

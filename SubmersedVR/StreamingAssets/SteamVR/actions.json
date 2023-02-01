@@ -208,6 +208,16 @@
       "requirement": "mandatory"
     },
     {
+      "name": "/actions/subnautica/in/BuilderRotateRight",
+      "type": "boolean",
+      "requirement": "suggested"
+    },
+    {
+      "name": "/actions/subnautica/in/BuilderRotateLeft",
+      "type": "boolean",
+      "requirement": "suggested"
+    },
+    {
       "name": "/actions/subnautica/out/HapticsRight",
       "type": "vibration"
     },
@@ -258,8 +268,8 @@
       "/actions/subnautica/in/UICancel": "Cancel(UI)",
       "/actions/subnautica/in/UIMenu": "Open Pause Menu (There is a button in PDA too)",
       "/actions/subnautica/in/UIAssign": "Assign to Quick Slot(UI)",
-      "/actions/subnautica/in/UIAdjustLeft": "Adjust Left (UI/Builder Tool)",
-      "/actions/subnautica/in/UIAdjustRight": "Adjust Right (UI/Builder Tool)",
+      "/actions/subnautica/in/UIAdjustLeft": "Adjust Left (UI)",
+      "/actions/subnautica/in/UIAdjustRight": "Adjust Right (UI)",
       "/actions/subnautica/in/UIPrevTab": "Previous Tab (UI)",
       "/actions/subnautica/in/UINextTab": "Next Tab (UI)",
       "/actions/subnautica/out/HapticsRight": "Right Hand Haptics",
@@ -278,7 +288,9 @@
       "/actions/subnautica/in/UIRight": "UI Go Right",
       "/actions/subnautica/in/UIUp": "UI Go Up",
       "/actions/subnautica/in/UIDown": "UI Go Down",
-      "/actions/subnautica/in/UIClear": "Pin Recipe/Throw away item(UIClear)"
+      "/actions/subnautica/in/UIClear": "Pin Recipe/Throw away item(UIClear)",
+      "/actions/subnautica/in/BuilderRotateRight": "Rotate Bulding Right",
+      "/actions/subnautica/in/BuilderRotateLeft": "Rotate Bulding Left"
     }
   ]
 }

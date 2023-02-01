@@ -166,14 +166,33 @@
             },
             {
                "inputs" : {
+                  "touch" : {
+                     "output" : "/actions/subnautica/in/buildertoolright"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/grip"
+            },
+            {
+               "inputs" : {
+                  "touch" : {
+                     "output" : "/actions/subnautica/in/buildertoolleft"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/grip"
+            },
+
+            {
+               "inputs" : {
                   "east" : {
                      "output" : "/actions/subnautica/in/moveright"
                   },
                   "north" : {
-                     "output" : "/actions/subnautica/in/moveup"
+                     "output" : "/actions/subnautica/in/moveforward"
                   },
                   "south" : {
-                     "output" : "/actions/subnautica/in/movedown"
+                     "output" : "/actions/subnautica/in/movebackward"
                   },
                   "west" : {
                      "output" : "/actions/subnautica/in/moveleft"
@@ -187,12 +206,6 @@
             },
             {
                "inputs" : {
-                  "east" : {
-                     "output" : "/actions/subnautica/in/uiadjustright"
-                  },
-                  "west" : {
-                     "output" : "/actions/subnautica/in/uiadjustleft"
-                  },
                   "south" : {
                      "output" : "/actions/subnautica/in/deconstruct"
                   }
