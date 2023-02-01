@@ -4,6 +4,7 @@ using HarmonyLib;
 using UnityEngine.XR;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace SubmersedVR
 {
@@ -48,6 +49,42 @@ namespace SubmersedVR
         public static void Prefix(FPSInputModule __instance, PointerEventData leftData)
         {
             leftData.position = __instance.lastRaycastResult.worldPosition;
+        }
+    }
+
+    // Use UICancel(uGUI.button2) as middle mouse button, which makes certain pointer ui work better.
+    // It's needed to get X to work for pinning recipes in the fabricator.
+    // TODO: Might be better to rewrite this using transpiler or rewrite completely.
+    // In any case it's painful because you gotta call base methods: https://harmony.pardeike.net/articles/patching-edgecases.html#calling-base-methods
+    [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.UpdateMouseState))]
+    class EmulateMiddleMosueButtonToo : PointerInputModule
+    {
+        [HarmonyReversePatch]
+        [HarmonyPatch(typeof(PointerInputModule), "GetPointerData")]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static bool GetPointerData(FPSInputModule instance, int id, out PointerEventData data, bool create) {
+            data = null;
+            return false;
+        }
+
+        public static void Postfix(FPSInputModule __instance, PointerEventData leftData)
+        {
+            GetPointerData(__instance, -3, out var data2, create: true);
+            __instance.CopyFromTo(leftData, data2);
+            data2.button = PointerEventData.InputButton.Middle;
+            if (GameInput.GetPrimaryDevice() == GameInput.Device.Controller)
+            {
+                var buttonDown = GameInput.GetButtonDown(uGUI.button2);
+                var buttonUp = GameInput.GetButtonUp(uGUI.button2);
+                if (__instance.m_MouseState.GetButtonState(PointerEventData.InputButton.Middle).eventData.buttonState == PointerEventData.FramePressState.NotChanged)
+                {
+                    __instance.m_MouseState.SetButtonState(PointerEventData.InputButton.Middle, FPSInputModule.ConstructPressState(buttonDown, buttonUp), data2);
+                }
+            }
+        }
+
+        public override void Process()
+        {
         }
     }
 

@@ -7,6 +7,9 @@ namespace SubmersedVR
     extern alias SteamVRActions;
     using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
+    using System.Reflection.Emit;
+    using System.Collections.Generic;
+    using System.Reflection;
 
     #region Patches
     static class SteamVrGameInput
@@ -27,7 +30,6 @@ namespace SubmersedVR
 
     // The following three patches map the steamvr actions to the button states
     // TODO: They could be optimized by using a switch instead of the GetStateDown(string) lookup
-
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonDown))]
     public static class SteamVrGetButtonDown
     {
@@ -170,6 +172,7 @@ namespace SubmersedVR
         }
     }
 
+
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAxisValues))]
     public static class SteamVrDontUpdateAxisValues
     {
@@ -213,6 +216,50 @@ namespace SubmersedVR
     public static class IgnoreQuickSlotCyclingWhenReloading {
         public static bool Prefix(uGUI_QuickSlots __instance) {
             return !Settings.DisableQuickslotCycling;
+        }
+    }
+
+    // This makes it so the crafting menu from the fabricators actually use the controller buttons
+    // [HarmonyPatch(typeof(uGUI_CraftingMenu), "OnPointerClick")]
+    [HarmonyPatch(typeof(uGUI_CraftingMenu))]
+    public static class CraftingMenuUseControllerButtons
+    {
+        public static MethodBase TargetMethod()
+        {
+            var type = typeof(uGUI_CraftingMenu);
+            return AccessTools.FirstMethod(type, method => method.Name.Contains("OnPointerClick"));
+        }
+
+        static bool Prefix(ref bool __result, uGUI_CraftingMenu __instance, uGUI_ItemIcon icon, int button)
+        {
+            if (__instance.interactable) {
+                uGUI_CraftingMenu.Node node = __instance.GetNode(icon);
+                switch (button) {
+                    case 0: // uGUI.button0 => UISubmit
+                        __instance.Action(node);
+                        __result = true;
+                        break;
+                    case 1: // uGUI.button1 => UICancel
+                        __instance.Deselect();
+                        __result = true;
+                        break;
+                    case 2: // uGUI.button2 => UIClear => Pinning
+                        if (node.action == TreeAction.Craft)
+						{
+							TechType techType = node.techType;
+							if (CrafterLogic.IsCraftRecipeUnlocked(techType))
+							{
+								PinManager.TogglePin(techType);
+							}
+						}
+                        __result = true;
+                        break;
+                    default:
+                        __result = false;
+                        break;
+                }
+            }
+            return false;
         }
     }
 
