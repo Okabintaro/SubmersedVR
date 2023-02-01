@@ -69,6 +69,15 @@
             {
                "inputs" : {
                   "click" : {
+                     "output" : "/actions/subnautica/in/uiclear"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/x"
+            },
+            {
+               "inputs" : {
+                  "click" : {
                      "output" : "/actions/subnautica/in/righthand"
                   }
                },
@@ -157,7 +166,7 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/b"
+               "path" : "/user/hand/right/input/a"
             },
             {
                "inputs" : {
@@ -180,16 +189,16 @@
             {
                "inputs" : {
                   "east" : {
-                     "output" : "/actions/subnautica/in/cycleright"
+                     "output" : "/actions/subnautica/in/moveright"
                   },
                   "north" : {
-                     "output" : "/actions/subnautica/in/uiup"
+                     "output" : "/actions/subnautica/in/moveup"
                   },
                   "south" : {
-                     "output" : "/actions/subnautica/in/uidown"
+                     "output" : "/actions/subnautica/in/movedown"
                   },
                   "west" : {
-                     "output" : "/actions/subnautica/in/cycleleft"
+                     "output" : "/actions/subnautica/in/moveleft"
                   }
                },
                "mode" : "dpad",
@@ -197,7 +206,26 @@
                   "sub_mode" : "touch"
                },
                "path" : "/user/hand/left/input/joystick"
+            },
+            {
+               "inputs" : {
+                  "east" : {
+                     "output" : "/actions/subnautica/in/uiadjustright"
+                  },
+                  "west" : {
+                     "output" : "/actions/subnautica/in/uiadjustleft"
+                  },
+                  "south" : {
+                     "output" : "/actions/subnautica/in/deconstruct"
+                  }
+               },
+               "mode" : "dpad",
+               "parameters" : {
+                  "sub_mode" : "touch"
+               },
+               "path" : "/user/hand/right/input/joystick"
             }
+
          ]
       }
    },

@@ -56,13 +56,11 @@
     },
     {
       "name": "/actions/subnautica/in/MoveLeft",
-      "type": "boolean",
-      "requirement": "optional"
+      "type": "boolean"
     },
     {
       "name": "/actions/subnautica/in/MoveRight",
-      "type": "boolean",
-      "requirement": "optional"
+      "type": "boolean"
     },
     {
       "name": "/actions/subnautica/in/Sprint",
@@ -91,11 +89,13 @@
     },
     {
       "name": "/actions/subnautica/in/CycleNext",
-      "type": "boolean"
+      "type": "boolean",
+      "requirement": "optional"
     },
     {
       "name": "/actions/subnautica/in/CyclePrev",
-      "type": "boolean"
+      "type": "boolean",
+      "requirement": "optional"
     },
     {
       "name": "/actions/subnautica/in/UISubmit",
@@ -246,8 +246,8 @@
       "/actions/subnautica/in/Reload": "Reload / Swap Batteries",
       "/actions/subnautica/in/MoveForward": "Move Forward",
       "/actions/subnautica/in/MoveBackward": "Move Backward",
-      "/actions/subnautica/in/MoveLeft": "Move Left",
-      "/actions/subnautica/in/MoveRight": "Move Right",
+      "/actions/subnautica/in/MoveLeft": "Move Left (also prev Battery/Item)",
+      "/actions/subnautica/in/MoveRight": "Move Right (also next Battery/Item)",
       "/actions/subnautica/in/Sprint": "Sprint",
       "/actions/subnautica/in/LookUp": "Look Up",
       "/actions/subnautica/in/LookDown": "Look Down",
@@ -278,7 +278,7 @@
       "/actions/subnautica/in/UIRight": "UI Go Right",
       "/actions/subnautica/in/UIUp": "UI Go Up",
       "/actions/subnautica/in/UIDown": "UI Go Down",
-      "/actions/subnautica/in/UIClear": "Pin Recipe (UIClear?)"
+      "/actions/subnautica/in/UIClear": "Pin Recipe/Throw away item(UIClear)"
     }
   ]
 }
