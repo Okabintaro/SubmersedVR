@@ -23,6 +23,7 @@ namespace SubmersedVR
             Harmony harmony = new Harmony(PluginInfo.PLUGIN_GUID);
             harmony.PatchAll();
             Logger.LogInfo($"{PluginInfo.PLUGIN_NAME} patches applied!");
+            VROptions.gazeBasedCursor = true;
 
             instance = this;
         }

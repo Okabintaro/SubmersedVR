@@ -274,6 +274,17 @@ namespace SubmersedVR
     }
 
 
+    // Force the gaze based cursor, since we use it for the laserpointer
+    [HarmonyPatch(typeof(VROptions), nameof(VROptions.GetUseGazeBasedCursor))]
+    public static class ForceGazeBasedCursor
+    {
+        public static bool Prefix(ref bool __result)
+        {
+            __result = true;
+            return false;
+        }
+    }
+
     // Previous attempt which tried to emulate controllers, not as clean and not needed
 #if false
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAxisValues))]
