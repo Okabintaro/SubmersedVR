@@ -224,6 +224,7 @@ namespace SubmersedVR
         {
             SteamVR.Initialize();
             SteamVR.settings.trackingSpace = ETrackingUniverseOrigin.TrackingUniverseSeated;
+            SteamVrGameInput.IsSteamVrReady = SteamVR.initializedState == SteamVR.InitializedStates.InitializeSuccess;
         }
 
         public void Start()
@@ -583,7 +584,7 @@ namespace SubmersedVR
     {
         public static void Postfix(uGUI __instance)
         {
-            VRCameraRig.instance.UpdateShowControllers();
+            VRCameraRig.instance?.UpdateShowControllers();
         }
     }
 

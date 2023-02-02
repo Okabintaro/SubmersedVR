@@ -15,10 +15,11 @@ namespace SubmersedVR
     static class SteamVrGameInput
     {
         public static bool InputLocked = false;
+        public static bool IsSteamVrReady = false;
 
         public static bool ShouldIgnore(GameInput.Button button)
         {
-            return InputLocked
+            return !IsSteamVrReady || InputLocked
                 || button == GameInput.Button.Slot1
                 || button == GameInput.Button.Slot2
                 || button == GameInput.Button.Slot3
@@ -114,7 +115,7 @@ namespace SubmersedVR
     {
         public static bool Prefix(GameInput.Button button, ref float __result)
         {
-            if (SteamVrGameInput.InputLocked)
+            if (SteamVrGameInput.InputLocked || !SteamVrGameInput.IsSteamVrReady)
             {
                 __result = 0.0f;
                 return false;
