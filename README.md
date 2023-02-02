@@ -6,6 +6,7 @@ SubmersedVR
 A mod aiming to make [Subnautica] an immersive VR game by moderinizing its VR Support.
 
 If you wan't to play the game in it's original VR Mode with a traditional XBox or PS4 Controller, I recommend using the [Subnautica VR Enhancements Mod] instead.
+**NOTE: Using SubmersedVR alongside this VR Enhancements Mod can cause issues due to both of them changing similar things. They are not compatible with each other.**
 
 Installation/Setup
 -------------------
