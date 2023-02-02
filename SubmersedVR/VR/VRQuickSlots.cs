@@ -167,7 +167,6 @@ namespace SubmersedVR
                 // TODO: Probably should use events to determine current slot, extending interface methods
                 if (doSwitch)
                 {
-                    ErrorMessage.AddDebug("DoSwitch");
                     lastSlot = currentSlot;
                     currentSlot = DetermineSlot(angle);
                     if (currentSlot != lastSlot)
