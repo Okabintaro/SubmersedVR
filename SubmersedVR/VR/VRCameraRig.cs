@@ -26,12 +26,12 @@ namespace SubmersedVR
     {
         public static GameObject WithParent(this GameObject obj, Transform target)
         {
-            obj.transform.parent = target;
+            obj.transform.SetParent(target);
             return obj;
         }
         public static GameObject WithParent(this GameObject obj, GameObject target)
         {
-            obj.transform.parent = target.transform;
+            obj.transform.SetParent(target.transform);
             return obj;
         }
         public static GameObject ResetTransform(this GameObject obj)
@@ -281,7 +281,7 @@ namespace SubmersedVR
             vrCamera = camera;
             Vector3 oldPos = camera.transform.position;
             transform.position = oldPos;
-            vrCamera.transform.parent = this.transform;
+            vrCamera.transform.SetParent(this.transform);
         }
 
         public void StealUICamera(Camera camera, bool fromGame = false)
@@ -312,7 +312,7 @@ namespace SubmersedVR
                 camera.clearFlags = CameraClearFlags.Depth;
                 camera.depth = oldDepth;
 
-                camera.transform.parent = uiRig.transform;
+                camera.transform.SetParent(uiRig.transform);
                 camera.transform.localPosition = Vector3.zero;
                 camera.transform.localRotation = Quaternion.identity;
 
@@ -324,7 +324,7 @@ namespace SubmersedVR
             }
             else
             {
-                camera.transform.parent = uiRig.transform;
+                camera.transform.SetParent(uiRig.transform);
                 camera.transform.localPosition = Vector3.zero;
                 camera.transform.localRotation = Quaternion.identity;
             }
@@ -340,7 +340,7 @@ namespace SubmersedVR
             var qs = FindObjectOfType<uGUI_QuickSlots>();
             var qstf = qs.transform;
 
-            qstf.parent = targetParent;
+            qstf.SetParent(targetParent);
             qstf.localPosition = new Vector3(-250, -455, 4f);
             qstf.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             qstf.localRotation = Quaternion.identity;
@@ -349,7 +349,7 @@ namespace SubmersedVR
             var dialog = pda.GetComponentInChildren<uGUI_Dialog>(true);
             var buttonPrefab = dialog.buttonPrefab;
             var button = Object.Instantiate(buttonPrefab, targetParent).GetComponent<uGUI_DialogButton>();
-            button.button.transform.parent = targetParent;
+            button.button.transform.SetParent(targetParent);
             button.button.gameObject.gameObject.name = "PauseMenuButton";
             button.text.text = "Pause Menu";
             button.button.onClick.RemoveAllListeners();
@@ -589,7 +589,8 @@ namespace SubmersedVR
     {
         public static void Postfix(uGUI __instance)
         {
-            VRCameraRig.instance.UpdateShowControllers();
+            if(SteamVR.initializedState == SteamVR.InitializedStates.InitializeSuccess)
+                VRCameraRig.instance.UpdateShowControllers();
         }
     }
 

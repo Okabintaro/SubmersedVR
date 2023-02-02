@@ -41,7 +41,7 @@ namespace SubmersedVR
             // Setup PointerDot at the end
             pointerDot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             pointerDot.transform.localScale = new Vector3(0.03f, 0.03f, 0.03f);
-            pointerDot.transform.parent = transform;
+            pointerDot.transform.SetParent(transform);
             Destroy(pointerDot.GetComponent<SphereCollider>());
             pointerDot.GetComponent<Renderer>().material = newMaterial;
 

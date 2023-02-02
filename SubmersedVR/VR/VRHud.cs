@@ -54,15 +54,18 @@ namespace SubmersedVR{
             }
             staticHudCanvas.worldCamera = uiCamera;
 
-            screenCanvas.parent = uiCamera.transform;
-            overlayCanvas.parent = uiCamera.transform;
+            screenCanvas.SetParent(uiCamera.transform);
+            overlayCanvas.SetParent(uiCamera.transform);
 
             // Steal Reticle and attach to the right hand
-            var handReticle = HandReticle.main.gameObject.WithParent(rightControllerUI.transform);
+            //TODO: set it so the hand icon does not rotate with controller
+            //var handReticle = HandReticle.main.gameObject.WithParent(rightControllerUI.transform);
+            var handReticle = HandReticle.main.gameObject.WithParent(VRCameraRig.instance.laserPointerUI.pointerDot.transform);
             handReticle.GetOrAddComponent<Canvas>().worldCamera = uiCamera;
-            handReticle.transform.localEulerAngles = new Vector3(90, 0, 0);
-            handReticle.transform.localPosition = new Vector3(0, 0, 0.05f);
-            handReticle.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+            handReticle.transform.LookAt(Camera.current.transform.position);
+            handReticle.transform.localRotation = Quaternion.Euler(40, 0, 0);
+            handReticle.transform.localPosition = new Vector3(0, -5, VRCameraRig.instance.laserPointerUI.pointerDot.transform.localPosition.z);//new Vector3(0, 0, 0.05f);
+            handReticle.transform.localScale = VRCameraRig.instance.laserPointerUI.pointerDot.transform.localScale * 2;//new Vector3(0.001f, 0.001f, 0.001f);
 
             var compo = screenCanvas.GetComponent<uGUI_CanvasScaler>();
             if (compo != null) {

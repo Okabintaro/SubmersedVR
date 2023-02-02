@@ -62,10 +62,13 @@ namespace SubmersedVR
 
         new void Init(IQuickSlots newTarget)
         {
-            Mod.logger.LogInfo($"[nameof{this.GetType()}] Init on {newTarget}");
-            base.Init(newTarget);
-            ArangeIconsInCircle(wheelRadius);
-            OnSelect(this.target.GetActiveSlotID());
+            if (newTarget != null)
+            {
+                Mod.logger.LogInfo($"[nameof{this.GetType()}] Init on {newTarget}");
+                base.Init(newTarget);
+                ArangeIconsInCircle(wheelRadius);
+                OnSelect(this.target.GetActiveSlotID());
+            }
         }
 
         new void OnSelect(int slotID) {
@@ -86,6 +89,8 @@ namespace SubmersedVR
                 var pos = CirclePosition(i, nSlots, radius);
                 icons[i].rectTransform.anchoredPosition = new Vector3(pos.x, pos.y, 0);
                 backgrounds[i].rectTransform.anchoredPosition = new Vector3(pos.x, pos.y, 0);
+                icons[i].rectTransform.LookAt(Camera.current.transform.position);
+                backgrounds[i].rectTransform.LookAt(Camera.current.transform.position);
             }
         }
 
@@ -101,6 +106,38 @@ namespace SubmersedVR
             {
                 this.target = quickSlots;
                 this.Init(this.target);
+            }
+            if (this.target != null)
+            {
+                //this.HandleInput();
+                int i = 0;
+                int num = this.icons.Length;
+                while (i < num)
+                {
+                    uGUI_ItemIcon uGUI_ItemIcon = this.icons[i];
+                    icons[i].rectTransform.LookAt(Camera.current.transform.position);
+                    backgrounds[i].rectTransform.LookAt(Camera.current.transform.position);
+                    if (!(uGUI_ItemIcon == null))
+                    {
+                        float slotProgress = this.target.GetSlotProgress(i);
+                        float slotCharge = this.target.GetSlotCharge(i);
+                        InventoryItem slotItem = this.target.GetSlotItem(i);
+                        uGUI_ItemIcon.SetBarValue(TooltipFactory.GetBarValue(slotItem));
+                        if (slotProgress < 1f)
+                        {
+                            uGUI_ItemIcon.SetProgress(slotProgress, FillMethod.Radial);
+                        }
+                        else if (slotCharge > 0f)
+                        {
+                            uGUI_ItemIcon.SetProgress(slotCharge, FillMethod.Vertical);
+                        }
+                        else
+                        {
+                            uGUI_ItemIcon.SetProgress(1f, FillMethod.None);
+                        }
+                    }
+                    i++;
+                }
             }
             if (active)
             {
@@ -130,6 +167,7 @@ namespace SubmersedVR
                 // TODO: Probably should use events to determine current slot, extending interface methods
                 if (doSwitch)
                 {
+                    ErrorMessage.AddDebug("DoSwitch");
                     lastSlot = currentSlot;
                     currentSlot = DetermineSlot(angle);
                     if (currentSlot != lastSlot)
@@ -164,6 +202,7 @@ namespace SubmersedVR
         {
             canvas.enabled = true;
             transform.position = controllerTarget.transform.position;
+            FPSInputModule.current.lockRotation = true;
             bool isVehicleSlot = GetTarget() is Vehicle;
 
             // TODO: This still could use some tweaking, maybe just align with the controller
@@ -185,6 +224,7 @@ namespace SubmersedVR
         {
             canvas.enabled = false;
             active = false;
+            FPSInputModule.current.lockRotation = false;
         }
 
         public void Setup(SteamVR_Action_Boolean activeAction)

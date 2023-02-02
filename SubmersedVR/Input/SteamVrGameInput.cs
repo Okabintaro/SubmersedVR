@@ -114,6 +114,11 @@ namespace SubmersedVR
     {
         public static bool Prefix(GameInput.Button button, ref float __result)
         {
+            if(SteamVR.initializedState != SteamVR.InitializedStates.InitializeSuccess)
+            {
+                __result = 0.0f;
+                return false;
+            }
             if (SteamVrGameInput.InputLocked)
             {
                 __result = 0.0f;

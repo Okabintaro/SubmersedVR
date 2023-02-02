@@ -8,7 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <!-- NOTE: Change this to your own directoy when building -->
-    <SubnauticaDir>V:\SteamLibrary\steamapps\common\Subnautica</SubnauticaDir>
+    <SubnauticaDir>F:\Steam Games SSD\steamapps\common\Subnautica</SubnauticaDir>
   </PropertyGroup>
 
   <ItemGroup>
