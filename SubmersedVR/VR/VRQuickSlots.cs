@@ -62,6 +62,9 @@ namespace SubmersedVR
 
         new void Init(IQuickSlots newTarget)
         {
+            if (newTarget == null) {
+                return;
+            }
             Mod.logger.LogInfo($"[nameof{this.GetType()}] Init on {newTarget}");
             base.Init(newTarget);
             ArangeIconsInCircle(wheelRadius);
@@ -104,8 +107,6 @@ namespace SubmersedVR
             }
             if (active)
             {
-                var proejctedControllerPos = Vector3.ProjectOnPlane(controllerTarget.position, transform.forward);
-
                 var from = controllerTarget.position;
                 var origin = transform.position;
                 var pX = Vector3.Dot(from - origin, transform.right);
@@ -121,12 +122,7 @@ namespace SubmersedVR
                 }
 
                 var distance = projected.sqrMagnitude;
-                // float stepSize = 2 * Mathf.PI / nSlots;
-
                 var doSwitch = distance > threshold;
-                // angle += Mathf.PI/2.0f;
-                // var angleWithOffset = angle + angleOffset;
-                // TODO: Test if this works with vehicles too
                 // TODO: Probably should use events to determine current slot, extending interface methods
                 if (doSwitch)
                 {
@@ -165,6 +161,7 @@ namespace SubmersedVR
             canvas.enabled = true;
             transform.position = controllerTarget.transform.position;
             bool isVehicleSlot = GetTarget() is Vehicle;
+            base.Update(); // This updates the battery values.
 
             // TODO: This still could use some tweaking, maybe just align with the controller
             var targetPos = VRCameraRig.instance.uiCamera.transform.position;
@@ -180,11 +177,13 @@ namespace SubmersedVR
             currentSlot = -2;
             lastSlot = -1;
             active = true;
+            FPSInputModule.current.lockRotation = true;
         }
         public void Deactivate(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
         {
             canvas.enabled = false;
             active = false;
+            FPSInputModule.current.lockRotation = false;
         }
 
         public void Setup(SteamVR_Action_Boolean activeAction)
