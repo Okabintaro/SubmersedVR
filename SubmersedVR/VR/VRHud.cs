@@ -7,11 +7,11 @@ namespace SubmersedVR{
         private static Transform screenCanvas;
         private static Transform overlayCanvas;
         private static Transform hud;
-        private static bool hudSetup = false;
+        private static bool wasSetup = false;
 
         private static Canvas staticHudCanvas = null;
 
-// TODO: Hud Distance needs dedicated canvas, since the Pips seem to assume the 1 meter canvas distance.
+        // TODO: Hud Distance needs dedicated canvas, since the Pips seem to assume the 1 meter canvas distance.
 #if false
         public static float hudDistance = 1.0f;
         public static float HudDistance {
@@ -31,6 +31,38 @@ namespace SubmersedVR{
         }
 #endif
 
+        public static void SetupHandReticle(bool onLaserPointer, Camera uiCamera, Transform rightControllerUI) {
+            if (onLaserPointer) {
+                SetupHandReticleLaserPointer(uiCamera, rightControllerUI);
+            } else {
+                SetupHandReticleOnHand(uiCamera, rightControllerUI);
+            }
+        }
+
+        public static void SetupHandReticleOnHand(Camera uiCamera, Transform rightControllerUI) {
+            // Steal Reticle and attach to the right hand
+            var handReticle = HandReticle.main.gameObject.WithParent(rightControllerUI.transform);
+            handReticle.GetOrAddComponent<Canvas>().worldCamera = uiCamera;
+            handReticle.transform.localEulerAngles = new Vector3(90, 0, 0);
+            handReticle.transform.localPosition = new Vector3(0, 0, 0.05f);
+            handReticle.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+        }
+
+        public static void SetupHandReticleLaserPointer(Camera uiCamera, Transform rightControllerUI) {
+            var handReticle = HandReticle.main.gameObject.WithParent(VRCameraRig.instance.laserPointerUI.pointerDot.transform);
+            handReticle.transform.LookAt(uiCamera.transform.position);
+            handReticle.transform.localRotation = Quaternion.Euler(40, 0, 0);
+            handReticle.transform.localPosition = new Vector3(0, -5, VRCameraRig.instance.laserPointerUI.pointerDot.transform.localPosition.z);//new Vector3(0, 0, 0.05f);
+            handReticle.transform.localScale = VRCameraRig.instance.laserPointerUI.pointerDot.transform.localScale * 2;//new Vector3(0.001f, 0.001f, 0.001f);
+        }
+
+        public static void OnHandReticleSettingChanged(bool onLaserPointer) {
+            var rig = VRCameraRig.instance;
+            if (!rig) {
+                return;
+            }
+            SetupHandReticle(onLaserPointer, rig.uiCamera, rig.rightControllerUI.transform);
+        }
 
         public static void Setup(Camera uiCamera, Transform rightControllerUI) {
             Mod.logger.LogInfo($"Setting up HUD for {uiCamera.name}");
@@ -57,19 +89,17 @@ namespace SubmersedVR{
             screenCanvas.parent = uiCamera.transform;
             overlayCanvas.parent = uiCamera.transform;
 
-            // Steal Reticle and attach to the right hand
-            var handReticle = HandReticle.main.gameObject.WithParent(rightControllerUI.transform);
-            handReticle.GetOrAddComponent<Canvas>().worldCamera = uiCamera;
-            handReticle.transform.localEulerAngles = new Vector3(90, 0, 0);
-            handReticle.transform.localPosition = new Vector3(0, 0, 0.05f);
-            handReticle.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+            SetupHandReticle(Settings.PutHandReticleOnLaserPointer, uiCamera, rightControllerUI);
+            Settings.PutHandReticleOnLaserPointerChanged -= OnHandReticleSettingChanged;
+            Settings.PutHandReticleOnLaserPointerChanged += OnHandReticleSettingChanged;
+
 
             var compo = screenCanvas.GetComponent<uGUI_CanvasScaler>();
             if (compo != null) {
                 compo.SetDirty();
             }
             screenCanvas.GetComponentsInChildren<uGUI_CanvasScaler>().ForEach(cs => cs.SetDirty());
-            hudSetup = true;
+            wasSetup = true;
         }
 
         public static void OnEnterVehicle() {

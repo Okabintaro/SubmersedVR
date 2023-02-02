@@ -18,6 +18,9 @@ namespace SubmersedVR
         public static bool AlwaysShowLaserPointer;
         public static event BooleanChanged AlwaysShowLaserPointerChanged;
 
+        public static bool PutHandReticleOnLaserPointer;
+        public static event BooleanChanged PutHandReticleOnLaserPointerChanged;
+
         // public static float HudDistance = 1.0f;
         // public static event FloatChanged HudDistanceChanged;
 
@@ -57,21 +60,19 @@ namespace SubmersedVR
         {
             int tab = panel.AddTab("Submersed VR");
 
-            // panel.AddHeading(tab, "UI Options");
-            // panel.AddSliderOption(tab, "HUD Distance", HudDistance, 0.5f, 3.0f, 1.0f, 0.1f, (value) => {
-            //     HudDistance = value;
-            //     HudDistanceChanged(value);
-            // }, SliderLabelMode.Float, "0.00");
+            panel.AddHeading(tab, "Experimental");
+            panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
+
+            panel.AddHeading(tab, "Hidden/Advanced VR Settings(Those can cause motion sickness!)");
+            panel.AddToggleOption(tab, "Enable pitching(Looking Up/Down) while diving", !VROptions.disableInputPitch, (value) => { VROptions.disableInputPitch = !value; }, "This allows you to pitch up and down using the right thumbstick when diving. Can be very disorienting! I recommend to keep this disabled!");
+            panel.AddToggleOption(tab, "Enable desktop cinematics", VROptions.enableCinematics, (value) => { VROptions.enableCinematics = value; }, "Enables the games cinematics. Warning! Those move around your head and can cause motion sickness!");
+            panel.AddToggleOption(tab, "Skip intro", VROptions.skipIntro, (value) => { VROptions.skipIntro = value; }, "Skip the intro when starting a new game.");
 
             panel.AddHeading(tab, "Debug Options");
             panel.AddToggleOption(tab, "Debug Overlays", IsDebugEnabled, (value) => { IsDebugEnabled = value; IsDebugChanged(value); }, "Enables Debug Overlays and Logs.");
             panel.AddToggleOption(tab, "Always show controllers", AlwaysShowControllers, (value) => { AlwaysShowControllers = value; AlwaysShowControllersChanged(value); }, "Shows the controllers at all times.");
             panel.AddToggleOption(tab, "Always show laserpointer", AlwaysShowLaserPointer, (value) => { AlwaysShowLaserPointer = value; AlwaysShowLaserPointerChanged(value); }, "Show the laserpointer at all times.");
 
-            panel.AddHeading(tab, "Hidden/Advanced VR Settings(Those can cause motion sickness!)");
-            panel.AddToggleOption(tab, "Enable pitching(Looking Up/Down) while diving", !VROptions.disableInputPitch, (value) => { VROptions.disableInputPitch = !value; }, "This allows you to pitch up and down using the right thumbstick when diving. Can be very disorienting! I recommend to keep this disabled!");
-            panel.AddToggleOption(tab, "Enable desktop cinematics", VROptions.enableCinematics, (value) => { VROptions.enableCinematics = value; }, "Enables the games cinematics. Warning! Those move around your head and can cause motion sickness!");
-            panel.AddToggleOption(tab, "Skip intro", VROptions.skipIntro, (value) => { VROptions.skipIntro = value; }, "Skip the intro when starting a new game.");
         }
     }
 
