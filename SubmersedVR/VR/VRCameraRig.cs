@@ -224,10 +224,6 @@ namespace SubmersedVR
         {
             SteamVR.Initialize();
             SteamVR.settings.trackingSpace = ETrackingUniverseOrigin.TrackingUniverseSeated;
-
-            // TODO: Probably can get rid of this
-            vrCamera = new GameObject(nameof(vrCamera)).WithParent(transform).AddComponent<Camera>();
-            vrCamera.gameObject.tag = "MainCamera";
         }
 
         public void Start()
@@ -272,6 +268,7 @@ namespace SubmersedVR
         {
             // Destroy/Delete old camera
             // NOTE: Subnautica renderes the water using specific camera component which also renders when the camera is disabled
+
             if (camera != vrCamera && vrCamera != null)
             {
                 vrCamera.enabled = false;
@@ -374,10 +371,7 @@ namespace SubmersedVR
             rig.StealUICamera(SNCameraRoot.main.guiCamera, true);
             yield return new WaitForSeconds(0.1f);
 
-            var clipCamera = FindObjectsOfType<Camera>().First(cam => cam.name == "Clip Camera");
-            clipCamera.gameObject.WithParent(vrCamera.transform).ResetTransform();
             FindObjectsOfType<uGUI_CanvasScaler>().ForEach(cs => cs.SetDirty());
-
         }
 
         public void LateUpdate()
