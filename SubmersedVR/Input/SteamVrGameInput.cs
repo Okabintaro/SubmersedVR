@@ -1,3 +1,4 @@
+using System;
 using HarmonyLib;
 using UnityEngine;
 
@@ -270,6 +271,37 @@ namespace SubmersedVR
                 additiveRotation = MathExtensions.RepeatAngle(additiveRotation + Builder.GetDeltaTimeForAdditiveRotation() * Builder.additiveRotationSpeed);
             }
             __result = additiveRotation;
+            return false;
+        }
+    }
+    
+    [HarmonyPatch(typeof(Builder), nameof(Builder.UpdateRotation))]
+    public static class BuilderUpdateRotationUseCustomActions
+    {
+        static DateTime _nextRotationAllowed = DateTime.MinValue;
+        static bool Prefix(int max, ref bool __result)
+        {
+            if (_nextRotationAllowed > DateTime.UtcNow)
+            {
+                __result = false;
+                return false;
+            }
+            
+            if (SteamVR_Actions.subnautica_BuilderRotateRight.GetState(SteamVR_Input_Sources.Any))
+            {
+                Builder.lastRotation = (Builder.lastRotation + max - 1) % max;
+                _nextRotationAllowed = DateTime.UtcNow.AddMilliseconds(250);
+                __result = true;
+                return false;
+            }
+            if (SteamVR_Actions.subnautica_BuilderRotateLeft.GetState(SteamVR_Input_Sources.Any))
+            {
+                Builder.lastRotation = (Builder.lastRotation + 1) % max;
+                _nextRotationAllowed = DateTime.UtcNow.AddMilliseconds(250);
+                __result = true;
+                return false;
+            }
+            __result = false;
             return false;
         }
     }
