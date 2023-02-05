@@ -4,7 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>SubmersedVR</AssemblyName>
     <Description>A VR Conversion Mod for Subnautica</Description>
-    <Version>0.1.2</Version>
+    <Version>0.1.3</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <!-- NOTE: Change this to your own directoy when building -->
