@@ -1,9 +1,11 @@
 using HarmonyLib;
 using UnityEngine;
 
-namespace SubmersedVR{
+namespace SubmersedVR
+{
     // Tweaks regarding the HUD of the game
-    static class VRHud {
+    static class VRHud
+    {
         private static Transform screenCanvas;
         private static Transform overlayCanvas;
         private static Transform hud;
@@ -31,15 +33,20 @@ namespace SubmersedVR{
         }
 #endif
 
-        public static void SetupHandReticle(bool onLaserPointer, Camera uiCamera, Transform rightControllerUI) {
-            if (onLaserPointer) {
+        public static void SetupHandReticle(bool onLaserPointer, Camera uiCamera, Transform rightControllerUI)
+        {
+            if (onLaserPointer)
+            {
                 SetupHandReticleLaserPointer(uiCamera, rightControllerUI);
-            } else {
+            }
+            else
+            {
                 SetupHandReticleOnHand(uiCamera, rightControllerUI);
             }
         }
 
-        public static void SetupHandReticleOnHand(Camera uiCamera, Transform rightControllerUI) {
+        public static void SetupHandReticleOnHand(Camera uiCamera, Transform rightControllerUI)
+        {
             // Steal Reticle and attach to the right hand
             var handReticle = HandReticle.main.gameObject.WithParent(rightControllerUI.transform);
             handReticle.GetOrAddComponent<Canvas>().worldCamera = uiCamera;
@@ -48,7 +55,8 @@ namespace SubmersedVR{
             handReticle.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
         }
 
-        public static void SetupHandReticleLaserPointer(Camera uiCamera, Transform rightControllerUI) {
+        public static void SetupHandReticleLaserPointer(Camera uiCamera, Transform rightControllerUI)
+        {
             var handReticle = HandReticle.main.gameObject.WithParent(VRCameraRig.instance.laserPointerUI.pointerDot.transform);
             handReticle.transform.LookAt(uiCamera.transform.position);
             handReticle.transform.localRotation = Quaternion.Euler(40, 0, 0);
@@ -56,22 +64,26 @@ namespace SubmersedVR{
             handReticle.transform.localScale = VRCameraRig.instance.laserPointerUI.pointerDot.transform.localScale * 2;//new Vector3(0.001f, 0.001f, 0.001f);
         }
 
-        public static void OnHandReticleSettingChanged(bool onLaserPointer) {
+        public static void OnHandReticleSettingChanged(bool onLaserPointer)
+        {
             var rig = VRCameraRig.instance;
-            if (!rig) {
+            if (!rig)
+            {
                 return;
             }
             SetupHandReticle(onLaserPointer, rig.uiCamera, rig.rightControllerUI.transform);
         }
 
-        public static void Setup(Camera uiCamera, Transform rightControllerUI) {
+        public static void Setup(Camera uiCamera, Transform rightControllerUI)
+        {
             Mod.logger.LogInfo($"Setting up HUD for {uiCamera.name}");
 
             screenCanvas = uGUI.main.screenCanvas.gameObject.transform;
             overlayCanvas = uGUI.main.overlays.gameObject.transform.parent;
             hud = uGUI.main.hud.transform;
 
-            if (staticHudCanvas == null) {
+            if (staticHudCanvas == null)
+            {
                 var uiRig = VRCameraRig.instance.uiRig.transform;
                 var go = new GameObject("StaticHUDCanvas").WithParent(uiRig);
                 staticHudCanvas = go.AddComponent<Canvas>();
@@ -95,26 +107,30 @@ namespace SubmersedVR{
 
 
             var compo = screenCanvas.GetComponent<uGUI_CanvasScaler>();
-            if (compo != null) {
+            if (compo != null)
+            {
                 compo.SetDirty();
             }
             screenCanvas.GetComponentsInChildren<uGUI_CanvasScaler>().ForEach(cs => cs.SetDirty());
             wasSetup = true;
         }
 
-        public static void OnEnterVehicle() {
+        public static void OnEnterVehicle()
+        {
             var player = Player.main;
-            if (player != null) {
+            if (player != null)
+            {
                 hud.SetParent(staticHudCanvas.transform, false);
             }
         }
 
-        public static void OnExitVehicle() {
+        public static void OnExitVehicle()
+        {
             hud.SetParent(screenCanvas, false);
         }
     }
 
-#region Patches
+    #region Patches
 
     // Switch to the vehicle quickslots when entering a vehicle and back to the player quickslots when exiting
     [HarmonyPatch]
@@ -123,7 +139,8 @@ namespace SubmersedVR{
     {
         public static void Postfix(Vehicle __instance)
         {
-            if (__instance is SeaMoth || __instance is Exosuit) {
+            if (__instance is SeaMoth || __instance is Exosuit)
+            {
                 VRHud.OnEnterVehicle();
             }
         }
@@ -135,12 +152,13 @@ namespace SubmersedVR{
     {
         public static void Postfix(Vehicle __instance)
         {
-            if (__instance is SeaMoth || __instance is Exosuit) {
+            if (__instance is SeaMoth || __instance is Exosuit)
+            {
                 VRHud.OnExitVehicle();
             }
         }
     }
 
-#endregion
+    #endregion
 
 }

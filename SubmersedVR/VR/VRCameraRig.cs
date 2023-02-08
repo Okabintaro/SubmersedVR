@@ -18,7 +18,7 @@ namespace SubmersedVR
     extern alias SteamVRRef;
     using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
-    
+
     class VRCameraRig : MonoBehaviour
     {
         // Setup and created in Start()
@@ -332,7 +332,8 @@ namespace SubmersedVR
             }
         }
 
-        void DebugRaycasts() {
+        void DebugRaycasts()
+        {
             if (false && Settings.IsDebugEnabled)
             {
                 RaycastResult? uiTarget = fpsInput?.lastRaycastResult;

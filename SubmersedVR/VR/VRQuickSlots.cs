@@ -62,7 +62,8 @@ namespace SubmersedVR
 
         new void Init(IQuickSlots newTarget)
         {
-            if (newTarget == null) {
+            if (newTarget == null)
+            {
                 return;
             }
             Mod.logger.LogInfo($"[nameof{this.GetType()}] Init on {newTarget}");
@@ -71,12 +72,15 @@ namespace SubmersedVR
             OnSelect(this.target.GetActiveSlotID());
         }
 
-        new void OnSelect(int slotID) {
-            if (target == null) {
+        new void OnSelect(int slotID)
+        {
+            if (target == null)
+            {
                 return;
             }
             base.OnSelect(slotID);
-            if (slotID >= 0) {
+            if (slotID >= 0)
+            {
                 var pos = CirclePosition(slotID, nSlots, radius);
                 selector.rectTransform.anchoredPosition = new Vector3(pos.x, pos.y, 0);
             }
@@ -131,7 +135,8 @@ namespace SubmersedVR
                     if (currentSlot != lastSlot)
                     {
                         var targetSlots = GetTarget();
-                        if (targetSlots == null) {
+                        if (targetSlots == null)
+                        {
                             return;
                         }
                         targetSlots.SlotKeyDown(currentSlot);
@@ -141,11 +146,13 @@ namespace SubmersedVR
                 else
                 {
                     var targetSlots = GetTarget();
-                    if (targetSlots == null) {
+                    if (targetSlots == null)
+                    {
                         return;
                     }
                     // NOTE: you can't deselect in vehicles
-                    if (targetSlots is QuickSlots) {
+                    if (targetSlots is QuickSlots)
+                    {
                         targetSlots.DeselectSlots();
                         currentSlot = -2;
                     }
@@ -168,7 +175,8 @@ namespace SubmersedVR
             SteamVR_Actions.subnautica_HapticsRight.Execute(0.0f, 0.1f, 10f, 0.5f, SteamVR_Input_Sources.Any);
 
             // Don't rotate the wheel up/down when not in vehicle.
-            if (!isVehicleSlot) {
+            if (!isVehicleSlot)
+            {
                 targetPos.y = transform.position.y;
             }
 
@@ -200,10 +208,12 @@ namespace SubmersedVR
             setup = true;
         }
 
-        new void OnDestroy() {
+        new void OnDestroy()
+        {
             Mod.logger.LogDebug($"Destroying {nameof(VRQuickSlots)}...");
             base.OnDestroy();
-            if (setup) {
+            if (setup)
+            {
                 action.onStateDown -= Activate;
                 action.onStateUp -= Deactivate;
             }
@@ -218,7 +228,7 @@ namespace SubmersedVR
         }
     }
 
-#region Patches
+    #region Patches
 
     // Switch to the vehicle quickslots when entering a vehicle and back to the player quickslots when exiting
     [HarmonyPatch]
@@ -236,6 +246,6 @@ namespace SubmersedVR
             VRCameraRig.instance?.VrQuickSlots?.SetTarget(null);
         }
     }
-#endregion
+    #endregion
 
 }

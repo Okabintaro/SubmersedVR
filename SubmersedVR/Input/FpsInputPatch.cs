@@ -61,7 +61,8 @@ namespace SubmersedVR
         [HarmonyReversePatch]
         [HarmonyPatch(typeof(PointerInputModule), "GetPointerData")]
         [MethodImpl(MethodImplOptions.NoInlining)]
-        static bool GetPointerData(FPSInputModule instance, int id, out PointerEventData data, bool create) {
+        static bool GetPointerData(FPSInputModule instance, int id, out PointerEventData data, bool create)
+        {
             data = null;
             return false;
         }

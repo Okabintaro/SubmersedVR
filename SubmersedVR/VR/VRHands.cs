@@ -395,7 +395,8 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(PropulsionCannon), nameof(PropulsionCannon.GetObjectPosition))]
     public static class OverridePropulsionObjectPosition
     {
-        public static Camera GetAimCamera() {
+        public static Camera GetAimCamera()
+        {
             return VRCameraRig.instance?.laserPointer.eventCamera;
         }
 
@@ -415,7 +416,7 @@ namespace SubmersedVR
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var m = new CodeMatcher(instructions);
-            m.MatchForward(false, new CodeMatch[] {new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera))))});
+            m.MatchForward(false, new CodeMatch[] { new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera)))) });
             m.SetInstruction(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
             return m.InstructionEnumeration();
         }
@@ -428,9 +429,9 @@ namespace SubmersedVR
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var m = new CodeMatcher(instructions);
-            m.MatchForward(false, new CodeMatch[] {new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera))))});
+            m.MatchForward(false, new CodeMatch[] { new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera)))) });
             m.SetInstructionAndAdvance(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
-            m.MatchForward(false, new CodeMatch[] {new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera))))});
+            m.MatchForward(false, new CodeMatch[] { new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera)))) });
             m.SetInstruction(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
             return m.InstructionEnumeration();
         }

@@ -225,9 +225,11 @@ namespace SubmersedVR
 
         static bool Prefix(ref bool __result, uGUI_CraftingMenu __instance, uGUI_ItemIcon icon, int button)
         {
-            if (__instance.interactable) {
+            if (__instance.interactable)
+            {
                 uGUI_CraftingMenu.Node node = __instance.GetNode(icon);
-                switch (button) {
+                switch (button)
+                {
                     case 0: // uGUI.button0 => UISubmit
                         __instance.Action(node);
                         __result = true;
@@ -238,13 +240,13 @@ namespace SubmersedVR
                         break;
                     case 2: // uGUI.button2 => UIClear => Pinning
                         if (node.action == TreeAction.Craft)
-						{
-							TechType techType = node.techType;
-							if (CrafterLogic.IsCraftRecipeUnlocked(techType))
-							{
-								PinManager.TogglePin(techType);
-							}
-						}
+                        {
+                            TechType techType = node.techType;
+                            if (CrafterLogic.IsCraftRecipeUnlocked(techType))
+                            {
+                                PinManager.TogglePin(techType);
+                            }
+                        }
                         __result = true;
                         break;
                     default:
@@ -274,7 +276,7 @@ namespace SubmersedVR
             return false;
         }
     }
-    
+
     // Rotate base pieces using custom steamvr actions
     [HarmonyPatch(typeof(Builder), nameof(Builder.UpdateRotation))]
     public static class BuilderUpdateRotationUseCustomActions

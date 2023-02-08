@@ -30,7 +30,8 @@ namespace SubmersedVR
 
         void OnDisable()
         {
-            if (entry) {
+            if (entry)
+            {
                 entry.text = "";
                 entry.enabled = false;
             }
