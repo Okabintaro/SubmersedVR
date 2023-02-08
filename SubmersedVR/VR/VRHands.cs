@@ -366,6 +366,19 @@ namespace SubmersedVR
         }
     }
 
+    // Aiming related fixes are following now
+    // TODO: Consider moving them into their own category/class or namespace
+    public static class Aiming {
+        public static Camera GetAimCamera()
+        {
+            return VRCameraRig.instance?.laserPointer.eventCamera;
+        }
+        public static Transform GetAimTransform()
+        {
+            return VRCameraRig.instance?.laserPointer.transform;
+        }
+    }
+
     // This makes it so the Builder tool aims with the laser pointer
     [HarmonyPatch(typeof(Builder), nameof(Builder.GetAimTransform))]
     public static class Builder_GetAimTransform__Patch
@@ -373,7 +386,7 @@ namespace SubmersedVR
         [HarmonyPrefix]
         static bool Prefix(ref Transform __result)
         {
-            __result = VRCameraRig.instance.laserPointer.transform;
+            __result = Aiming.GetAimTransform();
             return false;
         }
     }
@@ -385,26 +398,20 @@ namespace SubmersedVR
     {
         static bool Prefix(ref Quaternion rotation)
         {
-            rotation = VRCameraRig.instance.laserPointer.transform.rotation;
+            rotation = Aiming.GetAimTransform().rotation;
             return true;
         }
     }
-
 
     // Make the Propulsion canon aim with the laser pointer/target transform
     [HarmonyPatch(typeof(PropulsionCannon), nameof(PropulsionCannon.GetObjectPosition))]
     public static class OverridePropulsionObjectPosition
     {
-        public static Camera GetAimCamera()
-        {
-            return VRCameraRig.instance?.laserPointer.eventCamera;
-        }
-
         // Replace the first line/instruction in GetObjectPosition() that is Camera camera = MainCamera.camera, with our own above.
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var m = new CodeMatcher(instructions);
-            m.Start().SetInstruction(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
+            m.Start().SetInstruction(CodeInstruction.Call(typeof(Aiming), nameof(Aiming.GetAimCamera)));
             return m.InstructionEnumeration();
         }
     }
@@ -417,7 +424,7 @@ namespace SubmersedVR
         {
             var m = new CodeMatcher(instructions);
             m.MatchForward(false, new CodeMatch[] { new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera)))) });
-            m.SetInstruction(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
+            m.SetInstruction(CodeInstruction.Call(typeof(Aiming), nameof(Aiming.GetAimCamera)));
             return m.InstructionEnumeration();
         }
     }
@@ -430,14 +437,27 @@ namespace SubmersedVR
         {
             var m = new CodeMatcher(instructions);
             m.MatchForward(false, new CodeMatch[] { new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera)))) });
-            m.SetInstructionAndAdvance(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
+            m.SetInstructionAndAdvance(CodeInstruction.Call(typeof(Aiming), nameof(Aiming.GetAimCamera)));
             m.MatchForward(false, new CodeMatch[] { new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera)))) });
-            m.SetInstruction(CodeInstruction.Call(typeof(OverridePropulsionObjectPosition), nameof(OverridePropulsionObjectPosition.GetAimCamera)));
+            m.SetInstruction(CodeInstruction.Call(typeof(Aiming), nameof(Aiming.GetAimCamera)));
             return m.InstructionEnumeration();
         }
     }
 
-
+    // Make the Knife, Fire Extinguisher and Exosuit aim with the laserpointer instead of camera
+    [HarmonyPatch(typeof(UWE.Utils), nameof(UWE.Utils.TraceFPSTargetPosition))]
+    [HarmonyPatch(new Type[] { typeof(GameObject), typeof(float), typeof(GameObject), typeof(Vector3), typeof(Vector3), typeof(bool) }, 
+                  new ArgumentType[] { ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Ref, ArgumentType.Out, ArgumentType.Normal })]
+    public static class TraceFPSTargetUsingControllers
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var m = new CodeMatcher(instructions);
+            m.MatchForward(false, new CodeMatch[] { new CodeMatch(ci => ci.Calls(AccessTools.DeclaredPropertyGetter(typeof(MainCamera), nameof(MainCamera.camera)))) });
+            m.SetInstructionAndAdvance(CodeInstruction.Call(typeof(Aiming), nameof(Aiming.GetAimCamera)));
+            return m.InstructionEnumeration();
+        }
+    }
 
     #endregion
 }
