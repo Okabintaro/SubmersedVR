@@ -326,7 +326,6 @@ namespace SubmersedVR
                 GameInput.axisValues[i] = 0f;
             }
 
-            // TODO: This could probably be cached/optimized
             Vector2 move = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
             Vector2 look = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
             bool move_up = SteamVR_Actions.subnautica.MoveUp.GetState(SteamVR_Input_Sources.Any);

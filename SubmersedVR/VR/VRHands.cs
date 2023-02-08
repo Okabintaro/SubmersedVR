@@ -111,7 +111,6 @@ namespace SubmersedVR
         }
 
         // Save the transform by logging it to a logfile
-        // TODO: Could use an event?
         public void SaveTransform(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
         {
             // Print it out for putting it into the mod

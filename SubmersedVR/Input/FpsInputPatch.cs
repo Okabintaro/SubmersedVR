@@ -22,7 +22,6 @@ namespace SubmersedVR
                 return;
             }
 
-            // TODO: Check if this could be better patched in the raycaster canvas
             var eventCamera = VRCameraRig.instance.UIControllerCamera;
             __result = new Vector2(eventCamera.pixelWidth / 2, eventCamera.pixelHeight / 2);
         }
@@ -138,7 +137,6 @@ namespace SubmersedVR
     }
 
 #if false
-    // TODO: Remove/Toggle
     [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.UpdateMouseState))]
     class DebugPointerEventState : PointerInputModule {
         public static void Postfix(FPSInputModule __instance) {

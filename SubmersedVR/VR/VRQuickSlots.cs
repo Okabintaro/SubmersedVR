@@ -194,7 +194,6 @@ namespace SubmersedVR
                 return;
             }
             // Setup the actions/callbacks from steam
-            // TODO: Not sure if this is the right call here relying totaly on the SteamVR Input system
             action = activeAction;
             action.onStateDown += Activate;
             action.onStateUp += Deactivate;

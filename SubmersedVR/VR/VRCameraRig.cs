@@ -1,6 +1,5 @@
 using HarmonyLib;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.UI;
 using UnityEngine.XR;
 using System.Collections;
@@ -8,7 +7,6 @@ using UWE;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.EventSystems;
-
 
 /*
 The VRCamera Rig handles the controllers together with their laser pointers to control the UI.
@@ -20,59 +18,7 @@ namespace SubmersedVR
     extern alias SteamVRRef;
     using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
-
-    // TODO: Move to its own file
-    static class MyUtils
-    {
-        public static GameObject WithParent(this GameObject obj, Transform target)
-        {
-            obj.transform.parent = target;
-            return obj;
-        }
-        public static GameObject WithParent(this GameObject obj, GameObject target)
-        {
-            obj.transform.parent = target.transform;
-            return obj;
-        }
-        public static GameObject ResetTransform(this GameObject obj)
-        {
-            obj.transform.localPosition = Vector3.zero;
-            obj.transform.localRotation = Quaternion.identity;
-            return obj;
-        }
-
-        public static T GetOrAddComponent<T>(this GameObject go) where T : Component
-        {
-            T component = go.GetComponent<T>();
-            if (component == null)
-            {
-                component = go.AddComponent<T>();
-            }
-            return component;
-        }
-
-        public static ParentConstraint ParentTo(this ParentConstraint parentConstraint, Transform target, Vector3 translationOffset)
-        {
-            // Remove old sources
-            for (int i = 0; i < parentConstraint.sourceCount; i++)
-            {
-                parentConstraint.RemoveSource(0);
-            }
-
-            var cs = new ConstraintSource();
-            cs.sourceTransform = target;
-            cs.weight = 1.0f;
-            parentConstraint.AddSource(cs);
-            parentConstraint.SetTranslationOffset(0, translationOffset);
-            parentConstraint.SetRotationOffset(0, Vector3.zero);
-            parentConstraint.locked = true;
-            parentConstraint.constraintActive = true;
-            parentConstraint.weight = 1.0f;
-
-            return parentConstraint;
-        }
-    }
-
+    
     class VRCameraRig : MonoBehaviour
     {
         // Setup and created in Start()
@@ -149,7 +95,6 @@ namespace SubmersedVR
 
         public static Transform GetTargetTansform()
         {
-            // TODO: Switch depending on tool
             return VRCameraRig.instance.laserPointer.transform;
         }
 
@@ -525,6 +470,7 @@ namespace SubmersedVR
             scalar.vrMode = uGUI_CanvasScaler.Mode.Static;
         }
     }
+
     // Makes the builder menu spawn infront of you in vr
     [HarmonyPatch(typeof(uGUI_BuilderMenu), nameof(uGUI_BuilderMenu.Open))]
     class MakeBuilderMenuStatic2
@@ -533,7 +479,6 @@ namespace SubmersedVR
         {
             var scalar = __instance.GetComponent<uGUI_CanvasScaler>();
             scalar.SetDirty();
-            // TODO: Look into the dirty a bit more. Why does it work for Fabricators?
             scalar.UpdateTransform(SNCameraRoot.main.guiCamera);
         }
     }
