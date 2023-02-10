@@ -96,7 +96,6 @@ namespace SubmersedVR
         public void UnparentTarget(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
         {
             parent = target.parent;
-            var tool = global::Player.main.armsController.lastTool;
             target.SetParent(null, true);
         }
 
@@ -115,17 +114,20 @@ namespace SubmersedVR
         {
             // Print it out for putting it into the mod
             var tool = global::Player.main.armsController.lastTool;
-            string offset = new TransformOffset(target).SwitchString(tool.GetType().Name);
+            string targetName = tool?.GetType()?.Name ?? "Hands";
+            string offset = new TransformOffset(target).SwitchString(targetName);
             Mod.logger.LogInfo(offset);
-            ErrorMessage.AddDebug($"Saved Offset for {tool.GetType().Name}!\n{offset}");
+            ErrorMessage.AddDebug($"Saved Offset for {targetName}!\n{offset}");
         }
     }
 
     // Define all the Offsets
-    static class ToolOffset
+    static class HandOffsets
     {
         // Default Offset when no tool is Equipped
-        public static TransformOffset Hand = new TransformOffset(new Vector3(0.05f, 0.1f, -0.1f), new Vector3(0.0f, 180.0f, 270.0f));
+        public static TransformOffset RightHand = new TransformOffset(new Vector3(0.05f, 0.06f, -0.17f), new Vector3(40.0f, 175.0f, 270.0f));
+        public static TransformOffset LeftHand = new TransformOffset(new Vector3(-0.05f, 0.06f, -0.17f), new Vector3(-40.0f, 0.0f, 90.0f));
+        public static TransformOffset PDA = new TransformOffset(new Vector3(-0.05f, 0.05f, -0.14f), new Vector3(305.0f, 355.0f, 100.0f));
 
         internal static TransformOffset GetHandOffset(this PlayerTool tool)
         {
@@ -150,7 +152,7 @@ namespace SubmersedVR
                 case LaserCutter _: return new TransformOffset(new Vector3(-0.017f, 0.123f, -0.133f), new Vector3(17.726f, 151.261f, 233.612f));
                 case Flare _: return new TransformOffset(new Vector3(0.019f, 0.088f, -0.134f), new Vector3(31.170f, 153.374f, 244.228f));
                 case RepulsionCannon _: return new TransformOffset(new Vector3(-0.002f, 0.088f, -0.166f), new Vector3(33.777f, 149.093f, 232.610f));
-                default: return Hand;
+                default: return RightHand;
             };
         }
 
@@ -216,7 +218,7 @@ namespace SubmersedVR
             StartCoroutine(DisableBodyRendering());
 
             var laserPointer = VRCameraRig.instance.laserPointerUI.transform;
-            calibrationTool = new OffsetCalibrationTool(laserPointer, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
+            calibrationTool = new OffsetCalibrationTool(rightTarget, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
             calibrationTool.enabled = Settings.IsDebugEnabled;
             Settings.IsDebugChanged += (enabled) =>
             {
@@ -228,15 +230,13 @@ namespace SubmersedVR
 
         public void ResetHandTargets()
         {
-            leftTarget.localPosition = new Vector3(-0.05f, 0.1f, -0.1f);
-            leftTarget.localEulerAngles = new Vector3(0.0f, 0.0f, 90.0f);
-            rightTarget.localPosition = new Vector3(0.05f, 0.1f, -0.1f);
-            rightTarget.localEulerAngles = new Vector3(0.0f, 180.0f, 270.0f);
+            HandOffsets.LeftHand.Apply(leftTarget);
+            HandOffsets.RightHand.Apply(rightTarget);
+
         }
         public void OnOpenPDA()
         {
-            leftTarget.localPosition = new Vector3(-0.05f, 0.0418f, -0.14f);
-            leftTarget.localEulerAngles = new Vector3(305.1264f, 354.6509f, 99.6091f);
+            HandOffsets.PDA.Apply(leftTarget);
         }
         public void OnClosePDA()
         {
@@ -368,7 +368,8 @@ namespace SubmersedVR
 
     // Aiming related fixes are following now
     // TODO: Consider moving them into their own category/class or namespace
-    public static class Aiming {
+    public static class Aiming
+    {
         public static Camera GetAimCamera()
         {
             return VRCameraRig.instance?.laserPointer.eventCamera;
@@ -446,7 +447,7 @@ namespace SubmersedVR
 
     // Make the Knife, Fire Extinguisher and Exosuit aim with the laserpointer instead of camera
     [HarmonyPatch(typeof(UWE.Utils), nameof(UWE.Utils.TraceFPSTargetPosition))]
-    [HarmonyPatch(new Type[] { typeof(GameObject), typeof(float), typeof(GameObject), typeof(Vector3), typeof(Vector3), typeof(bool) }, 
+    [HarmonyPatch(new Type[] { typeof(GameObject), typeof(float), typeof(GameObject), typeof(Vector3), typeof(Vector3), typeof(bool) },
                   new ArgumentType[] { ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Ref, ArgumentType.Out, ArgumentType.Normal })]
     public static class TraceFPSTargetUsingControllers
     {
