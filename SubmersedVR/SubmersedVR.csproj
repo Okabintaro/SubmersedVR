@@ -32,7 +32,7 @@
     </Reference>
 
     <!-- UnityEngine: UI and TextMeshPro. Missing from the BepInEx/Nuget Package. -->
-    <Reference Include="Unity.TextMeshPro">
+    <Reference Include="Unity.TextMeshPro" Publicize="true">
       <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
