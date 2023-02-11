@@ -13,7 +13,7 @@
     {
       "name": "/actions/subnautica/in/Deconstruct",
       "type": "boolean",
-      "requirement": "optional"
+      "requirement": "suggested"
     },
     {
       "name": "/actions/subnautica/in/Exit",
@@ -119,11 +119,13 @@
     },
     {
       "name": "/actions/subnautica/in/UIAdjustLeft",
-      "type": "boolean"
+      "type": "boolean",
+      "requirement": "optional"
     },
     {
       "name": "/actions/subnautica/in/UIAdjustRight",
-      "type": "boolean"
+      "type": "boolean",
+      "requirement": "optional"
     },
     {
       "name": "/actions/subnautica/in/UIPrevTab",
@@ -159,6 +161,10 @@
       "name": "/actions/subnautica/in/UIClear",
       "type": "boolean",
       "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UIScroll",
+      "type": "vector2"
     },
     {
       "name": "/actions/subnautica/in/OpenQuickSlotWheel",
@@ -216,6 +222,11 @@
       "name": "/actions/subnautica/in/BuilderRotateLeft",
       "type": "boolean",
       "requirement": "suggested"
+    },
+    {
+      "name": "/actions/subnautica/in/DebugToggle",
+      "type": "boolean",
+      "requirement": "optional"
     },
     {
       "name": "/actions/subnautica/out/HapticsRight",
@@ -281,16 +292,18 @@
       "/actions/subnautica/in/RightHandSkeleton": "Right Hand Skeleton/Fingers",
       "/actions/subnautica/in/Move": "Move Player",
       "/actions/subnautica/in/Look": "Look Around",
-      "/actions/subnautica/in/UISubmit": "Submit",
+      "/actions/subnautica/in/UISubmit": "Submit(UI)",
       "/actions/subnautica/in/MoveUp": "Move Up",
       "/actions/subnautica/in/MoveDown": "Move Down",
       "/actions/subnautica/in/UILeft": "UI Go Left",
       "/actions/subnautica/in/UIRight": "UI Go Right",
       "/actions/subnautica/in/UIUp": "UI Go Up",
       "/actions/subnautica/in/UIDown": "UI Go Down",
-      "/actions/subnautica/in/UIClear": "Pin Recipe/Throw away item(UIClear)",
+      "/actions/subnautica/in/UIClear": "Pin Recipe/Throw item away(UIClear)",
       "/actions/subnautica/in/BuilderRotateRight": "Rotate Bulding Right",
-      "/actions/subnautica/in/BuilderRotateLeft": "Rotate Bulding Left"
+      "/actions/subnautica/in/BuilderRotateLeft": "Rotate Bulding Left",
+      "/actions/subnautica/in/UIScroll": "Scrolling (UI)",
+      "/actions/subnautica/in/DebugToggle": "[Debug Toggle]"
     }
   ]
 }

@@ -28,6 +28,15 @@ namespace SubmersedVR
                 || button == GameInput.Button.Slot5
                 || button == GameInput.Button.AutoMove;
         }
+
+        public static Vector2 GetScrollDelta()
+        {
+            if (!IsSteamVrReady || InputLocked)
+            {
+                return Vector2.zero;
+            }
+            return SteamVR_Actions.subnautica.UIScroll.GetAxis(SteamVR_Input_Sources.Any);
+        }
     }
 
     // The following three patches map the steamvr actions to the button states
@@ -184,6 +193,8 @@ namespace SubmersedVR
             {
                 // DebugPanel.Show($"{GameInput.axisValues[0]}, {GameInput.axisValues[1]}, {GameInput.axisValues[2]}, {GameInput.axisValues[3]}, {GameInput.axisValues[4]}, {GameInput.axisValues[5]}\nAvailable: {GameInput.controllerAvailable} -> Primary: {GameInput.GetPrimaryDevice()} IsGamePad: {GameInput.IsPrimaryDeviceGamepad()}");
                 // DebugPanel.Show($"{GameInput.GetMoveDirection()}");
+                // var sd = SteamVrGameInput.GetScrollDelta();
+                // DebugPanel.Show($"Scroll: {s}, ScrollDelta: {sd}");
             }
             return false;
         }
@@ -311,6 +322,17 @@ namespace SubmersedVR
             return false;
         }
     }
+
+    // Use Action vector as scroll delta to enable scrolling in the UI
+    [HarmonyPatch(typeof(Input), nameof(Input.mouseScrollDelta), MethodType.Getter)]
+    static class EmulateUnityScrollDelta
+    {
+        static bool Prefix(ref Vector2 __result) {
+            __result = SteamVrGameInput.GetScrollDelta();
+            return false;
+        }
+    }
+
 
     // Previous attempt which tried to emulate controllers, not as clean and not needed
 #if false

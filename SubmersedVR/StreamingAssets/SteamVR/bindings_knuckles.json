@@ -167,7 +167,7 @@
                      "output" : "/actions/subnautica/in/moveup"
                   },
                   "touch" : {
-                     "output" : "/actions/subnautica/in/buildertoolright"
+                     "output" : "/actions/subnautica/in/builderrotateright"
                   }
                },
                "mode" : "button",
@@ -186,6 +186,9 @@
                "inputs" : {
                   "held" : {
                      "output" : "/actions/subnautica/in/movedown"
+                  },
+                  "touch" : {
+                     "output" : "/actions/subnautica/in/builderrotateleft"
                   }
                },
                "mode" : "button",
@@ -237,6 +240,15 @@
                   "force_input" : "force"
                },
                "path" : "/user/hand/left/input/trackpad"
+            },
+            {
+               "inputs" : {
+                  "position" : {
+                     "output" : "/actions/subnautica/in/uiscroll"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/right/input/trackpad"
             }
          ]
       }

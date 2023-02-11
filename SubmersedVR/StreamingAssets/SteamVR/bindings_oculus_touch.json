@@ -212,11 +212,11 @@
                   "east" : {
                      "output" : "/actions/subnautica/in/builderrotateright"
                   },
-                  "west" : {
-                     "output" : "/actions/subnautica/in/builderrotateleft"
-                  },
                   "south" : {
                      "output" : "/actions/subnautica/in/deconstruct"
+                  },
+                  "west" : {
+                     "output" : "/actions/subnautica/in/builderrotateleft"
                   }
                },
                "mode" : "dpad",
@@ -224,8 +224,16 @@
                   "sub_mode" : "touch"
                },
                "path" : "/user/hand/right/input/joystick"
+            },
+            {
+               "inputs" : {
+                  "position" : {
+                     "output" : "/actions/subnautica/in/uiscroll"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/right/input/joystick"
             }
-
          ]
       }
    },
