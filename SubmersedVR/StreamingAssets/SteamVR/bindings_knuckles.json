@@ -65,15 +65,6 @@
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/subnautica/in/movedown"
-                  }
-               },
-               "mode" : "button",
-               "path" : "/user/hand/left/input/grip"
-            },
-            {
-               "inputs" : {
-                  "click" : {
                      "output" : "/actions/subnautica/in/uisubmit"
                   }
                },
@@ -136,9 +127,6 @@
             },
             {
                "inputs" : {
-                  "click" : {
-                     "output" : "/actions/subnautica/in/jump"
-                  },
                   "position" : {
                      "output" : "/actions/subnautica/in/move"
                   }
@@ -157,52 +145,59 @@
             },
             {
                "inputs" : {
-                  "touch" : {
+                  "north" : {
                      "output" : "/actions/subnautica/in/moveup"
                   }
                },
-               "mode" : "trigger",
-               "path" : "/user/hand/right/input/grip"
+               "mode" : "trackpad",
+               "path" : "/user/hand/left/input/trackpad"
             },
             {
                "inputs" : {
+                  "south" : {
+                     "output" : "/actions/subnautica/in/movedown"
+                  }
+               },
+               "mode" : "trackpad",
+               "path" : "/user/hand/left/input/trackpad"
+            },
+            {
+               "inputs" : {
+                  "held" : {
+                     "output" : "/actions/subnautica/in/moveup"
+                  },
                   "touch" : {
                      "output" : "/actions/subnautica/in/buildertoolright"
                   }
                },
-               "mode" : "trigger",
+               "mode" : "button",
+               "parameters" : {
+                  "click_activate_threshold" : "0.35",
+                  "click_deactivate_threshold" : "0.1",
+                  "force_input" : "force",
+                  "haptic_amplitude" : "0.1",
+                  "haptic_duration" : "0.1",
+                  "haptic_frequency" : "46",
+                  "touchy_click" : "false"
+               },
                "path" : "/user/hand/right/input/grip"
             },
             {
                "inputs" : {
-                  "touch" : {
-                     "output" : "/actions/subnautica/in/buildertoolleft"
+                  "held" : {
+                     "output" : "/actions/subnautica/in/movedown"
                   }
                },
-               "mode" : "trigger",
-               "path" : "/user/hand/left/input/grip"
-            },
-
-            {
-               "inputs" : {
-                  "east" : {
-                     "output" : "/actions/subnautica/in/moveright"
-                  },
-                  "north" : {
-                     "output" : "/actions/subnautica/in/moveforward"
-                  },
-                  "south" : {
-                     "output" : "/actions/subnautica/in/movebackward"
-                  },
-                  "west" : {
-                     "output" : "/actions/subnautica/in/moveleft"
-                  }
-               },
-               "mode" : "dpad",
+               "mode" : "button",
                "parameters" : {
-                  "sub_mode" : "touch"
+                  "click_activate_threshold" : "0.35",
+                  "click_deactivate_threshold" : "0.1",
+                  "force_input" : "force",
+                  "haptic_amplitude" : "0.1",
+                  "haptic_duration" : "0.1",
+                  "haptic_frequency" : "46"
                },
-               "path" : "/user/hand/left/input/thumbstick"
+               "path" : "/user/hand/left/input/grip"
             },
             {
                "inputs" : {
@@ -223,14 +218,32 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/thumbstick"
+               "parameters" : {
+                  "click_activate_threshold" : "0.15",
+                  "click_deactivate_threshold" : "0.05"
+               },
+               "path" : "/user/hand/right/input/trackpad"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/subnautica/in/jump"
+                  }
+               },
+               "mode" : "button",
+               "parameters" : {
+                  "click_activate_threshold" : "0.1",
+                  "click_deactivate_threshold" : "0.05",
+                  "force_input" : "force"
+               },
+               "path" : "/user/hand/left/input/trackpad"
             }
          ]
       }
    },
    "category" : "steamvr_input",
    "controller_type" : "knuckles",
-   "description" : "",
+   "description" : "Thanks PLYSHKA!",
    "interaction_profile" : "",
    "name" : "Default SubmersedVR Bindings for Knuckles(Index Controllers)",
    "options" : {},
