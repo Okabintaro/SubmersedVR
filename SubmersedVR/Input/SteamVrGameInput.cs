@@ -183,7 +183,7 @@ namespace SubmersedVR
             if (Settings.IsDebugEnabled)
             {
                 // DebugPanel.Show($"{GameInput.axisValues[0]}, {GameInput.axisValues[1]}, {GameInput.axisValues[2]}, {GameInput.axisValues[3]}, {GameInput.axisValues[4]}, {GameInput.axisValues[5]}\nAvailable: {GameInput.controllerAvailable} -> Primary: {GameInput.GetPrimaryDevice()} IsGamePad: {GameInput.IsPrimaryDeviceGamepad()}");
-                DebugPanel.Show($"{GameInput.GetMoveDirection()}");
+                // DebugPanel.Show($"{GameInput.GetMoveDirection()}");
             }
             return false;
         }

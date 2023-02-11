@@ -12,13 +12,14 @@ namespace SubmersedVR
         }
         public static GameObject WithParent(this GameObject obj, GameObject target)
         {
-            obj.transform.parent = target.transform;
+            obj.transform.SetParent(target.transform);
             return obj;
         }
         public static GameObject ResetTransform(this GameObject obj)
         {
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localRotation = Quaternion.identity;
+            obj.transform.localScale = Vector3.one;
             return obj;
         }
 

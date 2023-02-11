@@ -56,7 +56,8 @@ namespace SubmersedVR
 
         private void Awake()
         {
-            if (!IsSetupValid()) {
+            if (!IsSetupValid())
+            {
                 return;
             }
 

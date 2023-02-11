@@ -47,7 +47,7 @@ namespace SubmersedVR
         public Camera uiCamera = null;
         public GameObject worldTarget;
         public float worldTargetDistance;
-        private Transform rigParentTarget;
+        public Transform rigParentTarget;
 
         public Camera UIControllerCamera
         {
@@ -357,7 +357,7 @@ namespace SubmersedVR
     public static class uGUI_AwakeSetupRig
     {
         [HarmonyPostfix]
-        public static void Postfix(uGUI_MainMenu __instance)
+        public static void Postfix()
         {
             // TODO: Should use proper singleton pattern?
             var rig = new GameObject(nameof(VRCameraRig)).AddComponent<VRCameraRig>();
