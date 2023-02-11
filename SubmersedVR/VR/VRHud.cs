@@ -225,6 +225,10 @@ namespace SubmersedVR
 
         public static void OnUpdate()
         {
+            if (!uGUI.isMainLevel)
+            {
+                return;
+            }
             var camPos = uiCamera.transform.position;
             var worldRigPos = VRCameraRig.instance.rigParentTarget.position;
             var wristPos = wristTarget.transform.position;
