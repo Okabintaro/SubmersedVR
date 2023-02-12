@@ -21,6 +21,7 @@ namespace SubmersedVR
             {
                 DirtyAllCanvases();
             }
+            VRCameraRig.instance?.SetWorldTarget(hand.activeTarget, hand.activeHitDistance);
         }
     }
 }

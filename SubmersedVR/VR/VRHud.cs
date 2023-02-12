@@ -358,7 +358,6 @@ namespace SubmersedVR
     }
 
     [HarmonyPatch(typeof(uGUI_SeamothHUD), nameof(uGUI_SeamothHUD.Update))]
-    [HarmonyDebug]
     public static class HideSeamothHudWhenHudOff
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -377,7 +376,6 @@ namespace SubmersedVR
     }
 
     [HarmonyPatch(typeof(uGUI_ExosuitHUD), nameof(uGUI_ExosuitHUD.Update))]
-    [HarmonyDebug]
     public static class HideExosuitHudWhenHudOff
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

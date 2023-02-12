@@ -497,22 +497,6 @@ namespace SubmersedVR
         }
     }
 
-    // Get the current raycast world target from GUIHand to use for the laserpointer on right hand
-    [HarmonyPatch(typeof(GUIHand), nameof(GUIHand.UpdateActiveTarget))]
-    public static class GUIHandPatch
-    {
-        [HarmonyPostfix]
-        public static void Postfix(GUIHand __instance)
-        {
-            var rig = VRCameraRig.instance;
-            if (rig == null)
-            {
-                return;
-            }
-            rig.SetWorldTarget(__instance.activeTarget, __instance.activeHitDistance);
-        }
-    }
-
     // Don't disable the the automatic camera tracking of the UI Camera in the Main Game
     [HarmonyPatch(typeof(ManagedCanvasUpdate), nameof(ManagedCanvasUpdate.GetUICamera))]
     public static class PatchCameraTrackingDisabled
