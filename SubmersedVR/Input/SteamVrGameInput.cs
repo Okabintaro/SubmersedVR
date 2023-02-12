@@ -327,12 +327,92 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(Input), nameof(Input.mouseScrollDelta), MethodType.Getter)]
     static class EmulateUnityScrollDelta
     {
-        static bool Prefix(ref Vector2 __result) {
+        static bool Prefix(ref Vector2 __result)
+        {
             __result = SteamVrGameInput.GetScrollDelta();
             return false;
         }
     }
 
+#if false 
+    // Use the ui camera for tooltip scaling instead of controller event camera
+    [HarmonyPatch(typeof(uGUI_Tooltip), nameof(uGUI_Tooltip.ExtractParams))]
+    static class UseCameraForTooltapScaling
+    {
+        public static Camera GetUiCamera()
+        {
+            return VRCameraRig.instance.uiCamera;
+        }
+
+        public static void Postfix(uGUI_Tooltip __instance, ref bool __result) {
+            if (__result) {
+                Transform tf = GetUiCamera().transform;
+                __instance.aimingPosition = tf.position;
+                __instance.aimingForward = tf.forward;
+            }
+        }
+
+    }
+
+    // Use the ui camera for tooltip scaling instead of controller event camera
+    [HarmonyPatch(typeof(uGUI_Tooltip), nameof(uGUI_Tooltip.UpdatePosition))]
+    static class ScaleDownTooltip
+    {
+        public static PDA pda;
+        public const float PDA_ScaleFactor = 0.5f;
+
+        public static float GetTooltipScaler()
+        {
+            if (pda == null) {
+                pda = Player.main.GetPDA();
+            }
+            return pda.isInUse ? PDA_ScaleFactor : 1.0f;
+        }
+
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var m = new CodeMatcher(instructions);
+            m.MatchForward(false, new CodeMatch[] {
+                new CodeMatch(OpCodes.Stloc_0)
+            }).Insert(new CodeInstruction[] {
+                CodeInstruction.Call(typeof(ScaleDownTooltip), nameof(ScaleDownTooltip.GetTooltipScaler)),
+                new CodeInstruction(OpCodes.Mul),
+            });
+            return m.InstructionEnumeration();
+        }
+    }
+#endif
+
+    // Don't scale the tooltips with the controller distance
+    [HarmonyPatch(typeof(uGUI_Tooltip), nameof(uGUI_Tooltip.UpdatePosition))]
+    [HarmonyDebug]
+    static class DontScaleToolTips
+    {
+        public static PDA pda;
+        public const float PDA_ScaleFactor = 0.25f;
+
+        public static float GetTooltipScaler()
+        {
+            if (pda == null)
+            {
+                pda = Player.main.GetPDA();
+            }
+            return pda.isInUse ? PDA_ScaleFactor : 1.0f;
+        }
+
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var m = new CodeMatcher(instructions);
+            var pos = m.MatchForward(false, new CodeMatch[] {
+                // new CodeMatch(OpCodes.Stloc_0)
+                new CodeMatch(ci => ci.Calls(AccessTools.DeclaredMethod(typeof(Vector3), nameof(Vector3.Dot))))
+            }).Pos;
+            m.Start().RemoveInstructionsInRange(0, pos).Insert(new CodeInstruction[] {
+                CodeInstruction.Call(typeof(DontScaleToolTips), nameof(DontScaleToolTips.GetTooltipScaler)),
+            });
+            return m.InstructionEnumeration();
+        }
+    }
 
     // Previous attempt which tried to emulate controllers, not as clean and not needed
 #if false
