@@ -8,6 +8,7 @@ namespace SubmersedVR
     extern alias SteamVRRef;
     using SteamVRActions.Valve.VR;
     using System.Collections.Generic;
+    using System.Reflection.Emit;
 
     // Tweaks regarding the HUD of the game
     static class VRHud
@@ -353,6 +354,44 @@ namespace SubmersedVR
         public static void Postfix(ref bool __result)
         {
             __result &= WristHud.isHudOn;
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_SeamothHUD), nameof(uGUI_SeamothHUD.Update))]
+    [HarmonyDebug]
+    public static class HideSeamothHudWhenHudOff
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var m = new CodeMatcher(instructions);
+            m.MatchForward(true, new CodeMatch[] {
+                new CodeMatch(OpCodes.Stloc_3),
+            }).Advance(1).Insert(new CodeInstruction[] {
+                new CodeInstruction(OpCodes.Ldloc_3),
+                CodeInstruction.LoadField(typeof(WristHud), nameof(WristHud.isHudOn)),
+                new CodeInstruction(OpCodes.And),
+                new CodeInstruction(OpCodes.Stloc_3),
+            });
+            return m.InstructionEnumeration();
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_ExosuitHUD), nameof(uGUI_ExosuitHUD.Update))]
+    [HarmonyDebug]
+    public static class HideExosuitHudWhenHudOff
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var m = new CodeMatcher(instructions);
+            m.MatchForward(true, new CodeMatch[] {
+                new CodeMatch(OpCodes.Stloc_3),
+            }).Advance(1).Insert(new CodeInstruction[] {
+                new CodeInstruction(OpCodes.Ldloc_3),
+                CodeInstruction.LoadField(typeof(WristHud), nameof(WristHud.isHudOn)),
+                new CodeInstruction(OpCodes.And),
+                new CodeInstruction(OpCodes.Stloc_3),
+            });
+            return m.InstructionEnumeration();
         }
     }
 
