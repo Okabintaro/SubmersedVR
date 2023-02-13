@@ -17,7 +17,7 @@ Installation/Setup
 - Copy the whole contents of the zip file into your Subnautica folder e.g. `C:\SteamLibrary\steamapps\common\Subnautica`
     - You can find the location of your game in steam by right-clicking it, then -> Properties -> Local Files -> Browse.
 - Start the game within SteamVR. **The Oculus Runtime won't work and is not supported!**
-    - For Airlink Users: You can force the SteamVR runtime by adding `-vrmode openvr` to the launch options in steam and launching it via SteamVR.
+    - For OculusRift or Oculus Link Users: You can force the SteamVR runtime by adding `-vrmode openvr` to the advanced launch options of the Subnautica game. Please make sure you did that before launching the game.
 
 Development Setup
 -----------------

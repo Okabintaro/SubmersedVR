@@ -47,7 +47,7 @@ namespace SubmersedVR
             }
             if (XRSettings.loadedDeviceName != "OpenVR")
             {
-                Logger.LogError($"{PluginInfo.PLUGIN_NAME} only supports SteamVR! Make sure to add `-vrmode openvr` to your launch options when using an oculus headset.");
+                Logger.LogError($"{PluginInfo.PLUGIN_NAME} only supports SteamVR! Make sure to add `-vrmode openvr` to your games advanded launch options when using an oculus headset.");
                 valid = false;
             }
 
