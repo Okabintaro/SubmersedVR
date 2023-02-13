@@ -10,7 +10,6 @@ namespace SubmersedVR
     {
         public static void Postfix(SeaMoth __instance)
         {
-            Mod.logger.LogInfo($"Tweaking position of {__instance.playerPosition.name}");
             __instance.playerPosition.transform.localPosition = new Vector3(0.0f, 0.0f, 0.2f);
         }
     }
@@ -21,7 +20,6 @@ namespace SubmersedVR
     {
         public static void Postfix(Exosuit __instance)
         {
-            Mod.logger.LogInfo($"Tweaking position of {__instance.playerPosition.name}");
             __instance.playerPosition.transform.localPosition = new Vector3(0.0f, 0.0f, 0.2f);
         }
     }

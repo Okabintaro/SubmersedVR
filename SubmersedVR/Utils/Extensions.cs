@@ -7,7 +7,7 @@ namespace SubmersedVR
     {
         public static GameObject WithParent(this GameObject obj, Transform target)
         {
-            obj.transform.parent = target;
+            obj.transform.SetParent(target, true);
             return obj;
         }
         public static GameObject WithParent(this GameObject obj, GameObject target)

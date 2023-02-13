@@ -4,11 +4,14 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>SubmersedVR</AssemblyName>
     <Description>A VR Conversion Mod for Subnautica</Description>
-    <Version>0.1.3</Version>
+    <Version>0.1.4</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <!-- NOTE: Change this to your own directoy when building -->
     <SubnauticaDir>V:\SteamLibrary\steamapps\common\Subnautica</SubnauticaDir>
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
+    <BuildDir>Build</BuildDir>
+    <!-- <BuildDir>V:\SteamLibrary\steamapps\common\Subnautica</BuildDir> -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -57,16 +60,20 @@
   <Target Name="PostBuild" BeforeTargets="PostBuildEvent">
     <ItemGroup>
       <InstallPlugin Include="$(MSBuildProjectDirectory)\bin\Debug\$(TargetFramework)\$(AssemblyName).dll" />
-      <BindingsFolder Include="$(SubnauticaDir)\Subnautica_Data\StreamingAssets\SteamVR" />
-      <ManagedFolder Include="$(SubnauticaDir)\Subnautica_Data\Managed" />
+      <PlguindsFolder Include="$(BuildDir)\BepInEx\plugins" />
+      <BindingsFolder Include="$(BuildDir)\Subnautica_Data\StreamingAssets\SteamVR" />
+      <ManagedFolder Include="$(BuildDir)\Subnautica_Data\Managed" />
     </ItemGroup>
-    <Copy SourceFiles="@(InstallPlugin)" DestinationFolder="$(SubnauticaDir)\BepInEx\plugins" />
+    <MakeDir Directories="@(BuildDir)"/>
     <MakeDir Directories="@(BindingsFolder)"/>
+    <MakeDir Directories="@(ManagedFolder)"/>
+    <MakeDir Directories="@(PluginsFolder)"/>
+    <Copy SourceFiles="@(InstallPlugin)" DestinationFolder="$(BuildDir)\BepInEx\plugins" />
     <Copy SourceFiles="StreamingAssets\SteamVR\actions.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="StreamingAssets\SteamVR\bindings_oculus_touch.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="StreamingAssets\SteamVR\bindings_knuckles.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
-    <MakeDir Directories="@(ManagedFolder)"/>
     <Copy SourceFiles="SteamVR\SteamVR.dll" DestinationFolder="@(ManagedFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="SteamVR\SteamVR_Actions.dll" DestinationFolder="@(ManagedFolder)" SkipUnchangedFiles="true"/>
+    <ZipDirectory SourceDirectory="$(BuildDir)" DestinationFile="$(MSBuildProjectDirectory)\$(AssemblyName)_$(Version).zip" />
   </Target>
 </Project>

@@ -49,7 +49,7 @@ namespace SubmersedVR
         new void Start()
         {
             var qs = FindObjectsOfType<uGUI_QuickSlots>().First(obj => obj.name == "QuickSlots");
-            Mod.logger.LogInfo($"[nameof{this.GetType()}] Start, stealing stuff from on {qs.name}");
+            Mod.logger.LogDebug($"[nameof{this.GetType()}] Start, stealing stuff from on {qs.name}");
             materialBackground = qs.materialBackground;
             spriteLeft = qs.spriteLeft;
             spriteCenter = qs.spriteCenter;
@@ -66,7 +66,7 @@ namespace SubmersedVR
             {
                 return;
             }
-            Mod.logger.LogInfo($"[nameof{this.GetType()}] Init on {newTarget}");
+            Mod.logger.LogDebug($"[nameof{this.GetType()}] Init on {newTarget}");
             base.Init(newTarget);
             ArangeIconsInCircle(wheelRadius);
             OnSelect(this.target.GetActiveSlotID());

@@ -2,6 +2,7 @@ using System;
 using HarmonyLib;
 using UnityEngine;
 
+#pragma warning disable Harmony003
 namespace SubmersedVR
 {
     extern alias SteamVRRef;

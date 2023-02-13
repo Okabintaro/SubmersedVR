@@ -16,7 +16,6 @@ namespace SubmersedVR
         private static Transform screenCanvas;
         private static Transform overlayCanvas;
         private static Transform hud;
-        private static bool wasSetup = false;
 
         private static Canvas staticHudCanvas = null;
         // private static OffsetCalibrationTool calibrationTool;
@@ -92,7 +91,7 @@ namespace SubmersedVR
 
         public static void Setup(Camera uiCamera, Transform rightControllerUI)
         {
-            Mod.logger.LogInfo($"Setting up HUD for {uiCamera.name}");
+            Mod.logger.LogDebug($"Setting up HUD for {uiCamera.name}");
 
             screenCanvas = uGUI.main.screenCanvas.gameObject.transform;
             overlayCanvas = uGUI.main.overlays.gameObject.transform.parent;
@@ -112,8 +111,8 @@ namespace SubmersedVR
             }
             staticHudCanvas.worldCamera = uiCamera;
 
-            screenCanvas.parent = uiCamera.transform;
-            overlayCanvas.parent = uiCamera.transform;
+            screenCanvas.SetParent(uiCamera.transform, true);
+            overlayCanvas.SetParent(uiCamera.transform, true);
 
             SetupHandReticle(Settings.PutHandReticleOnLaserPointer, uiCamera, rightControllerUI);
             Settings.PutHandReticleOnLaserPointerChanged -= OnHandReticleSettingChanged;
@@ -127,7 +126,6 @@ namespace SubmersedVR
                 compo.SetDirty();
             }
             screenCanvas.GetComponentsInChildren<uGUI_CanvasScaler>().ForEach(cs => cs.SetDirty());
-            wasSetup = true;
         }
 
         public static void OnEnterVehicle()

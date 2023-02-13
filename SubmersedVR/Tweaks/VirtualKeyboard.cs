@@ -45,6 +45,9 @@ namespace SubmersedVR
 
         public static void Deactivate()
         {
+            if (VirtualKeyboard.instance == null) {
+                return;
+            }
             VirtualKeyboard.instance.callback = null;
         }
 
@@ -78,7 +81,7 @@ namespace SubmersedVR
         public static void Postfix()
         {
             var keyboard = new GameObject(nameof(VirtualKeyboard)).AddComponent<VirtualKeyboard>();
-            UnityEngine.Object.DontDestroyOnLoad(keyboard);
+            UnityEngine.Object.DontDestroyOnLoad(keyboard.gameObject);
         }
     }
 
