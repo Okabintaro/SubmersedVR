@@ -162,11 +162,24 @@ namespace SubmersedVR
                     break;
                 case GameInput.Button.LookUp:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
-                    value = vec.y > 0.0f ? vec.y : 0.0f;
+                    if (Settings.InvertYAxis)
+                    {
+                        value = vec.y < 0.0f ? -vec.y : 0.0f;
+                    }
+                    else
+                    {
+                        value = vec.y > 0.0f ? vec.y : 0.0f;
+                    }
                     break;
                 case GameInput.Button.LookDown:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
-                    value = vec.y < 0.0f ? -vec.y : 0.0f;
+                    if (Settings.InvertYAxis)
+                    {
+                        value = vec.y > 0.0f ? vec.y : 0.0f;
+                    }
+                    else {
+                        value = vec.y < 0.0f ? -vec.y : 0.0f;
+                    }
                     break;
                 case GameInput.Button.LookRight:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
