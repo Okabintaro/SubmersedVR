@@ -9,7 +9,6 @@ namespace SubmersedVR
     extern alias SteamVRActions;
     using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
-    using System.Reflection.Emit;
     using System.Collections.Generic;
     using System.Reflection;
 
@@ -18,6 +17,7 @@ namespace SubmersedVR
     {
         public static bool InputLocked = false;
         public static bool IsSteamVrReady = false;
+        public static bool SnapTurned = false;
 
         public static bool ShouldIgnore(GameInput.Button button)
         {
@@ -97,6 +97,30 @@ namespace SubmersedVR
             GameInput.chosenControllerLayout = GameInput.ControllerLayout.Xbox360;
             GameInput.lastDevice = GameInput.Device.Controller;
             return false;
+        }
+    }
+
+    // Implement Snap turning for the player
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetLookDelta))]
+    public static class SnapTurning
+    {
+        public static void Postfix(ref Vector2 __result)
+        {
+            bool isInVehicle = Player.main?.currentMountedVehicle != null;
+            if (Settings.IsSnapTurningEnabled && !isInVehicle) {
+                float lookX = __result.x;
+                float absX = Mathf.Abs(lookX);
+                float threshold = 0.5f;
+                if (absX > threshold && !SteamVrGameInput.SnapTurned) {
+                    __result.x = Settings.SnapTurningAngle * Mathf.Sign(lookX);
+                    SteamVrGameInput.SnapTurned = true;
+                } else  {
+                    __result.x = 0;
+                    if (absX <= threshold) {
+                        SteamVrGameInput.SnapTurned = false;
+                    }
+                }
+            }
         }
     }
 

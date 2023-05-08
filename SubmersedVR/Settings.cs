@@ -9,6 +9,11 @@ namespace SubmersedVR
         public delegate void BooleanChanged(bool newValue);
         public delegate void FloatChanged(float newValue);
 
+        public static bool IsSnapTurningEnabled;
+        public static event BooleanChanged IsSnapTurningEnabledChanged;
+        public static float SnapTurningAngle = 45.0f;
+        public static event FloatChanged SnapTurningAngleChanged;
+
         public static bool IsDebugEnabled;
         public static event BooleanChanged IsDebugChanged;
        
@@ -66,6 +71,13 @@ namespace SubmersedVR
         internal static void AddMenu(uGUI_OptionsPanel panel)
         {
             int tab = panel.AddTab("Submersed VR");
+
+            panel.AddHeading(tab, "Controls");
+            panel.AddToggleOption(tab, "Enable Snap Turning", IsSnapTurningEnabled, (value) => { IsSnapTurningEnabled = value; IsSnapTurningEnabledChanged(value); });
+            panel.AddChoiceOption<float>(tab, "Snap Turning Angle(°)", new float[] {22.5f, 45, 90}, SnapTurningAngle, (value) => {
+                SnapTurningAngle = value;
+                SnapTurningAngleChanged(value);
+            });
 
             panel.AddHeading(tab, "Experimental");
             panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
