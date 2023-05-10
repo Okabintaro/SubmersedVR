@@ -65,7 +65,6 @@ namespace SubmersedVR
                     field.EndEdit();
                 }
                 inputField.text = text;
-                inputField.OnSubmit(null);
                 inputField.OnDeselect(null);
             });
         }
@@ -86,7 +85,7 @@ namespace SubmersedVR
     }
 
     // Open virtual keyboard once the input field was activated
-    [HarmonyPatch(typeof(TMP_InputField), nameof(TMP_InputField.ActivateInputField))]
+    [HarmonyPatch(typeof(TMP_InputField), nameof(TMP_InputField.ActivateInputFieldInternal))]
     static class ShowVirtualKeyboardOnFocus
     {
         public static void Postfix(TMP_InputField __instance)
@@ -136,7 +135,19 @@ namespace SubmersedVR
         }
     }
 
-    // But focus text field immediately on ColoredLabes used by Lockers
+    // We don't use touch keyboard on Desktop
+    // Without this submiting with the VRKeyboard breaks
+    [HarmonyPatch(typeof(TouchScreenKeyboardManager), nameof(TouchScreenKeyboardManager.isSupported), MethodType.Getter)]
+    static class DisableTouchScreenKeyboard2
+    {
+        static bool Prefix(ref bool __result)
+        {
+            __result = false;
+            return false;
+        }
+    }
+
+    // But focus text field immediately on ColoredLabels used by Lockers
     [HarmonyPatch(typeof(ColoredLabel), nameof(ColoredLabel.OnHandClick))]
     static class ActivateInputFieldOnCloredLabel
     {
