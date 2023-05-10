@@ -73,10 +73,16 @@ namespace SubmersedVR
             int tab = panel.AddTab("Submersed VR");
 
             panel.AddHeading(tab, "Controls");
-            panel.AddToggleOption(tab, "Enable Snap Turning", IsSnapTurningEnabled, (value) => { IsSnapTurningEnabled = value; IsSnapTurningEnabledChanged(value); });
+            panel.AddToggleOption(tab, "Enable Snap Turning", IsSnapTurningEnabled, (value) => { IsSnapTurningEnabled = value;
+                if (IsSnapTurningEnabledChanged != null) {
+                    IsSnapTurningEnabledChanged(value);
+                }
+            });
             panel.AddChoiceOption<float>(tab, "Snap Turning Angle(°)", new float[] {22.5f, 45, 90}, SnapTurningAngle, (value) => {
                 SnapTurningAngle = value;
-                SnapTurningAngleChanged(value);
+                if (SnapTurningAngleChanged != null) {
+                    SnapTurningAngleChanged(value);
+                }
             });
 
             panel.AddHeading(tab, "Experimental");
