@@ -208,12 +208,12 @@ namespace SubmersedVR
                 case GameInput.Button.LookRight:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.x > 0.0f ? vec.x : 0.0f;
-					value = value*0.5;
+                    value = value*0.5;
                     break;
                 case GameInput.Button.LookLeft:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.x < 0.0f ? -vec.x : 0.0f;
-					value = value*05;
+                    value = value*05;
                     break;
             }
 
