@@ -13,6 +13,9 @@ namespace SubmersedVR
         public static event BooleanChanged IsSnapTurningEnabledChanged;
         public static float SnapTurningAngle = 45.0f;
         public static event FloatChanged SnapTurningAngleChanged;
+        
+        public static int TurnDampener = 1.0f;
+        public static event FloatChanged TurnDampenerChanged;
 
         public static bool IsDebugEnabled;
         public static event BooleanChanged IsDebugChanged;
@@ -86,6 +89,7 @@ namespace SubmersedVR
             });
 
             panel.AddHeading(tab, "Experimental");
+            panel.AddSliderOption(tab, "this is a test", new float[] {0.0f,1.0f}, TurnDampener, (value) => {TurnDampener = value; TurnDampenerChanged(value);});
             panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
             panel.AddToggleOption(tab, "Invert Y Axis in Seamoth/Cameras", InvertYAxis, (value) => { InvertYAxis = value; InvertYAxisChanged(value); }, "Enables Y axis inversion for Seamoth and Cameras.");
