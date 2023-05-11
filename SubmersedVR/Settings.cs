@@ -14,7 +14,7 @@ namespace SubmersedVR
         public static float SnapTurningAngle = 45.0f;
         public static event FloatChanged SnapTurningAngleChanged;
         
-        public float TurnDampener = 1.0f;
+        public float TurnDamper = 1.0f;
 
         public static bool IsDebugEnabled;
         public static event BooleanChanged IsDebugChanged;
