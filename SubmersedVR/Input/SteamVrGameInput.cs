@@ -150,6 +150,8 @@ namespace SubmersedVR
     {
         public static bool Prefix(GameInput.Button button, ref float __result)
         {
+            bool isInVehicle = Player.main?.currentMountedVehicle != null;
+            
             if (SteamVrGameInput.InputLocked || !SteamVrGameInput.IsSteamVrReady)
             {
                 __result = 0.0f;
@@ -163,36 +165,77 @@ namespace SubmersedVR
                 case GameInput.Button.MoveForward:
                     vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.y > 0.0f ? vec.y : 0.0f;
+                    if (isInVehicle) {
+                        value = value*Settings.VehicleMoveSpeed;
+                    } else  {
+                        value = value*Settings.PlayerMoveSpeed;
+                    }
                     break;
+                    
                 case GameInput.Button.MoveBackward:
                     vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.y < 0.0f ? -vec.y : 0.0f;
+                    if (isInVehicle) {
+                        value = value*Settings.VehicleMoveSpeed;
+                    } else  {
+                        value = value*Settings.PlayerMoveSpeed;
+                    }
                     break;
                 case GameInput.Button.MoveRight:
                     vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.x > 0.0f ? vec.x : 0.0f;
+                    if (isInVehicle) {
+                        value = value*Settings.VehicleMoveSpeed;
+                    } else  {
+                        value = value*Settings.PlayerMoveSpeed;
+                    }
                     break;
                 case GameInput.Button.MoveLeft:
                     vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.x < 0.0f ? -vec.x : 0.0f;
+                    if (isInVehicle) {
+                        value = value*Settings.VehicleMoveSpeed;
+                    } else  {
+                        value = value*Settings.PlayerMoveSpeed;
+                    }
                     break;
                 case GameInput.Button.MoveUp:
                     isPressed = SteamVR_Actions.subnautica.MoveUp.GetState(SteamVR_Input_Sources.Any);
                     value = isPressed ? 1.0f : 0.0f;
+                    if (isInVehicle) {
+                        value = value*Settings.VehicleMoveSpeed;
+                    } else  {
+                        value = value*Settings.PlayerMoveSpeed;
+                    }
                     break;
                 case GameInput.Button.MoveDown:
                     isPressed = SteamVR_Actions.subnautica.MoveDown.GetState(SteamVR_Input_Sources.Any);
                     value = isPressed ? 1.0f : 0.0f;
+                    if (isInVehicle) {
+                        value = value*Settings.VehicleMoveSpeed;
+                    } else  {
+                        value = value*Settings.PlayerMoveSpeed;
+                    }
                     break;
                 case GameInput.Button.LookUp:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
                     if (Settings.InvertYAxis)
                     {
                         value = vec.y < 0.0f ? -vec.y : 0.0f;
+                        if (isInVehicle) {
+                        value = value*Settings.VehicleTurnSpeed;
+                    } else  {
+                        value = value*Settings.PlayerTurnSpeed;
+                    }
                     }
                     else
                     {
                         value = vec.y > 0.0f ? vec.y : 0.0f;
+                        if (isInVehicle) {
+                        value = value*Settings.VehicleTurnSpeed;
+                    } else  {
+                        value = value*Settings.PlayerTurnSpeed;
+                    }
                     }
                     break;
                 case GameInput.Button.LookDown:
@@ -200,22 +243,38 @@ namespace SubmersedVR
                     if (Settings.InvertYAxis)
                     {
                         value = vec.y > 0.0f ? vec.y : 0.0f;
+                        if (isInVehicle) {
+                        value = value*Settings.VehicleTurnSpeed;
+                    } else  {
+                        value = value*Settings.PlayerTurnSpeed;
+                    }
                     }
                     else {
                         value = vec.y < 0.0f ? -vec.y : 0.0f;
+                        if (isInVehicle) {
+                        value = value*Settings.VehicleTurnSpeed;
+                    } else  {
+                        value = value*Settings.PlayerTurnSpeed;
+                    }
                     }
                     break;
                 case GameInput.Button.LookRight:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.x > 0.0f ? vec.x : 0.0f;
-                    // value = value*0.5f;
-                    value = value*Settings.TurnDamper;
+                    if (isInVehicle) {
+                        value = value*Settings.VehicleTurnSpeed;
+                    } else  {
+                        value = value*Settings.PlayerTurnSpeed;
+                    }
                     break;
                 case GameInput.Button.LookLeft:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
                     value = vec.x < 0.0f ? -vec.x : 0.0f;
-                    // value = value*0.5f;
-                    value = value*Settings.TurnDamper;
+                    if (isInVehicle) {
+                        value = value*Settings.VehicleTurnSpeed;
+                    } else  {
+                        value = value*Settings.PlayerTurnSpeed;
+                    }
                     break;
             }
 

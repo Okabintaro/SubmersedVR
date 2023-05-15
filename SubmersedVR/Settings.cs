@@ -14,7 +14,10 @@ namespace SubmersedVR
         public static float SnapTurningAngle = 45.0f;
         public static event FloatChanged SnapTurningAngleChanged;
         
-        public float TurnDamper = 1.0f;
+        public static float PlayerTurnSpeed = 1.0f;
+        public static float PlayerMoveSpeed = 1.0f;
+        public static float VehicleTurnSpeed = 1.0f;
+        public static float VehicleMoveSpeed = 1.0f;
 
         public static bool IsDebugEnabled;
         public static event BooleanChanged IsDebugChanged;
@@ -80,19 +83,31 @@ namespace SubmersedVR
                     IsSnapTurningEnabledChanged(value);
                 }
             });
+            
             panel.AddChoiceOption<float>(tab, "Snap Turning Angle(°)", new float[] {22.5f, 45, 90}, SnapTurningAngle, (value) => {
                 SnapTurningAngle = value;
                 if (SnapTurningAngleChanged != null) {
                     SnapTurningAngleChanged(value);
                 }
             });
+            
+            panel.AddSliderOption(tab, "Player Turning Speed", PlayerTurnSpeed * 100f, 25, 100, 75,1f, delegate (float v){
+                PlayerTurnSpeed = v/100f;
+            }, SliderLabelMode.Float, "F0");
+
+            panel.AddSliderOption(tab, "Player Movement Speed", PlayerMoveSpeed * 100f, 25, 100, 75,1f, delegate (float v){
+                PlayerMoveSpeed = v/100f;
+            }, SliderLabelMode.Float, "F0");
+            
+            panel.AddSliderOption(tab, "Vehicle Turning Speed", VehicleTurnSpeed * 100f, 25, 100, 75,1f, delegate (float v){
+                VehicleTurnSpeed = v/100f;
+            }, SliderLabelMode.Float, "F0");
+            
+            panel.AddSliderOption(tab, "Vehicle Movement Speed", VehicleMoveSpeed * 100f, 25, 100, 75,1f, delegate (float v){
+                VehicleMoveSpeed = v/100f;
+            }, SliderLabelMode.Float, "F0");
 
             panel.AddHeading(tab, "Experimental");
-            
-            panel.AddSliderOption(tab, "Turning Damper", TurnDamper * 100f, 25, 100, 75,1f, delegate (float v)
-            {
-                TurnDamper = v/100f;
-            }, SliderLabelMode.Float, "F0");
             
             panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
