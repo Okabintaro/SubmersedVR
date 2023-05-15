@@ -91,7 +91,7 @@ namespace SubmersedVR
                 }
             });
             
-            panel.AddSliderOption(tab, "Player Turning Speed", PlayerTurnSpeed * 100f, 25, 100, 75,1f, delegate (float v){
+            panel.AddSliderOption(tab, "Player Turn Speed", PlayerTurnSpeed * 100f, 25, 100, 75,1f, delegate (float v){
                 PlayerTurnSpeed = v/100f;
             }, SliderLabelMode.Float, "F0");
 
@@ -99,7 +99,7 @@ namespace SubmersedVR
                 PlayerMoveSpeed = v/100f;
             }, SliderLabelMode.Float, "F0");
             
-            panel.AddSliderOption(tab, "Vehicle Turning Speed", VehicleTurnSpeed * 100f, 25, 100, 75,1f, delegate (float v){
+            panel.AddSliderOption(tab, "Vehicle Turn Speed", VehicleTurnSpeed * 100f, 25, 100, 75,1f, delegate (float v){
                 VehicleTurnSpeed = v/100f;
             }, SliderLabelMode.Float, "F0");
             
