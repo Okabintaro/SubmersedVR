@@ -27,7 +27,8 @@ namespace SubmersedVR
                 || button == GameInput.Button.Slot3
                 || button == GameInput.Button.Slot4
                 || button == GameInput.Button.Slot5
-                || button == GameInput.Button.AutoMove;
+                || button == GameInput.Button.AutoMove
+                || button == GameInput.Button.Answer;
         }
 
         public static Vector2 GetScrollDelta()
@@ -57,6 +58,21 @@ namespace SubmersedVR
         }
     }
 
+    [HarmonyPatch(typeof(uGUI_GraphicRaycaster), nameof(uGUI_GraphicRaycaster.UpdateGraphicRaycasters))]
+    public static class KeepRaycastersEnabled
+    {
+        static bool Prefix()
+        {
+            foreach (uGUI_GraphicRaycaster uGUI_GraphicRaycaster in uGUI_GraphicRaycaster.allRaycasters)
+            {
+                uGUI_GraphicRaycaster.enabled = true;
+            }
+            return false;
+        }
+    }
+
+
+
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonUp))]
     public static class SteamVrGetButtonUp
     {
@@ -66,7 +82,6 @@ namespace SubmersedVR
             {
                 return false;
             }
-
             __result = SteamVR_Input.GetStateUp(button.ToString(), SteamVR_Input_Sources.Any);
             return false;
         }
@@ -372,6 +387,7 @@ namespace SubmersedVR
         }
     }
 
+
 #if false 
     // Use the ui camera for tooltip scaling instead of controller event camera
     [HarmonyPatch(typeof(uGUI_Tooltip), nameof(uGUI_Tooltip.ExtractParams))]
@@ -421,6 +437,7 @@ namespace SubmersedVR
     }
 #endif
 
+#if false
     // Don't scale the tooltips with the controller distance
     [HarmonyPatch(typeof(uGUI_Tooltip), nameof(uGUI_Tooltip.UpdatePosition))]
     [HarmonyDebug]
@@ -451,6 +468,7 @@ namespace SubmersedVR
             return m.InstructionEnumeration();
         }
     }
+#endif
 
     // Previous attempt which tried to emulate controllers, not as clean and not needed
 #if false

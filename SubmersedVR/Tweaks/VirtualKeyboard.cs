@@ -135,17 +135,17 @@ namespace SubmersedVR
         }
     }
 
-    // We don't use touch keyboard on Desktop
-    // Without this submiting with the VRKeyboard breaks
-    [HarmonyPatch(typeof(TouchScreenKeyboardManager), nameof(TouchScreenKeyboardManager.isSupported), MethodType.Getter)]
-    static class DisableTouchScreenKeyboard2
-    {
-        static bool Prefix(ref bool __result)
-        {
-            __result = false;
-            return false;
-        }
-    }
+    // // We don't use touch keyboard on Desktop
+    // // Without this submiting with the VRKeyboard breaks
+    // [HarmonyPatch(typeof(TouchScreenKeyboardManager), nameof(TouchScreenKeyboardManager.isSupported), MethodType.Getter)]
+    // static class DisableTouchScreenKeyboard2
+    // {
+    //     static bool Prefix(ref bool __result)
+    //     {
+    //         __result = false;
+    //         return false;
+    //     }
+    // }
 
     // But focus text field immediately on ColoredLabels used by Lockers
     [HarmonyPatch(typeof(ColoredLabel), nameof(ColoredLabel.OnHandClick))]

@@ -59,12 +59,13 @@ namespace SubmersedVR
         }
     }
 
-    [HarmonyPatch(typeof(WaitScreen), nameof(WaitScreen.Update))]
-    static class LockInputWhileLoading
-    {
-        static void Postfix(WaitScreen __instance)
-        {
-            SteamVrGameInput.InputLocked = __instance.isWaiting;
-        }
-    }
+    // [HarmonyPatch(typeof(WaitScreen), nameof(WaitScreen.Update))]
+    // static class LockInputWhileLoading
+    // {
+    //     static void Postfix(WaitScreen __instance)
+    //     {
+    //         SteamVrGameInput.InputLocked = __instance.isWaiting;
+    //     }
+    // }
+
 }

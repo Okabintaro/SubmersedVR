@@ -94,6 +94,7 @@ namespace SubmersedVR
             Mod.logger.LogDebug($"Setting up HUD for {uiCamera.name}");
 
             screenCanvas = uGUI.main.screenCanvas.gameObject.transform;
+            screenCanvas.localScale = new Vector3(0.001f, 0.001f, 0.001f);
             overlayCanvas = uGUI.main.overlays.gameObject.transform.parent;
             hud = uGUI.main.hud.transform;
 
@@ -206,6 +207,7 @@ namespace SubmersedVR
             var animator = Player.main?.playerAnimator;
             if (animator is Animator anim)
             {
+                // TODO: Test this
                 var tip = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_R/clav_R_aim/shoulder_R/hand_R/hand_R_point_base/hand_R_point_mid/hand_R_point_tip_rig");
                 if (tip != null)
                 {
@@ -270,7 +272,7 @@ namespace SubmersedVR
                 Mod.logger.LogDebug("Turning WristHud on");
                 barsPanel.WithParent(canvas.transform).ResetTransform();
                 barsPanel.GetComponent<RectTransform>().pivot = new Vector2(0, 0);
-                ManagedUpdate.Subscribe(ManagedUpdate.Queue.PreCanvasFirst, new ManagedUpdate.OnUpdate(OnUpdate));
+                ManagedUpdate.Subscribe(ManagedUpdate.Queue.LateUpdateLast, new ManagedUpdate.OnUpdate(OnUpdate));
             }
             else
             {
@@ -279,7 +281,7 @@ namespace SubmersedVR
                 barsPanel.transform.SetParent(hudContent.transform, false);
                 barsPanel.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
                 barsPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.0f, 0.0f);
-                ManagedUpdate.Unsubscribe(ManagedUpdate.Queue.PreCanvasFirst, new ManagedUpdate.OnUpdate(OnUpdate));
+                ManagedUpdate.Unsubscribe(ManagedUpdate.Queue.LateUpdateLast, new ManagedUpdate.OnUpdate(OnUpdate));
                 isHudOn = true;
             }
 
@@ -298,6 +300,16 @@ namespace SubmersedVR
             {
                 VRHud.OnEnterVehicle();
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerMask), nameof(PlayerMask.Start))]
+    public static class PlayerMaskDisable
+    {
+        static bool Prefix(PlayerMask __instance)
+        {
+            __instance.gameObject.SetActive(false);
+            return false;
         }
     }
 

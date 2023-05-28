@@ -8,10 +8,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <!-- NOTE: Change this to your own directoy when building -->
-    <SubnauticaDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\Subnautica</SubnauticaDir>
+    <SubnauticaDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\SubnauticaZero</SubnauticaDir>
     <NoWarn>$(NoWarn);CS0436</NoWarn>
-    <BuildDir>Build</BuildDir>
+    <!-- <BuildDir>Build</BuildDir> -->
     <!-- <BuildDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\Subnautica</BuildDir> -->
+    <BuildDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\SubnauticaZero</BuildDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,21 +29,21 @@
     </Reference>
     <!-- Main Game Assemblies -->
     <Reference Include="Assembly-CSharp" Publicize="true">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass" Publicize="true">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
 
     <!-- UnityEngine: UI and TextMeshPro. Missing from the BepInEx/Nuget Package. -->
     <Reference Include="Unity.TextMeshPro" Publicize="true">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="FMODUnity">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\FMODUnity.dll</HintPath>
+      <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\FMODUnity.dll</HintPath>
     </Reference>
 
     <!-- SteamVR + SteamVR Actions: Currenlty prebuilt, should be built from source later -->
@@ -63,9 +64,9 @@
   <Target Name="PostBuild" BeforeTargets="PostBuildEvent">
     <ItemGroup>
       <InstallPlugin Include="$(MSBuildProjectDirectory)\bin\Debug\$(TargetFramework)\$(AssemblyName).dll" />
-      <PlguindsFolder Include="$(BuildDir)\BepInEx\plugins" />
-      <BindingsFolder Include="$(BuildDir)\Subnautica_Data\StreamingAssets\SteamVR" />
-      <ManagedFolder Include="$(BuildDir)\Subnautica_Data\Managed" />
+      <PlguinsFolder Include="$(BuildDir)\BepInEx\plugins" />
+      <BindingsFolder Include="$(BuildDir)\SubnauticaZero_Data\StreamingAssets\SteamVR" />
+      <ManagedFolder Include="$(BuildDir)\SubnauticaZero_Data\Managed" />
     </ItemGroup>
     <MakeDir Directories="@(BuildDir)"/>
     <MakeDir Directories="@(BindingsFolder)"/>
@@ -78,6 +79,6 @@
     <Copy SourceFiles="StreamingAssets\SteamVR\bindings_holographic.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="SteamVR\SteamVR.dll" DestinationFolder="@(ManagedFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="SteamVR\SteamVR_Actions.dll" DestinationFolder="@(ManagedFolder)" SkipUnchangedFiles="true"/>
-    <ZipDirectory SourceDirectory="$(BuildDir)" DestinationFile="$(MSBuildProjectDirectory)\$(AssemblyName)_$(Version).zip" />
+    <!-- <ZipDirectory SourceDirectory="$(BuildDir)" DestinationFile="$(MSBuildProjectDirectory)\$(AssemblyName)_$(Version).zip" /> -->
   </Target>
 </Project>

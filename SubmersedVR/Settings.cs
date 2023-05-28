@@ -92,7 +92,7 @@ namespace SubmersedVR
 
             panel.AddHeading(tab, "Hidden/Advanced VR Settings(Those can cause motion sickness!)");
             panel.AddToggleOption(tab, "Enable pitching(Looking Up/Down) while diving", !VROptions.disableInputPitch, (value) => { VROptions.disableInputPitch = !value; }, "This allows you to pitch up and down using the right thumbstick when diving. Can be very disorienting! I recommend to keep this disabled!");
-            panel.AddToggleOption(tab, "Enable desktop cinematics", VROptions.enableCinematics, (value) => { VROptions.enableCinematics = value; }, "Enables the games cinematics. Warning! Those move around your head and can cause motion sickness!");
+            // panel.AddToggleOption(tab, "Enable desktop cinematics", VROptions.enableCinematics, (value) => { VROptions.enableCinematics = value; }, "Enables the games cinematics. Warning! Those move around your head and can cause motion sickness!");
             panel.AddToggleOption(tab, "Skip intro", VROptions.skipIntro, (value) => { VROptions.skipIntro = value; }, "Skip the intro when starting a new game.");
 
             panel.AddHeading(tab, "Debug Options");
@@ -112,6 +112,15 @@ namespace SubmersedVR
         public static void Postfix(GameSettings.ISerializer serializer)
         {
             Settings.Serialize(serializer);
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.Update))]
+    static class AlwaysEnableBackButton
+    {
+        public static void Postfix(uGUI_OptionsPanel __instance)
+        {
+            __instance.UpdateButtonState(__instance.backButton, true);
         }
     }
 
@@ -138,16 +147,16 @@ namespace SubmersedVR
     }
 
 
-    // GameOptions.GetVRAnimationMode returns true whenever we want to play the simplified VR Animations instead of the desktop ones
-    [HarmonyPatch(typeof(GameOptions), nameof(GameOptions.GetVrAnimationMode))]
-    class EnableCinematicsIfSet
-    {
-        static bool Prefix(ref bool __result)
-        {
-            __result = !VROptions.enableCinematics;
-            return false;
-        }
-    }
+    // // GameOptions.GetVRAnimationMode returns true whenever we want to play the simplified VR Animations instead of the desktop ones
+    // [HarmonyPatch(typeof(GameOptions), nameof(GameOptions.GetVrAnimationMode))]
+    // class EnableCinematicsIfSet
+    // {
+    //     static bool Prefix(ref bool __result)
+    //     {
+    //         __result = !VROptions.enableCinematics;
+    //         return false;
+    //     }
+    // }
 
     #endregion
 }

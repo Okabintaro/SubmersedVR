@@ -1,7 +1,7 @@
 {
    "action_manifest_version" : 0,
    "alias_info" : {},
-   "app_key" : "steam.app.264710",
+   "app_key" : "steam.app.848450",
    "bindings" : {
       "/actions/subnautica" : {
          "haptics" : [

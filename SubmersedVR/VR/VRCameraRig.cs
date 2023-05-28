@@ -1,10 +1,8 @@
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.XR;
 using System.Collections;
 using UWE;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.EventSystems;
 
@@ -242,21 +240,22 @@ namespace SubmersedVR
                 // even though the transform was changing properly.
                 // Maybe it is because the tracking was once disabled in the main game, but I am not sure, since I tried enabling it too.
                 // Copying the properties from the main camera and setting up the original important properties fixed it.
+
                 uiRig.transform.position = Vector3.zero;
                 var oldMask = camera.cullingMask;
                 var oldClear = camera.clearFlags;
                 var oldDepth = camera.depth;
 
-                camera.CopyFrom(SNCameraRoot.main.mainCamera);
+                // camera.CopyFrom(SNCameraRoot.main.mainCamera);
                 camera.transform.localPosition = Vector3.zero;
                 camera.transform.localRotation = Quaternion.identity;
-                camera.renderingPath = RenderingPath.Forward;
+                // camera.renderingPath = RenderingPath.Forward;
                 camera.cullingMask = oldMask;
                 camera.clearFlags = CameraClearFlags.Depth;
                 camera.depth = oldDepth;
 
                 camera.transform.parent = uiRig.transform;
-                camera.transform.localPosition = Vector3.zero;
+                camera.transform.localPosition = new Vector3(0.0f, 2.0f, 0.0f);
                 camera.transform.localRotation = Quaternion.identity;
 
                 // Set all canvas scalers to static, which makes UI better usable
@@ -268,7 +267,7 @@ namespace SubmersedVR
             else
             {
                 camera.transform.parent = uiRig.transform;
-                camera.transform.localPosition = Vector3.zero;
+                camera.transform.localPosition = new Vector3(0.0f, 1.0f, 0.0f);
                 camera.transform.localRotation = Quaternion.identity;
             }
             uiCamera = camera;
@@ -497,17 +496,17 @@ namespace SubmersedVR
         }
     }
 
-    // Don't disable the the automatic camera tracking of the UI Camera in the Main Game
-    [HarmonyPatch(typeof(ManagedCanvasUpdate), nameof(ManagedCanvasUpdate.GetUICamera))]
-    public static class PatchCameraTrackingDisabled
-    {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            return new CodeMatcher(instructions).MatchForward(false, new CodeMatch[] {
-                new CodeMatch(ci => ci.Calls(typeof(XRDevice).GetMethod(nameof(XRDevice.DisableAutoXRCameraTracking))))
-            }).ThrowIfNotMatch("Could not find XRDevice Deactivation").Advance(-2).RemoveInstructions(3).InstructionEnumeration();
-        }
-    }
+    // // Don't disable the the automatic camera tracking of the UI Camera in the Main Game
+    // [HarmonyPatch(typeof(ManagedCanvasUpdate), nameof(ManagedCanvasUpdate.GetUICamera))]
+    // public static class PatchCameraTrackingDisabled
+    // {
+    //     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    //     {
+    //         return new CodeMatcher(instructions).MatchForward(false, new CodeMatch[] {
+    //             new CodeMatch(ci => ci.Calls(typeof(XRDevice).GetMethod(nameof(XRDevice.DisableAutoXRCameraTracking))))
+    //         }).ThrowIfNotMatch("Could not find XRDevice Deactivation").Advance(-2).RemoveInstructions(3).InstructionEnumeration();
+    //     }
+    // }
 
     [HarmonyPatch(typeof(uGUI), nameof(uGUI.UpdateLevelIdentifier))]
     static class OnMainLevelChanged
