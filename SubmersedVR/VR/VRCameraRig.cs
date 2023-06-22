@@ -16,6 +16,9 @@ namespace SubmersedVR
     extern alias SteamVRRef;
     using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
+    using System.Collections.Generic;
+    using UWEXR;
+    using System.Reflection.Emit;
 
     class VRCameraRig : MonoBehaviour
     {
@@ -246,10 +249,10 @@ namespace SubmersedVR
                 var oldClear = camera.clearFlags;
                 var oldDepth = camera.depth;
 
-                // camera.CopyFrom(SNCameraRoot.main.mainCamera);
+                camera.CopyFrom(SNCameraRoot.main.mainCamera);
                 camera.transform.localPosition = Vector3.zero;
                 camera.transform.localRotation = Quaternion.identity;
-                // camera.renderingPath = RenderingPath.Forward;
+                camera.renderingPath = RenderingPath.Forward;
                 camera.cullingMask = oldMask;
                 camera.clearFlags = CameraClearFlags.Depth;
                 camera.depth = oldDepth;
@@ -514,6 +517,53 @@ namespace SubmersedVR
         public static void Postfix(uGUI __instance)
         {
             VRCameraRig.instance?.UpdateShowControllers();
+        }
+    }
+
+
+
+    // Disable the last XRSettings.enabled branch by replacing it with false/0
+    [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnUpdate))]
+    public static class DisableVRLockMechanic
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return new CodeMatcher(instructions).End().MatchBack(false, new CodeMatch[] {
+                new CodeMatch(ci => ci.Calls(typeof(XRSettings).GetProperty(nameof(XRSettings.enabled)).GetGetMethod()))
+            }).ThrowIfNotMatch("Could not find last thingy").SetInstruction(new CodeInstruction(OpCodes.Ldc_I4_0)).InstructionEnumeration();
+        }
+    }
+
+    // Disable the XRSettings.enabled to disable HandReticle Patch
+    [HarmonyPatch(typeof(HandReticle), nameof(HandReticle.LateUpdate))]
+    public static class DisableHandReticleVR
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return new CodeMatcher(instructions).End().MatchBack(false, new CodeMatch[] {
+                new CodeMatch(ci => ci.Calls(typeof(XRSettings).GetProperty(nameof(XRSettings.enabled)).GetGetMethod()))
+            }).ThrowIfNotMatch("Could not find last thingy").SetInstruction(new CodeInstruction(OpCodes.Ldc_I4_0)).InstructionEnumeration();
+        }
+    }
+
+    // Disalbe LightBar stuff
+    [HarmonyPatch(typeof(PlatformUtils), nameof(PlatformUtils.DimLightBar))]
+    public static class NoDimLightBar {
+        public static bool Prefix() {
+            return false;
+        }
+    }
+    [HarmonyPatch(typeof(PlatformUtils), nameof(PlatformUtils.SetLightBarColor))]
+    public static class NoSetLightBarColor {
+        public static bool Prefix() {
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlatformUtils), nameof(PlatformUtils.ResetLightBarColor))]
+    public static class NoResetLightBarColor {
+        public static bool Prefix() {
+            return false;
         }
     }
 

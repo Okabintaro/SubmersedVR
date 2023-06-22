@@ -2,7 +2,7 @@
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using HarmonyLib;
-using UnityEngine.XR;
+using UXR = UnityEngine.XR;
 using System.Linq;
 
 namespace SubmersedVR
@@ -30,7 +30,7 @@ namespace SubmersedVR
         private bool IsSetupValid()
         {
             bool valid = true;
-            if (!XRSettings.enabled)
+            if (!UXR.XRSettings.enabled)
             {
                 Logger.LogWarning($"Game was not started in VR. Don't load and apply {PluginInfo.PLUGIN_NAME} patches.");
                 valid = false;
@@ -45,9 +45,9 @@ namespace SubmersedVR
                 Logger.LogError($"Found old {SN1MC.NAME} mod. Please remove it if you want to use {PluginInfo.PLUGIN_NAME}. They are not compatible.");
                 valid = false;
             }
-            if (XRSettings.loadedDeviceName != "OpenVR")
+            if (UXR.XRSettings.enabled && UXR.XRSettings.loadedDeviceName != "OpenVR")
             {
-                Logger.LogError($"{PluginInfo.PLUGIN_NAME} only supports SteamVR! Make sure to add `-vrmode openvr` to your games advanded launch options when using an oculus headset.");
+                Logger.LogError($"{PluginInfo.PLUGIN_NAME} only supports SteamVR, but loaded plugin is `{UXR.XRSettings.loadedDeviceName}`! Make sure to add `-vrmode openvr` to your games advanded launch options when using an oculus headset.");
                 valid = false;
             }
 
@@ -66,6 +66,7 @@ namespace SubmersedVR
             harmony.PatchAll();
             Logger.LogInfo($"{PluginInfo.PLUGIN_NAME} loaded and patches applied!");
             VROptions.gazeBasedCursor = true;
+            VROptions.aimRightArmWithHead = false;
 
             instance = this;
         }

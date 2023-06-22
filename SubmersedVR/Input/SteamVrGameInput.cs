@@ -253,10 +253,11 @@ namespace SubmersedVR
         }
     }
 
-    // This makes GameInput.AnyKeyDown() return true incase any boolean action is pressed. Is needed for the intro skip and credits.
+    // This makes Input.anyKeyDown return true incase any boolean action is pressed. Is needed for the intro skip and credits.
     // But hmm, where is the any key on the controllers? (https://www.youtube.com/watch?v=st6-DgWeuos)
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.AnyKeyDown))]
-    public static class SteamVRPressAnyKey
+    [HarmonyPatch(typeof(Input))]
+    [HarmonyPatch(nameof(Input.anyKeyDown), MethodType.Getter)]
+    public static class UnityAnyKeyDown
     {
         static void Postfix(GameInput __instance, ref bool __result)
         {
@@ -275,6 +276,7 @@ namespace SubmersedVR
             }
         }
     }
+
 
     // This makes it so the crafting menu from the fabricators actually use the controller buttons
     // [HarmonyPatch(typeof(uGUI_CraftingMenu), "OnPointerClick")]

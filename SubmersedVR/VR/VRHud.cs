@@ -94,7 +94,7 @@ namespace SubmersedVR
             Mod.logger.LogDebug($"Setting up HUD for {uiCamera.name}");
 
             screenCanvas = uGUI.main.screenCanvas.gameObject.transform;
-            screenCanvas.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+            // screenCanvas.localScale = new Vector3(0.001f, 0.001f, 0.001f);
             overlayCanvas = uGUI.main.overlays.gameObject.transform.parent;
             hud = uGUI.main.hud.transform;
 
@@ -142,9 +142,6 @@ namespace SubmersedVR
         {
             hud.SetParent(screenCanvas, false);
         }
-
-
-
     }
 
     static class WristHud
@@ -296,7 +293,8 @@ namespace SubmersedVR
     {
         public static void Postfix(Vehicle __instance)
         {
-            if (__instance is SeaMoth || __instance is Exosuit)
+            // TODO: How to check for SeaTruck?
+            if (__instance is Exosuit)
             {
                 VRHud.OnEnterVehicle();
             }
@@ -318,7 +316,8 @@ namespace SubmersedVR
     {
         public static void Postfix(Vehicle __instance)
         {
-            if (__instance is SeaMoth || __instance is Exosuit)
+            // TODO: How to check for SeaTruck?
+            if (__instance is Exosuit)
             {
                 VRHud.OnExitVehicle();
             }
