@@ -5,6 +5,7 @@ using UnityEngine.XR;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using UnityEngine.UI;
 
 namespace SubmersedVR
 {
@@ -88,6 +89,76 @@ namespace SubmersedVR
         }
     }
 
+    //Replace the existinng implementation with one that removes the check for event system focus 
+    //Also fixes the problem with the cursor rendering behind UI elements
+    [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.OnUpdate))]
+    static class DontCheckForGameFocus
+    {
+        public static bool Prefix(FPSInputModule __instance)
+        {
+            if (GameInput.IsScanningInput())
+            {
+                return false;
+            }
+            __instance.SendUpdateEventToSelectedObject();
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                Mod.logger.LogInfo($"F2 Recenter pressed");
+                VRUtil.Recenter();
+            }
+            bool flag = false;
+            bool useGazeBasedCursor = VROptions.GetUseGazeBasedCursor();
+            if (GameInput.GetPrimaryDevice() == GameInput.Device.Controller || useGazeBasedCursor)
+            {
+                UWE.Utils.alwaysLockCursor = true;
+            }
+            else
+            {
+                UWE.Utils.alwaysLockCursor = false;
+            }
+            if (GameInput.GetPrimaryDevice() == GameInput.Device.Keyboard)
+            {
+                flag = true;
+            }
+            if (!__instance.lockRotation)
+            {
+                flag = true;
+            }
+            if (useGazeBasedCursor)
+            {
+                flag = true;
+            }
+            if (flag)
+            {
+                if (__instance.skipMouseEvent)
+                {
+                    __instance.skipMouseEvent = false;
+                    uGUI_Tooltip.Clear();
+                }
+                else
+                {
+                    __instance.ProcessMouseEvent();
+                }
+               __instance.UpdateCursor();
+ 
+                ////Fix the problem with the cursor rendering behind UI elements.
+                Canvas cursorCanvas = __instance._cursor.GetComponentInChildren<Graphic>().canvas;
+                RaycastResult lastRaycastResult = Traverse.Create(__instance).Field("lastRaycastResult").GetValue<RaycastResult>();
+                if (cursorCanvas != null && lastRaycastResult.isValid)
+                {
+                    cursorCanvas.sortingLayerID = lastRaycastResult.sortingLayer; //put the cursor on the same layer as whatever was hit by the cursor raycast.
+                }
+                ////
+            }
+            if (Inventory.main)
+            {
+                Inventory.main.UpdateContainers();
+		    }
+            return false;
+        }
+    }
+
+
 #if false
     // Makes it so that you can still interact with the UI, even when the Game is not focused, which only makes sense in VR I guess.
     [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.OnUpdate))]
@@ -128,7 +199,7 @@ namespace SubmersedVR
     //         return false;
     //     }
     // }
-
+/*
     [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.UpdateMouseState))]
     class DebugPointerEventState : PointerInputModule {
         public static void Postfix(FPSInputModule __instance) {
@@ -144,6 +215,6 @@ namespace SubmersedVR
         {
         }
     }
-
+*/
 }
 

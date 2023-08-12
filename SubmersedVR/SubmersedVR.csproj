@@ -8,11 +8,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <!-- NOTE: Change this to your own directoy when building -->
-    <SubnauticaDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\SubnauticaZero</SubnauticaDir>
+    <SubnauticaDir>c:\Program Files (x86)\Steam\steamapps\common\SubnauticaZero</SubnauticaDir>
     <NoWarn>$(NoWarn);CS0436</NoWarn>
     <!-- <BuildDir>Build</BuildDir> -->
     <!-- <BuildDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\Subnautica</BuildDir> -->
-    <BuildDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\SubnauticaZero</BuildDir>
+    <BuildDir>c:\Program Files (x86)\Steam\steamapps\common\SubnauticaZero</BuildDir>
   </PropertyGroup>
 
   <ItemGroup>

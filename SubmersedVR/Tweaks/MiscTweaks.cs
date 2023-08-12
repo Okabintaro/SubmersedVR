@@ -1,5 +1,6 @@
 using UnityEngine;
 using HarmonyLib;
+using UnityEngine.XR;
 
 namespace SubmersedVR
 {
@@ -31,4 +32,17 @@ namespace SubmersedVR
             MiscTweaks.BetterTextureQuality();
         }
     }
+
+    //Add in the recentering  by using UnityEngine.XR InputTracking
+    [HarmonyPatch(typeof(VRUtil), nameof(VRUtil.Recenter))]
+    public static class RecenterFix
+    {
+        public static bool Prefix()
+        {
+            InputTracking.Recenter();
+            return true;
+        }
+    }
+
+
 }

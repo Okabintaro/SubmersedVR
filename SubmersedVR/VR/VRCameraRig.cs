@@ -204,8 +204,8 @@ namespace SubmersedVR
         {
             var inMainMenu = !uGUI.isMainLevel;
             bool alwaysShow = Settings.AlwaysShowControllers;
-            modelL.SetActive(alwaysShow || inMainMenu);
-            modelR.SetActive(alwaysShow || inMainMenu);
+            modelL?.SetActive(alwaysShow || inMainMenu);
+            modelR?.SetActive(alwaysShow || inMainMenu);
         }
 
         // This is used to get the camera from the main menu
@@ -258,7 +258,7 @@ namespace SubmersedVR
                 camera.depth = oldDepth;
 
                 camera.transform.parent = uiRig.transform;
-                camera.transform.localPosition = new Vector3(0.0f, 2.0f, 0.0f);
+                camera.transform.localPosition = Vector3.zero; //new Vector3(0.0f, 2.0f, 0.0f);
                 camera.transform.localRotation = Quaternion.identity;
 
                 // Set all canvas scalers to static, which makes UI better usable
@@ -270,7 +270,7 @@ namespace SubmersedVR
             else
             {
                 camera.transform.parent = uiRig.transform;
-                camera.transform.localPosition = new Vector3(0.0f, 1.0f, 0.0f);
+                camera.transform.localPosition = Vector3.zero; //new Vector3(0.0f, 1.0f, 0.0f);
                 camera.transform.localRotation = Quaternion.identity;
             }
             uiCamera = camera;
@@ -343,7 +343,7 @@ namespace SubmersedVR
             }
         }
 
-        // Gets set by GUIHand Patch, which already does world raycasting so we dont have to do it ourselfs
+        // Gets set by GUIHand Patch, which already does world raycasting so we dont have to do it ourselves
         public void SetWorldTarget(GameObject activeTarget, float activeHitDistance)
         {
             this.worldTarget = activeTarget;
@@ -432,7 +432,7 @@ namespace SubmersedVR
     {
         public static void Postfix(uGUI_CanvasScaler __instance)
         {
-            // TODO: There gotta be a better way to attach this only to the PDA, maybe custom behaviour, disabling the Scalar?
+             // TODO: There gotta be a better way to attach this only to the PDA, maybe custom behaviour, disabling the Scalar?
             if (__instance.gameObject.GetComponent<uGUI_PDA>() == null)
             {
                 return;
@@ -451,7 +451,7 @@ namespace SubmersedVR
         }
     }
 
-    // Makes the ingame menu spawn infront of you in vr
+     // Makes the ingame menu spawn infront of you in vr
     [HarmonyPatch(typeof(IngameMenu), nameof(IngameMenu.Awake))]
     class MakeIngameMenuStatic
     {
@@ -521,7 +521,6 @@ namespace SubmersedVR
     }
 
 
-
     // Disable the last XRSettings.enabled branch by replacing it with false/0
     [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnUpdate))]
     public static class DisableVRLockMechanic
@@ -546,7 +545,7 @@ namespace SubmersedVR
         }
     }
 
-    // Disalbe LightBar stuff
+    // Disable LightBar stuff
     [HarmonyPatch(typeof(PlatformUtils), nameof(PlatformUtils.DimLightBar))]
     public static class NoDimLightBar {
         public static bool Prefix() {

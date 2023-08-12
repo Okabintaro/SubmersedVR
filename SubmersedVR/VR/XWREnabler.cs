@@ -13,10 +13,10 @@ using UXR = UnityEngine.XR;
 [HarmonyPatch(nameof(XRSettings.enabled), MethodType.Getter)]
 class XRSettingsEnabled
 {
+    public static bool isEnabled = UXR.XRSettings.enabled;
     public static bool Prefix(ref bool __result)
     {
-        __result = UXR.XRSettings.enabled;
-        // __result = false;
+        __result = XRSettingsEnabled.isEnabled;
         return false;
     }
 }

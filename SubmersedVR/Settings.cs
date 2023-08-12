@@ -157,5 +157,21 @@ namespace SubmersedVR
         }
     }
 
+    //XRSettings sets most of the graphics settings correctly for comfort but it still allows Ambient Occlusion to be set
+    //AO appears to only be updating in one eye at the moment so I am disabling it here until we can either
+    //default it to off in new installations or fix the issue with only one eye rendering
+    [HarmonyPatch(typeof(UwePostProcessingManager), nameof(UwePostProcessingManager.ApplySettingsToProfile))]
+    public static class FixGraphicsForVR
+    {
+        public static void Postfix(UwePostProcessingManager __instance)
+        {
+            __instance.SetAO(0);
+            //__instance.SetDof(0);
+            //__instance.SetSSR(0);
+            //__instance.SetMotionBlur(0);
+        }
+    }
+
+
     #endregion
 }
