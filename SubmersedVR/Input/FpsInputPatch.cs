@@ -89,7 +89,7 @@ namespace SubmersedVR
         }
     }
 
-    //Replace the existinng implementation with one that removes the check for event system focus 
+    //Replace the existing implementation with one that removes the check for event system focus 
     //Also fixes the problem with the cursor rendering behind UI elements
     [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.OnUpdate))]
     static class DontCheckForGameFocus

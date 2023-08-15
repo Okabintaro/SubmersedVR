@@ -164,19 +164,25 @@
             {
                "inputs" : {
                   "north" : {
-                     "output" : "/actions/subnautica/in/moveup"
+                     "output" : "/actions/subnautica/in/cyclenext"
+                  },
+                  "south" : {
+                     "output" : "/actions/subnautica/in/cycleprev"
                   }
-               },
-               "mode" : "trackpad",
+              },
+               "mode" : "dpad",
                "path" : "/user/hand/left/input/trackpad"
             },
             {
                "inputs" : {
+                  "north" : {
+                     "output" : "/actions/subnautica/in/uinexttab"
+                  },
                   "south" : {
-                     "output" : "/actions/subnautica/in/movedown"
+                     "output" : "/actions/subnautica/in/uiprevtab"
                   }
-               },
-               "mode" : "trackpad",
+              },
+               "mode" : "dpad",
                "path" : "/user/hand/left/input/trackpad"
             },
             {
@@ -235,20 +241,6 @@
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/subnautica/in/answer"
-                  }
-               },
-               "mode" : "button",
-               "parameters" : {
-                  "click_activate_threshold" : "0.1",
-                  "click_deactivate_threshold" : "0.05",
-                  "force_input" : "force"
-               },
-               "path" : "/user/hand/left/input/trackpad"
-            },
-            {
-               "inputs" : {
-                  "click" : {
                      "output" : "/actions/subnautica/in/openquickslotwheel"
                   }
                },
@@ -258,20 +250,6 @@
                   "click_deactivate_threshold" : "0.05"
                },
                "path" : "/user/hand/right/input/trackpad"
-            },
-            {
-               "inputs" : {
-                  "click" : {
-                     "output" : "/actions/subnautica/in/cyclenext"
-                  }
-               },
-               "mode" : "button",
-               "parameters" : {
-                  "click_activate_threshold" : "0.1",
-                  "click_deactivate_threshold" : "0.05",
-                  "force_input" : "force"
-               },
-               "path" : "/user/hand/left/input/trackpad"
             },
             {
                "inputs" : {

@@ -50,6 +50,8 @@ namespace SubmersedVR
         public float worldTargetDistance;
         public Transform rigParentTarget;
 
+        public bool photoRequested = false;
+
         public Camera UIControllerCamera
         {
             get
@@ -309,6 +311,25 @@ namespace SubmersedVR
             button.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 100);
             button.rectTransform.ForceUpdateRectTransforms();
             button.rectTransform.GetComponentsInChildren<RectTransform>().ForEach(rt => rt.ForceUpdateRectTransforms());
+
+            buttonPrefab = dialog.buttonPrefab;
+            button = Object.Instantiate(buttonPrefab, targetParent).GetComponent<uGUI_DialogButton>();
+            button.button.transform.parent = targetParent;
+            button.button.gameObject.gameObject.name = "ScreenshotButton";
+            button.text.text = "Photo";
+            button.button.onClick.RemoveAllListeners();
+            button.button.onClick.AddListener(() =>
+            {
+                photoRequested = true;
+            });
+            // Move it to the bottom right
+            button.rectTransform.anchoredPosition = new Vector2(780, 50);
+            button.rectTransform.pivot = new Vector2(1, 0);
+            button.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 150);
+            button.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 100);
+            button.rectTransform.ForceUpdateRectTransforms();
+            button.rectTransform.GetComponentsInChildren<RectTransform>().ForEach(rt => rt.ForceUpdateRectTransforms());
+
         }
 
         public IEnumerator SetupGameCameras()

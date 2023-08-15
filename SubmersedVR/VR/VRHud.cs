@@ -20,6 +20,11 @@ namespace SubmersedVR
         private static Canvas staticHudCanvas = null;
         // private static OffsetCalibrationTool calibrationTool;
 
+        public static void HideOverlays()
+        {
+            uGUI.main.overlays.gameObject.SetActive(false);
+            uGUI.main.hud.gameObject.SetActive(false);
+        }
         // TODO: Hud Distance needs dedicated canvas, since the Pips seem to assume the 1 meter canvas distance.
 #if false
         public static float hudDistance = 1.0f;
@@ -459,6 +464,7 @@ namespace SubmersedVR
         }
     }
 
+    //Make the pause menu a more comfortable scale
     [HarmonyPatch(typeof(IngameMenu), nameof(IngameMenu.Update))]
     class IngameMenu_Scale_Fixer
     {
@@ -467,6 +473,16 @@ namespace SubmersedVR
             __instance.transform.localScale = new Vector3(0.0013f , 0.0013f, 0.0013f);
             //__instance.transform.localPosition = SNCameraRoot.main.transform.forward * 1.5f;
        }
+    }
+    
+    //Make the builder menu a more comfortable scale
+    [HarmonyPatch(typeof(uGUI_BuilderMenu), nameof(uGUI_BuilderMenu.Update))]
+    class uGUI_BuilderMenu_Scale_Fixer
+    {
+        public static void Postfix(uGUI_BuilderMenu __instance)
+        {
+            __instance.transform.localScale = new Vector3(0.0013f , 0.0013f, 0.0013f);
+        }
     }
     
     //These next two functions eliminate the "squashed" HUD UI that comes from enabling XRSettings

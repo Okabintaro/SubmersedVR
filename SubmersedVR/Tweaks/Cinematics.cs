@@ -7,6 +7,8 @@ namespace SubmersedVR
 {
     extern alias SteamVRActions;
     extern alias SteamVRRef;
+
+    using UnityEngine.Playables;
     using UnityEngine.XR;
 
     // Tweaks regarding the cinematics in VR mode of the game
@@ -119,11 +121,13 @@ namespace SubmersedVR
                 && __instance.gameObject.name != "Takeoff" //Brace yourself on escape ship                                                                     
                 //&& __instance.gameObject.name != "Necklace_Scene_Placements" //Picking up the necklace (slot 0017) does nothing with InitDirectorFixer disabled. When skipped ends with PlayerCinematicController.SkipCinematic informGameObject = FrozenLeviathan_Necklace(Clone)
                 && __instance.gameObject.name != "IntroCinematics(Clone)";  //crash landing on planet  
+            
             if(__instance.gameObject.name == "seatruck_module_sleeper_anim")   
             {
                 skipAnimations = CinematicsVR.hasSlept;
                 CinematicsVR.hasSlept = !CinematicsVR.hasSlept;
-            }         
+            }     
+            
             Mod.logger.LogInfo($"{__instance.gameObject.name}.StartCinematicMode skipIntro = {skipIntro} skipAnimations = {skipAnimations} "); 
             //if (!__instance.playInVr && VRGameOptions.GetVrAnimationMode())
             if(skipIntro || skipAnimations)
@@ -208,43 +212,57 @@ namespace SubmersedVR
     {
         public static bool Prefix(PlayerCinematicController __instance, bool forceRestoreControl = false)
         {
+            Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 1");
             if (__instance.cinematicModeActive)
             {
+                Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 2");
                 if (__instance.IsInvoking("DoFailSafeCancel"))
                 {
+                    Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 3");
                     __instance.CancelInvoke("DoFailSafeCancel");
                 }
+                Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 4");
                 if (__instance.interruptAutoMove)
                 {
+                    Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 5");
                     GameInput.SetAutoMove(false);
                 }
+                Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 6");
                 if (__instance.animator != null && __instance.resetToCullCompletely)
                 {
+                    Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 7");
                     __instance.animator.cullingMode = AnimatorCullingMode.CullCompletely;
                 }
+                Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 8");
                 __instance.animState = false;
                 __instance.state = PlayerCinematicController.State.None;
                 if (__instance.player)
                 {
+                    Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 9");
                     __instance.player.playerController.SetEnabled(true);
                     __instance.player.cinematicModeActive = false;
                     __instance.player.UnfreezeStats();
                     if (!__instance.restoreControl && !forceRestoreControl)
                     {
+                        Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 10");
                         __instance.player.playerController.SetEnabled(false);
                     }
                     if (__instance.leftIKTarget || __instance.rightIKTarget)
                     {
+                        Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 11");
                         __instance.player.armsController.SetWorldIKTarget(null, null);
                     }
                 }
+                Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 12");
                 __instance.cinematicModeActive = false;
                 PlayerCinematicController.cinematicModeCount--;
                 HandReticle.main.UnrequestCrosshairHide();
                 if (__instance.rumbleCinematic)
                 {
+                    Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 13");
                     __instance.rumbleCinematic.Stop();
                 }
+                Mod.logger.LogInfo($"PlayerCinematicController.EndCinematicMode 14");
             }           
             
             return false;
@@ -256,17 +274,23 @@ namespace SubmersedVR
     {
         public static bool Prefix(PlayerCinematicController __instance)
         {
+            Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 1");
             if (__instance.cinematicModeActive && !__instance.onCinematicModeEndCall)
             {
+                Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 2");
                 if (__instance.director != null)
                 {
-                    __instance.director.played -= __instance.OnDirectorPlayed;
+                    Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 3");
+                   __instance.director.played -= __instance.OnDirectorPlayed;
                     __instance.director.stopped -= __instance.OnDirectorStopped;
                 }
+                Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 4");
                 if (__instance.player)
                 {
+                    Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 5");
                     __instance.UpdatePlayerPosition();
                 }
+                Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 6");
                 __instance.animState = false;
                 if (__instance.UseEndTransform())
                 {
@@ -274,6 +298,7 @@ namespace SubmersedVR
                     __instance.state = PlayerCinematicController.State.Out;
                     if (__instance.player)
                     {
+                        Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 7");
                         Transform component = __instance.player.GetComponent<Transform>();
                         __instance.playerFromPosition = component.position;
                         __instance.playerFromRotation = component.rotation;
@@ -281,21 +306,48 @@ namespace SubmersedVR
                 }
                 else
                 {
+                    Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 8");
                     __instance.EndCinematicMode(false);
                 }
+                Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 9");
                 if (__instance.informGameObject != null)
                 {
+                    Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 10");
                     __instance.onCinematicModeEndCall = true;
                     __instance.informGameObject.SendMessage("OnPlayerCinematicModeEnd", __instance, SendMessageOptions.DontRequireReceiver);
                     __instance.onCinematicModeEndCall = false;
                 }
                 if (__instance.player)
                 {
+                    Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 11");
                     __instance.player.playerController.ForceControllerSize();
                 }
+                Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 12");
             }
+            Mod.logger.LogInfo($"PlayerCinematicController.OnPlayerCinematicModeEnd 13");
            
             return false;
+        }
+    }
+*/
+/*
+    [HarmonyPatch(typeof(PlayableDirector), nameof(PlayableDirector.SetGenericBinding)) ]
+    public static class PlayableDirector_mod
+    {
+        public static bool Prefix(PlayableDirector __instance, Object key, Object value)
+        {
+            Mod.logger.LogInfo($"PlayableDirector.SetGenericBinding {key} {value}");
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayableDirector), nameof(PlayableDirector.Play), new[] {typeof(PlayableAsset), typeof(DirectorWrapMode)})]
+    public static class PlayableDirectorPlay_mod
+    {
+        public static bool Prefix(PlayableDirector __instance, PlayableAsset asset, DirectorWrapMode mode)
+        {
+            Mod.logger.LogInfo($"PlayableDirector.SetGenericBinding {asset.name} {mode}");
+            return true;
         }
     }
 */

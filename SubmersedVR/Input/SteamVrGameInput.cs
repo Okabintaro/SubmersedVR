@@ -55,10 +55,23 @@ namespace SubmersedVR
             }
 
             String actionName = button.ToString();
+            if(actionName == "TakePicture" && VRCameraRig.instance.photoRequested)
+            {
+                __result = true;
+                VRCameraRig.instance.photoRequested = false;
+                return false;
+            }
+            //Use the Sprint action as the Take Picture action when the player is not piloting a vehicle
+            if(actionName == "TakePicture" && !(Player.main?.currentMountedVehicle != null || (Player.main?.IsPiloting() == true)))
+            {
+                actionName = "Sprint";
+            }
+
             if(actionName == "Answer")
             {
                 actionName = "Deconstruct";
-            }          
+            }
+ 
             __result = SteamVR_Input.GetStateDown(actionName, SteamVR_Input_Sources.Any);
             return false;
         }
@@ -80,7 +93,7 @@ namespace SubmersedVR
             {
                 actionName = "Deconstruct";
             }          
-             __result = SteamVR_Input.GetStateUp(actionName, SteamVR_Input_Sources.Any);
+            __result = SteamVR_Input.GetStateUp(actionName, SteamVR_Input_Sources.Any);
             return false;
         }
     }
@@ -117,6 +130,7 @@ namespace SubmersedVR
             return false;
         }
     }
+
 
     // Make the game believe to be controllerd by controllers only
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAvailableDevices))]
