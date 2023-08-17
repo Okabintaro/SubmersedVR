@@ -180,6 +180,7 @@ namespace SubmersedVR
             return false;
         }
     }
+    
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateKeyboardAvailable))]
     public static class KeyboardNeverAvialable
     {
