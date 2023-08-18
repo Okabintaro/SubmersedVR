@@ -81,7 +81,7 @@ namespace SubmersedVR
             }
         }
     }
-    /*
+    
     [HarmonyPatch(typeof(Seaglide), nameof(Seaglide.Start))]
     public static class SeaglideAlphaFixer
     {
@@ -103,7 +103,7 @@ namespace SubmersedVR
             return true;
         }                
     }
-    */
+    
     #endregion
 
 }

@@ -98,6 +98,9 @@ namespace SubmersedVR
             bool skipIntro = __instance.gameObject.name == "IntroCinematics(Clone)" && VROptions.skipIntro;
             //Do not skip these or else actions won't happen or the story wont progress
             bool skipAnimations = !__instance.playInVr && VRGameOptions.GetVrAnimationMode() 
+                //&& __instance.gameObject.name != "model" //enter/exit base climbing ladder (breaks game)
+                && __instance.gameObject.name != "submarine_hatch_02_doorway_01_cin2" //enter/exit base through sub bay  
+                //&& __instance.gameObject.name != "hatch_side_anim" //enter/exit base through hatch (can be skipped)                          
                 && __instance.gameObject.name != "seatruck_anim" //enter/exit SeaTruck Motor section when not docked with base
                 && __instance.gameObject.name != "seatruck_module_prawn_anim" //enter/exit SeaTruck Prawn module
                 && __instance.gameObject.name != "seatruck_module_sleeper_anim" //when exiting the animation it puts the player on the ceiling and disables all input              

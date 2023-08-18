@@ -46,46 +46,70 @@ namespace SubmersedVR
         }
     }
 
-    //Add in the recentering  by using UnityEngine.XR InputTracking
-    [HarmonyPatch(typeof(VRUtil), nameof(VRUtil.Recenter))]
-    public class RecenterFix : MonoBehaviour
+    //Press F5 with the flatscreen window active to disable current WBOIT shaders
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateKeyInputs))]
+    public  class GameInputKeyTracker : MonoBehaviour
     {
-        public static bool Prefix()
+        public static void Postfix(GameInput __instance, bool useKeyboard, bool useController)
         {
-            /*
-            foreach (GameObject m in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+            //if(GameInput.lastInputPressed[(int)GameInput.lastDevice] != -1)
+            //{
+            //    Mod.logger.LogInfo($"GameInput.UpdateKeyInput called {GameInput.lastInputPressed[(int)GameInput.lastDevice]} ");
+            //}
+            if(GameInput.lastInputPressed[(int)GameInput.lastDevice] == 106) //F5 key
             {
-               
-                if (m.name.Equals("airsack_fish_geo"))
-                {
-                    foreach (SkinnedMeshRenderer r in m.GetAllComponentsInChildren<SkinnedMeshRenderer>())
-                    {
-                        foreach (Material mat in r.materials)
+                foreach (GameObject m in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+                {               
+                    //if (m.name.Equals("airsack_fish_geo"))
+                    //{
+                        foreach (SkinnedMeshRenderer r in m.GetAllComponentsInChildren<SkinnedMeshRenderer>())
                         {
-                            if (mat.shaderKeywords.Where(x => x.Equals("WBOIT")).Count() > 0)
+                            foreach (Material mat in r.materials)
                             {
-                                mat.DisableKeyword("WBOIT");
-                                //File.AppendAllText("VRTweaksLog.txt", "Shader Keyword Disabled" + Environment.NewLine);
+                                Mod.logger.LogInfo($"Gameobject {m.name} material {mat.name} {mat.renderQueue} {String.Join(", ", mat.shaderKeywords)} {mat.doubleSidedGI} {mat.color}");
+                                //if (mat.shaderKeywords.Where(x => x.Equals("WBOIT")).Count() > 0)
+                                //{
+                                    mat.DisableKeyword("WBOIT");
+                                    //File.AppendAllText("VRTweaksLog.txt", "Shader Keyword Disabled" + Environment.NewLine);
+                                //}
                             }
                         }
-                    }
+                    //}
+                    
                 }
-                
+                        
+                foreach (Material m in FindObjectsOfType(typeof(Material)) as Material[])
+                {
+                    Mod.logger.LogInfo($"Material {m.name} {String.Join(", ", m.shaderKeywords)}");
+                    m.DisableKeyword("WBOIT");
+                    //File.AppendAllText("VRTweaksLog.txt", m.name + " " + String.Join(", ", m.shaderKeywords) + Environment.NewLine);
+                }
+                             
+                Shader.DisableKeyword("WBOIT");
             }
-            */
-            /*
-            foreach (Material m in FindObjectsOfType(typeof(Material)) as Material[])
-            {
-                Mod.logger.LogInfo($"Material {m.name} {String.Join(", ", m.shaderKeywords)}");
-                m.DisableKeyword("WBOIT");
-                //File.AppendAllText("VRTweaksLog.txt", m.name + " " + String.Join(", ", m.shaderKeywords) + Environment.NewLine);
-            }
-            
-            //Shader.DisableKeyword("WBOIT");
-            */
+        }
+    }
+
+    //Add in the recentering  by using UnityEngine.XR InputTracking
+    [HarmonyPatch(typeof(VRUtil), nameof(VRUtil.Recenter))]
+    public static class RecenterFix
+    {
+        public static bool Prefix()
+        {           
             InputTracking.Recenter();
             return true;
         }
     }
-
+/*
+    //Quick build until ghost material can be fixed
+    [HarmonyPatch(typeof(Constructable), nameof(Constructable.GetConstructInterval))]
+    public static class AutoBuildFix
+    {
+        public static bool Prefix(Base __instance, ref float __result)
+        {           
+           __result = 0.05f;
+           return false;
+        }
+    }
+*/
 }

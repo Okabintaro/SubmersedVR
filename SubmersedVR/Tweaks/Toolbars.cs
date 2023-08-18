@@ -17,16 +17,18 @@ namespace SubmersedVR
     {
         public static void Postfix(uGUI_BuilderMenu __instance)
         {
-            
-            if (GameInput.GetButtonDown(GameInput.Button.UINextTab))
+            if(uGUI_BuilderMenu.IsOpen())
             {
-                int currentTab = (__instance.TabOpen + 1) % __instance.TabCount;
-                __instance.SetCurrentTab(currentTab);
-            }
-            if (GameInput.GetButtonDown(GameInput.Button.UIPrevTab))
-            {
-               int currentTab = (__instance.TabOpen - 1 + __instance.TabCount) % __instance.TabCount;
-                __instance.SetCurrentTab(currentTab);
+                if (GameInput.GetButtonDown(GameInput.Button.UINextTab))
+                {
+                    int currentTab = (__instance.TabOpen + 1) % __instance.TabCount;
+                    __instance.SetCurrentTab(currentTab);
+                }
+                if (GameInput.GetButtonDown(GameInput.Button.UIPrevTab))
+                {
+                int currentTab = (__instance.TabOpen - 1 + __instance.TabCount) % __instance.TabCount;
+                    __instance.SetCurrentTab(currentTab);
+                }
             }
        }
     }
@@ -37,16 +39,18 @@ namespace SubmersedVR
     {
         public static void Postfix(uGUI_PDA __instance)
         {
-            
-            if (GameInput.GetButtonDown(GameInput.Button.UINextTab))
+            if(Player.main.GetPDA().isInUse)
             {
-                int currentTabIndex = (__instance.currentTabs.IndexOf(__instance.tabOpen) + 1) % __instance.currentTabs.Count;
-                __instance.OpenTab( __instance.currentTabs[currentTabIndex]);
-            }
-            if (GameInput.GetButtonDown(GameInput.Button.UIPrevTab))
-            {
-                 int currentTabIndex = (__instance.currentTabs.IndexOf(__instance.tabOpen) - 1 + __instance.currentTabs.Count) % __instance.currentTabs.Count;
-                __instance.OpenTab( __instance.currentTabs[currentTabIndex]);
+                if (GameInput.GetButtonDown(GameInput.Button.UINextTab))
+                {
+                    int currentTabIndex = (__instance.currentTabs.IndexOf(__instance.tabOpen) + 1) % __instance.currentTabs.Count;
+                    __instance.OpenTab( __instance.currentTabs[currentTabIndex]);
+                }
+                if (GameInput.GetButtonDown(GameInput.Button.UIPrevTab))
+                {
+                    int currentTabIndex = (__instance.currentTabs.IndexOf(__instance.tabOpen) - 1 + __instance.currentTabs.Count) % __instance.currentTabs.Count;
+                    __instance.OpenTab( __instance.currentTabs[currentTabIndex]);
+                }
             }
        }
     }
