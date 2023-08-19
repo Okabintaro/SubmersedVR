@@ -46,6 +46,10 @@
       <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\FMODUnity.dll</HintPath>
     </Reference>
 
+    <Reference Include="Unity.Timeline" Publicize="true">
+      <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\Unity.Timeline.dll</HintPath>
+    </Reference>
+
     <!-- SteamVR + SteamVR Actions: Currenlty prebuilt, should be built from source later -->
     <Reference Include="SteamVR">
       <HintPath>SteamVR/SteamVR.dll</HintPath>

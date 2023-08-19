@@ -228,7 +228,7 @@ namespace SubmersedVR
             Vector3 oldPos = camera.transform.position;
             transform.position = oldPos;
             vrCamera.transform.parent = this.transform;
-        }
+       }
 
         public void StealUICamera(Camera camera, bool fromGame = false)
         {

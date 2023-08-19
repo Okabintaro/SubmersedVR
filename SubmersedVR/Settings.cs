@@ -152,7 +152,7 @@ namespace SubmersedVR
     {
         static bool Prefix(ref bool __result)
         {
-            __result = !VROptions.enableCinematics;
+            __result = false;//!VROptions.enableCinematics;
             return false;
         }
     }
