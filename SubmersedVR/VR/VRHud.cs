@@ -386,6 +386,34 @@ namespace SubmersedVR
         }
     }
 
+    [HarmonyPatch(typeof(uGUI_PlayerDeath), nameof(uGUI_PlayerDeath.Start))]
+    public static class ScaleDeath
+    {
+        public static void Postfix(uGUI_PlayerDeath __instance)
+        {
+             __instance.blackOverlay.transform.localScale = new Vector3(10f, 10f, 10f);
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_Overlays), nameof(uGUI_Overlays.Awake))]
+    public static class ScaleOverlays
+    {
+        public static void Postfix(uGUI_Overlays __instance)
+        {
+            __instance.gameObject.transform.localScale = new Vector3(10f, 10f, 10f);
+        }
+    }
+
+    [HarmonyPatch(typeof(EndCreditsManager), nameof(EndCreditsManager.Update))]
+    public static class ScaleEndCredits
+    {
+        public static void Postfix(EndCreditsManager __instance)
+        {
+             __instance.gameObject.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+        }
+    }
+
+
     [HarmonyPatch(typeof(uGUI_Pings), nameof(uGUI_Pings.IsVisibleNow))]
     public static class HidePingsWhenHudOff
     {

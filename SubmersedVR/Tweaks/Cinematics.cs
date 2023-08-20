@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Collections;
 using UWE;
 using System;
-using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using UWEXR;
@@ -38,7 +37,7 @@ namespace SubmersedVR
         public static void Postfix(PlayerCinematicController __instance)
         {
             string text = "vr_active";
-            Mod.logger.LogInfo($"PlayerCinematicController.SetVrActiveParam called animationMode={VRGameOptions.GetVrAnimationMode()}");
+            //Mod.logger.LogInfo($"PlayerCinematicController.SetVrActiveParam called animationMode={VRGameOptions.GetVrAnimationMode()}");
             bool vrAnimationMode = VRGameOptions.GetVrAnimationMode();
             if (__instance.animator != null)
             {
@@ -52,6 +51,32 @@ namespace SubmersedVR
                     component.ForwardAnimationParameterBool(text, vrAnimationMode);
                 }
             }
+        }
+    }
+
+    //Disabled cinematic sequences no longer control the player's head rotation greatly reducing nausea affect of cinematics
+    [HarmonyPatch(typeof(PlayerCinematicController), nameof(PlayerCinematicController.UpdatePlayerPosition))]
+    public static class ManagedLateUpdateFixer
+    {
+        public static bool Prefix(PlayerCinematicController __instance)
+        {
+            Transform component = __instance.player.GetComponent<Transform>();
+            Transform component2 = MainCameraControl.main.GetComponent<Transform>();
+            component.position = __instance.animatedTransform.position;
+            component2.position = __instance.player.camAnchor.position;
+        
+            //disabling head rotation for these cinematics do not work well           
+            bool enableRotation = __instance.gameObject.name == "seatruck_module_sleeper_anim" //going to sleep
+                || __instance.gameObject.name == "submarine_hatch_02_doorway_01_cin2" //entering base through the seatruck bay hatch
+                || __instance.gameObject.name == "Top_Left_Collision"   //going down the ladder at the radio tower
+                || __instance.gameObject.name == "Top_Right_Collision";  //going down the ladder at the radio tower
+            if(enableRotation || VROptions.enableCinematics)
+            {
+                component.rotation = __instance.animatedTransform.rotation;
+                component2.rotation = __instance.animatedTransform.rotation;
+            }
+		
+            return false;
         }
     }
 
@@ -86,12 +111,14 @@ namespace SubmersedVR
                 }
                 return false;
             }
+
             Mod.logger.LogInfo($"StartCinematicMode name = {__instance.gameObject.name} playInVR = {__instance.playInVr} cinematicsEnabled = {VROptions.enableCinematics} "); 
             bool canSkip = __instance.gameObject.name == "Drop_Pod_anim" 
-                        || __instance.gameObject.name == "precursor_teleporter_cin"
-                        || __instance.gameObject.name == "model"; 
+                        //|| __instance.gameObject.name == "model"
+                        || __instance.gameObject.name == "precursor_teleporter_cin"; 
             bool mustSkip = __instance.gameObject.name == "IntroCinematics(Clone)" && VROptions.skipIntro
                         || __instance.gameObject.name == "Necklace_Scene_Placements";
+
             __instance.player = null;
             if ((!__instance.playInVr && !VROptions.enableCinematics && canSkip) || mustSkip )
             {

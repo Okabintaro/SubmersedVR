@@ -169,6 +169,8 @@ namespace SubmersedVR
             //__instance.SetDof(0);
             //__instance.SetSSR(0);
             //__instance.SetMotionBlur(0);
+             MiscSettings.cameraBobbing = VROptions.enableCinematics; 
+
         }
     }
 
