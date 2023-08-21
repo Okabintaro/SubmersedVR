@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace SubmersedVR
 {
@@ -142,6 +143,35 @@ namespace SubmersedVR
         public static void Postfix(uGUI_OptionsPanel __instance)
         {
             Settings.AddMenu(__instance);
+        }
+    }
+
+    // The next two function add back in the ability to toggle fullscreen on the flatscreen display.
+    [HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.AddGeneralTab))]
+    static class ReAddFullscreenOption
+    {
+        public static void Postfix(uGUI_OptionsPanel __instance)
+        {
+			__instance.AddToggleOption(__instance.tabs.Count - 1, "Fullscreen", Screen.fullScreen, new UnityAction<bool>(__instance.OnFullscreenChanged), null);
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.OnScreenChanged))]
+    static class OnScreenChangedFixer
+    {
+        public static bool Prefix(uGUI_OptionsPanel __instance)
+        {
+            if (__instance.AreDisplayOptionsEnabled() && __instance.resolutionOption)
+            {
+                __instance.resolutionOption.value = uGUI_OptionsPanel.GetCurrentResolutionIndex(__instance.resolutions);
+                __instance.toApply.Remove(uGUI_OptionsPanel.Change.Resolution);
+            }
+            if(__instance.hFovSlider != null)
+            {
+                __instance.OnVFovChanged(MiscSettings.fieldOfView);  
+            } 
+
+            return false;    
         }
     }
 

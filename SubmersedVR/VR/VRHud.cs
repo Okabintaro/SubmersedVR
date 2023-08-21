@@ -413,6 +413,15 @@ namespace SubmersedVR
         }
     }
 
+    [HarmonyPatch(typeof(uGUI_ExpansionIntro), nameof(uGUI_ExpansionIntro.Start))]
+    public static class ScaleuGUI_ExpansionIntro
+    {
+        public static void Postfix(uGUI_ExpansionIntro __instance)
+        {
+             __instance.gameObject.transform.localScale = new Vector3(1.4f, 1.4f, 1.4f);
+        }
+    }
+
 
     [HarmonyPatch(typeof(uGUI_Pings), nameof(uGUI_Pings.IsVisibleNow))]
     public static class HidePingsWhenHudOff

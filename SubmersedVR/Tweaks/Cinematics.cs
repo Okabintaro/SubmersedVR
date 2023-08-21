@@ -67,6 +67,7 @@ namespace SubmersedVR
         
             //disabling head rotation for these cinematics do not work well           
             bool enableRotation = __instance.gameObject.name == "seatruck_module_sleeper_anim" //going to sleep
+                || __instance.gameObject.name == "IntroCinematics(Clone)" //Planet crash landing
                 || __instance.gameObject.name == "submarine_hatch_02_doorway_01_cin2" //entering base through the seatruck bay hatch
                 || __instance.gameObject.name == "Top_Left_Collision"   //going down the ladder at the radio tower
                 || __instance.gameObject.name == "Top_Right_Collision";  //going down the ladder at the radio tower
