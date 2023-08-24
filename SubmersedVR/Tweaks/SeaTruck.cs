@@ -9,7 +9,7 @@ namespace SubmersedVR
     extern alias SteamVRRef;
     using UnityEngine.XR;
 
-    // Tweaks regarding the cinematics in VR mode of the game
+    // Tweaks regarding the seatruck in VR mode of the game
     static class SeaTruckVR
     {
 

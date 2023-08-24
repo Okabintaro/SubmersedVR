@@ -6,7 +6,7 @@ namespace SubmersedVR
     extern alias SteamVRActions;
     extern alias SteamVRRef;
  
-    // Tweaks regarding the cinematics in VR mode of the game
+    // Tweaks regarding the hoverbike in VR mode of the game
     static class HoverbikeVR
     {
 

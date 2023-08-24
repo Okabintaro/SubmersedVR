@@ -50,6 +50,9 @@
     <Reference Include="Unity.Timeline" Publicize="true">
       <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\Unity.Timeline.dll</HintPath>
     </Reference>
+    <Reference Include="UWE.EditorModifications" Publicize="true">
+      <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\UWE.EditorModifications.dll</HintPath>
+    </Reference>
 
     <!-- SteamVR + SteamVR Actions: Currenlty prebuilt, should be built from source later -->
     <Reference Include="SteamVR">

@@ -114,11 +114,11 @@ namespace SubmersedVR
             }
 
             Mod.logger.LogInfo($"StartCinematicMode name = {__instance.gameObject.name} playInVR = {__instance.playInVr} cinematicsEnabled = {VROptions.enableCinematics} "); 
-            bool canSkip = __instance.gameObject.name == "Drop_Pod_anim" 
+            bool canSkip = __instance.gameObject.name == "Drop_Pod_anim" //entering/exiting the drop pod
                         //|| __instance.gameObject.name == "model"
-                        || __instance.gameObject.name == "precursor_teleporter_cin"; 
-            bool mustSkip = __instance.gameObject.name == "IntroCinematics(Clone)" && VROptions.skipIntro
-                        || __instance.gameObject.name == "Necklace_Scene_Placements";
+                        || __instance.gameObject.name == "precursor_teleporter_cin"; //after going through the teleporter in the end sequences
+            bool mustSkip = __instance.gameObject.name == "IntroCinematics(Clone)" && VROptions.skipIntro //The intro
+                        || __instance.gameObject.name == "Necklace_Scene_Placements"; //picking up Sam's necklace
 
             __instance.player = null;
             if ((!__instance.playInVr && !VROptions.enableCinematics && canSkip) || mustSkip )

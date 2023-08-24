@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SubmersedVR
 {
-    // Tweaks regarding the cinematics in VR mode of the game
+    // Tweaks regarding the toolbars in VR mode of the game
     static class ToolbarsVR
     {
 

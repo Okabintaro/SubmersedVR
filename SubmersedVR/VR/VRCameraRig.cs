@@ -554,6 +554,18 @@ namespace SubmersedVR
         }
     }
 
+    //https://github.com/elliotttate/VRTweaks/blob/master/VRTweaks/CameraPositionFixes.cs
+    [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnLateUpdate))]
+    public static class PlayerPositionFixer
+    {
+         static bool Prefix(MainCameraControl __instance)
+        {
+            __instance.cameraUPTransform.localPosition
+                = new Vector3(__instance.cameraUPTransform.localPosition.x, __instance.cameraUPTransform.localPosition.y, 0f);
+            return false;
+        }
+    }
+
     // Disable the XRSettings.enabled to disable HandReticle Patch
     [HarmonyPatch(typeof(HandReticle), nameof(HandReticle.LateUpdate))]
     public static class DisableHandReticleVR

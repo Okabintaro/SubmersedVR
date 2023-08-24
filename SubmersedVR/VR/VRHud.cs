@@ -551,8 +551,19 @@ namespace SubmersedVR
             XRSettingsEnabled.isEnabled = true;
         }
     }
-
-
+/*
+    [HarmonyPatch(typeof(PlayerMask))]
+    [HarmonyPatch("Start")]
+    internal static class PlayerMask_Start_Patch
+    {
+        static bool Prefix(PlayerMask __instance)
+        {
+            Debug.Log($"[ExtraFov] __instance is {__instance.referenceFov}");
+            //__instance.referenceFov += 200.0f;
+            return true;
+        }
+    }
+*/
     #endregion
 
 }
