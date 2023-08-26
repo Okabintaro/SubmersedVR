@@ -52,6 +52,13 @@ namespace SubmersedVR
 
         public bool photoRequested = false;
 
+        float yVelocity = 0.0f;
+
+        //Using these booleans instead of doing a component lookup during Update() calls
+        public bool isPilotingSeaTruck = false;
+        public bool isPilotingSnowbike = false;
+        public bool isPilotingExosuit = false;
+
         public Camera UIControllerCamera
         {
             get
@@ -346,12 +353,42 @@ namespace SubmersedVR
         public void LateUpdate()
         {
             // Move the camera rig to the player each frame and rotate the uiRig accordingly
-            // TODO: This probably has to be changed for roomscale tracking.
-            // Right now if you move too far away from the center, you will rotate the camera with the center as a pivot.
             if (rigParentTarget != null)
             {
                 this.transform.SetPositionAndRotation(rigParentTarget.position, rigParentTarget.rotation);
                 uiRig.transform.rotation = transform.rotation;
+                //Move the body to whereever the head is
+                if(uGUI_SpyPenguin.main.activePenguin == false)
+                {
+                    RecenterBodyOnCameraOrientation(35f, 0.3f, 3.0f, 1.5f);  
+
+                    float zOffset = isPilotingSeaTruck || isPilotingExosuit ? -0.2f : -0.08f;                 
+                    float yOffset = isPilotingSeaTruck || isPilotingExosuit ? -0.2f : -0.1f;    
+                    if(Player.main._cinematicModeActive == false)  
+                    {
+                        Player.main.armsController.transform.position = SNCameraRoot.main.mainCamera.transform.position + (SNCameraRoot.main.mainCamera.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
+                    }           
+                }
+            }
+        }
+
+        //If the camera turns more than a certain degree (more than the head can normally turn on a human body without rotating the shoulders) then
+        //rotate the body quickly to prevent the "Exorcist" head rotation
+        //If the camera is slightly rotated away from the body direction then very slowly turn the body to center with the head
+        public void RecenterBodyOnCameraOrientation(float leewayAngle, float duration, float secondaryLeewayAngle, float secondaryDuration)
+        {
+            float cameraYRot = SNCameraRoot.main.mainCamera.transform.rotation.eulerAngles.y;
+            float bodyYRot = Player.main.armsController.transform.rotation.eulerAngles.y;
+            float diff = Mathf.DeltaAngle(cameraYRot, bodyYRot);
+            if(Mathf.Abs(diff) > leewayAngle)
+            {
+                float yAngle = Mathf.SmoothDampAngle(bodyYRot, cameraYRot + (leewayAngle * Mathf.Sign(diff)), ref yVelocity, duration);
+                Player.main.armsController.transform.rotation = Quaternion.Euler( new Vector3(0f, yAngle, 0f));
+            }
+            else if(Mathf.Abs(diff) > secondaryLeewayAngle)
+            {
+                float yAngle = Mathf.SmoothDampAngle(bodyYRot, cameraYRot + (secondaryLeewayAngle * Mathf.Sign(diff)), ref yVelocity, secondaryDuration);
+                Player.main.armsController.transform.rotation = Quaternion.Euler( new Vector3(0f, yAngle, 0f));
             }
         }
 
@@ -374,6 +411,35 @@ namespace SubmersedVR
     }
 
     #region Patches
+
+    [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnLateUpdate))]
+    public static class PlayerPositionFixer
+    {
+         static bool Prefix(MainCameraControl __instance)
+        {
+            float zOffset = 0.0f;
+            float yOffset = 0.0f;
+            if(VRCameraRig.instance?.isPilotingSeaTruck == true)
+            {
+                zOffset = 0.2f + Settings.SeaTruckZOffset;
+                yOffset = 0.2f + Settings.SeaTruckYOffset;
+            }
+            else if(VRCameraRig.instance?.isPilotingSnowbike == true)
+            {
+                zOffset = 0.07f + Settings.SnowBikeZOffset;
+                yOffset = 0.2f + Settings.SnowBikeYOffset;
+            }
+            else if(VRCameraRig.instance?.isPilotingExosuit == true)
+            {
+                zOffset = 0.1f + Settings.ExosuitZOffset;
+                yOffset = 0.2f + Settings.ExosuitYOffset;
+            }
+
+            __instance.cameraUPTransform.localPosition = new Vector3(__instance.cameraUPTransform.localPosition.x, yOffset, zOffset);
+            //__instance.cameraUPTransform.localRotation = Quaternion.Euler( new Vector3(0.0f, 0.0f, 0.0f));
+            return false;
+        }
+    }
 
     // Create the Rig together with the uGUI Prefab
     [HarmonyPatch(typeof(uGUI), nameof(uGUI.Awake))]
@@ -551,18 +617,6 @@ namespace SubmersedVR
             return new CodeMatcher(instructions).End().MatchBack(false, new CodeMatch[] {
                 new CodeMatch(ci => ci.Calls(typeof(XRSettings).GetProperty(nameof(XRSettings.enabled)).GetGetMethod()))
             }).ThrowIfNotMatch("Could not find last thingy").SetInstruction(new CodeInstruction(OpCodes.Ldc_I4_0)).InstructionEnumeration();
-        }
-    }
-
-    //https://github.com/elliotttate/VRTweaks/blob/master/VRTweaks/CameraPositionFixes.cs
-    [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnLateUpdate))]
-    public static class PlayerPositionFixer
-    {
-         static bool Prefix(MainCameraControl __instance)
-        {
-            __instance.cameraUPTransform.localPosition
-                = new Vector3(__instance.cameraUPTransform.localPosition.x, __instance.cameraUPTransform.localPosition.y, 0f);
-            return false;
         }
     }
 

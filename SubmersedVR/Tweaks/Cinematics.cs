@@ -54,6 +54,7 @@ namespace SubmersedVR
         }
     }
 
+
     //Disabled cinematic sequences no longer control the player's head rotation greatly reducing nausea affect of cinematics
     [HarmonyPatch(typeof(PlayerCinematicController), nameof(PlayerCinematicController.UpdatePlayerPosition))]
     public static class ManagedLateUpdateFixer
@@ -84,6 +85,7 @@ namespace SubmersedVR
     //Fixes PDA being offset after an animated climb/exit/etc
     //Bypassing the compiled code disables the system hand animation override during the cinematic. 
     //Might be better to somehow reset hands at the end instead?
+    /*
     [HarmonyPatch(typeof(PlayerCinematicController), nameof(PlayerCinematicController.InitDirector))]
     public static class InitDirectorFixer
     {
@@ -92,14 +94,24 @@ namespace SubmersedVR
             return false;
         }
     }
+    
 
+    [HarmonyPatch(typeof(PlayerCinematicController), nameof(PlayerCinematicController.OnDirectorStopped))]
+    public static class StoppedDirectorFixer
+    {
+        public static void Postfix(PlayerCinematicController __instance)
+        {
+            VRHands.instance.ResetHandTargets();
+        }
+    }
+    */
     //Enable specific cinematics to be bypassed
     [HarmonyPatch(typeof(PlayerCinematicController), nameof(PlayerCinematicController.StartCinematicMode))]
     public static class StartCinematicModeFixer
     {
         public static bool Prefix(PlayerCinematicController __instance, Player setplayer)
         {
-
+            VRUtil.Recenter();
             if (__instance.debug)
             {
                 Debug.Log(__instance.gameObject.name + ".StartCinematicMode");

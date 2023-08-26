@@ -2,10 +2,7 @@ using HarmonyLib;
 using UnityEngine;
 
 namespace SubmersedVR
-{
-    extern alias SteamVRActions;
-    extern alias SteamVRRef;
- 
+{ 
     // Tweaks regarding the hoverbike in VR mode of the game
     static class HoverbikeVR
     {

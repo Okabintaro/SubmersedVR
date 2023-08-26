@@ -1,14 +1,8 @@
 using HarmonyLib;
 using UnityEngine;
-using System.Collections;
-using UWE;
 
 namespace SubmersedVR
 {
-    extern alias SteamVRActions;
-    extern alias SteamVRRef;
-    using UnityEngine.XR;
-
     // Tweaks regarding the spy penguin in VR mode of the game
     static class SpyPenguinVR
     {
@@ -54,6 +48,26 @@ namespace SubmersedVR
             }
             //disables penguin camera tilt from rough terrain
             __instance.meshObject.transform.localRotation = Quaternion.Euler(new Vector3(0f,  __instance.meshObject.transform.localRotation.y, 0f));
+        }
+    }
+
+    [HarmonyPatch(typeof(SpyPenguin), nameof(SpyPenguin.EnablePenguinCam))]
+    public static class SpyPenguinHideBodyFix
+    {
+        public static void Postfix(SpyPenguin __instance)
+        {
+            //Mod.logger.LogInfo($"SpyPenguin.EnablePenguinCam called");
+            VRHands.instance.SetBodyRendering(true);
+        }
+    }
+
+    [HarmonyPatch(typeof(SpyPenguin), nameof(SpyPenguin.DisablePenguinCam))]
+    public static class SpyPenguinShowBodyFix
+    {
+        public static void Postfix(SpyPenguin __instance)
+        {
+            //Mod.logger.LogInfo($"SpyPenguin.DisablePenguinCam called");
+            VRHands.instance.UpdateBody();
         }
     }
    

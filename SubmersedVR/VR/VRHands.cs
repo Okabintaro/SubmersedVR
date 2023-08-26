@@ -108,13 +108,13 @@ namespace SubmersedVR
         public Transform leftTarget;
         public Transform rightTarget;
 
-        public Transform leftHand;
-        public Transform rightHand;
-        public Transform leftElbow;
-        public Transform rightElbow;
+        //public Transform leftHand;
+        //public Transform rightHand;
+        //public Transform leftElbow;
+        //public Transform rightElbow;
 
-        private Vector3 leftElbowOffset;
-        private Vector3 rightElbowOffset;
+        //private Vector3 leftElbowOffset;
+        //private Vector3 rightElbowOffset;
 
         public static VRHands instance;
 
@@ -122,34 +122,29 @@ namespace SubmersedVR
 
         public void Setup(FullBodyBipedIK ik)
         {
-            this.ik = ik;
-            leftHand = ik.solver.leftHandEffector.bone;
-            rightHand = ik.solver.rightHandEffector.bone;
-            leftElbow = leftHand.parent;
-            rightElbow = rightHand.parent;
-            leftHand.parent = leftElbow.parent;
-            rightHand.parent = rightElbow.parent;
+            instance = this;
 
+            Settings.FullBodyChanged -= OnFullBodyChanged;
+            Settings.FullBodyChanged += OnFullBodyChanged;
+
+            this.ik = ik;
             var camRig = VRCameraRig.instance;
             leftTarget = camRig.leftHandTarget.transform;
             rightTarget = camRig.rightHandTarget.transform;
-
-            leftElbowOffset = leftElbow.transform.position - leftHand.transform.position;
-            rightElbowOffset = rightElbow.transform.position - rightHand.transform.position;
-
             ResetHandTargets();
-            StartCoroutine(DisableBodyRendering());
 
-            var laserPointer = VRCameraRig.instance.laserPointerUI.transform;
+            var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true);
+            foreach (var bodyRenderer in bodyRenderers)
+            {
+                Mod.logger.LogInfo($"bodyRenderer {bodyRenderer.name}");
+            }
 
-            // var calibrationTool = new OffsetCalibrationTool(rightTarget, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
-            // calibrationTool.enabled = Settings.IsDebugEnabled;
-            // Settings.IsDebugChanged += (enabled) =>
-            // {
-            //     calibrationTool.enabled = enabled;
-            // };
+            UpdateBody();
+        }
 
-            instance = this;
+        public static void OnFullBodyChanged(bool val)
+        {
+            VRUtil.Recenter();
         }
 
         public void ResetHandTargets()
@@ -169,7 +164,7 @@ namespace SubmersedVR
 
         void Update()
         {
-            if (ik.enabled)
+            if (ik.enabled && uGUI_SpyPenguin.main.activePenguin == false)
             {
                 ik.solver.leftHandEffector.target = leftTarget;
                 ik.solver.rightHandEffector.target = rightTarget;
@@ -178,44 +173,40 @@ namespace SubmersedVR
 
         void LateUpdate()
         {
-            // Hand/controller tracking without IK
-            if (this.ik.enabled)
-            {
-                // TODO: Add back experimental IK behind an option
-                return;
-            }
-
-            // Move the hands to the targets which are attached to the controllers
-            leftHand.transform.SetPositionAndRotation(leftTarget.position, leftTarget.rotation);
-            rightHand.transform.SetPositionAndRotation(rightTarget.position, rightTarget.rotation);
-
-            // Reset Elbows
-            leftElbow.transform.SetPositionAndRotation(leftHand.position, leftHand.rotation);
-            rightElbow.transform.SetPositionAndRotation(rightHand.position, rightHand.rotation);
-            leftElbow.localScale = Vector3.zero;
-            rightElbow.localScale = Vector3.zero;
         }
 
-        // TODO: Proper patch/fix, this doesnt need to run each 2 seconds
-        IEnumerator DisableBodyRendering()
+        public void UpdateBody()
         {
-            while (true)
+           StartCoroutine(UpdateBodyRendering());
+        }
+
+        public void SetBodyRendering(bool val)
+        {
+            var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("body") || r.name.Contains("vest"));
+            bodyRenderers.ForEach(r => r.enabled = val);
+        }
+
+        // Retries until changes have actually been made
+        IEnumerator UpdateBodyRendering()
+        {
+            bool retry = true;
+            while (retry)
             {
-                // Extend globes BoundingBox to fight culling
-                transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true).Where(m => m.name.Contains("glove") || m.name.Contains("hands")).ForEach(
-                mr =>
-                {
-                    var newBounds = new Bounds(Vector3.zero, new Vector3(3.0f, 3.0f, 3.0f));
-                    mr.localBounds = newBounds;
-                    mr.allowOcclusionWhenDynamic = false;
-                    // TODO: This actually fixes the culling, but still not sure why the bbox doesn't work
-                    mr.updateWhenOffscreen = true;
-                });
-                // Disable body rendering
+                Mod.logger.LogInfo($"UpdateBodyRendering {Settings.FullBody}");
+
                 var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("body") || r.name.Contains("vest"));
-                bodyRenderers.ForEach(r => r.enabled = false);
-                yield return new WaitForSeconds(2.0f);
+                foreach (var bodyRenderer in bodyRenderers)
+                {
+                    if(bodyRenderer.enabled == Settings.FullBody)
+                    {
+                        retry = false;
+                    }
+                    bodyRenderer.enabled = Settings.FullBody;
+                }
+
+                yield return new WaitForSeconds(0.5f);
             }
+
         }
 
         internal void OnToolEquipped(PlayerTool tool)
@@ -228,6 +219,15 @@ namespace SubmersedVR
 
     #region Patches
 
+    [HarmonyPatch(typeof(IngameMenu), nameof(IngameMenu.Close))]
+    class IngameMenu_Update_Body
+    {
+        public static void Postfix(IngameMenu __instance)
+        {
+           VRHands.instance.UpdateBody();
+        }
+    }
+ 
     // TODO: Move/cleanup this
     [HarmonyPatch(typeof(ArmsController), nameof(ArmsController.Start))]
     public class VRPlayerCreate : MonoBehaviour
@@ -236,8 +236,9 @@ namespace SubmersedVR
         [HarmonyPostfix]
         public static void Postfix(ArmsController __instance)
         {
+            Mod.logger.LogInfo($"ArmsController.Start called");
             // Disable IK
-            __instance.ik.enabled = false;
+            __instance.ik.enabled = true;
             __instance.leftAim.aimer.enabled = false;
             __instance.rightAim.aimer.enabled = false;
 

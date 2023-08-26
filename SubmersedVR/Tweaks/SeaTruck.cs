@@ -1,14 +1,7 @@
 using HarmonyLib;
-using UnityEngine;
-using System.Collections;
-using UWE;
 
 namespace SubmersedVR
 {
-    extern alias SteamVRActions;
-    extern alias SteamVRRef;
-    using UnityEngine.XR;
-
     // Tweaks regarding the seatruck in VR mode of the game
     static class SeaTruckVR
     {
