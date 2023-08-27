@@ -12,15 +12,14 @@ namespace SubmersedVR
     #region Patches
 
 
-    //Get rid of the white overlay which is supposed to be a camera flash but was showing up in the photo.
-    //If we figure out why UI items are not being hidden for photos we could put this back in if it 
-    //gets scaled up significantly to cover the full screen
+    //Scale up the white camera flash overlay to cover the full screen
     [HarmonyPatch(typeof(uGUI_SpyPenguin), nameof(uGUI_SpyPenguin.OnSelfieTaken))]
     public static class SpyPenguinFix
     {
-        public static bool Prefix()
+        public static bool Prefix(uGUI_SpyPenguin __instance)
         {
-            return false;
+            __instance.cameraFlash.transform.localScale = new Vector3(3, 3, 3);
+            return true;
         }
     }
 
@@ -57,6 +56,7 @@ namespace SubmersedVR
         public static void Postfix(SpyPenguin __instance)
         {
             //Mod.logger.LogInfo($"SpyPenguin.EnablePenguinCam called");
+            VRHands.OnFullBodyChanged(true);
             VRHands.instance.SetBodyRendering(true);
         }
     }
@@ -67,10 +67,21 @@ namespace SubmersedVR
         public static void Postfix(SpyPenguin __instance)
         {
             //Mod.logger.LogInfo($"SpyPenguin.DisablePenguinCam called");
+            VRHands.OnFullBodyChanged(Settings.FullBody);
             VRHands.instance.UpdateBody();
         }
     }
    
+    //Dont show the selfie border
+    [HarmonyPatch(typeof(uGUI_SpyPenguinSelfieBorder), nameof(uGUI_SpyPenguinSelfieBorder.Show))]
+    public static class SpyPenguinCameraBorderFix
+    {
+        public static bool Prefix(SpyPenguinCameraScreenFXController __instance)
+        {
+            return false;
+        }
+    }
+
     #endregion
 
 }

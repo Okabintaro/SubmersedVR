@@ -57,24 +57,30 @@ namespace SubmersedVR
             switch (tool)
             {
                 case FireExtinguisher _: return new TransformOffset(new Vector3(0.062f, 0.077f, -0.148f), new Vector3(40.736f, 139.849f, 249.888f));
-                case Seaglide _: return new TransformOffset(new Vector3(0.055f, 0.101f, -0.125f), new Vector3(24.986f, 153.649f, 265.740f));
+                case Seaglide _: return new TransformOffset(new Vector3(0.219f, -0.182f, -0.167f), new Vector3(32.169f, 184.419f, 283.909f));
+                //case Seaglide _: return new TransformOffset(new Vector3(0.223f, -0.164f, -0.009f), new Vector3(43.114f, 176.128f, 278.686f));
                 case Gravsphere _: return new TransformOffset(new Vector3(-0.010f, 0.114f, -0.125f), new Vector3(10.485f, 158.948f, 244.422f));
                 case DeployableStorage _: return new TransformOffset(new Vector3(0.017f, 0.099f, -0.135f), new Vector3(27.633f, 159.160f, 251.929f));
                 case Constructor _: return new TransformOffset(new Vector3(0.042f, 0.076f, -0.166f), new Vector3(53.635f, 151.667f, 249.508f));
                 case LEDLight _: return new TransformOffset(new Vector3(0.051f, 0.113f, -0.122f), new Vector3(20.287f, 157.143f, 262.503f));
-                case Knife _: return new TransformOffset(new Vector3(0.008f, 0.095f, -0.115f), new Vector3(17.193f, 162.033f, 250.308f));
-                case FlashLight _: return new TransformOffset(new Vector3(0.011f, 0.125f, -0.123f), new Vector3(18.573f, 162.636f, 247.017f));
+                //case Knife _: return new TransformOffset(new Vector3(0.008f, 0.095f, -0.115f), new Vector3(17.193f, 162.033f, 250.308f));
+                case HeatBlade _: return new TransformOffset(new Vector3(-0.020f, -0.029f, -0.087f), new Vector3(22.524f, 166.383f, 239.124f));
+                case FlashLight _: return new TransformOffset(new Vector3(-0.030f, -0.083f, -0.076f), new Vector3(9.447f, 176.207f, 244.878f));
                 case Beacon _: return new TransformOffset(new Vector3(0.006f, 0.137f, -0.165f), new Vector3(31.791f, 151.351f, 242.064f));
                 case StasisRifle _: return new TransformOffset(new Vector3(0.013f, 0.091f, -0.155f), new Vector3(32.203f, 147.266f, 237.102f));
-                case PropulsionCannonWeapon _: return new TransformOffset(new Vector3(0.001f, 0.078f, -0.169f), new Vector3(36.510f, 148.234f, 231.454f));
-                case BuilderTool _: return new TransformOffset(new Vector3(0.042f, 0.090f, -0.129f), new Vector3(30.567f, 155.533f, 258.169f));
+                case PropulsionCannonWeapon _: return new TransformOffset(new Vector3(-0.004f, 0.044f, -0.069f), new Vector3(11.417f, 171.608f, 248.110f));
+                case BuilderTool _: return new TransformOffset(new Vector3(0.016f, 0.007f, -0.118f), new Vector3(25.544f, 172.357f, 265.022f));
                 case AirBladder _: return new TransformOffset(new Vector3(-0.032f, 0.090f, -0.133f), new Vector3(7.689f, 145.798f, 224.260f));
-                case DiveReel _: return new TransformOffset(new Vector3(-0.019f, 0.096f, -0.119f), new Vector3(14.196f, 148.834f, 238.635f));
-                case Welder _: return new TransformOffset(new Vector3(0.002f, 0.110f, -0.140f), new Vector3(23.999f, 153.807f, 241.427f));
-                case ScannerTool _: return new TransformOffset(new Vector3(0.006f, 0.109f, -0.149f), new Vector3(25.775f, 145.925f, 236.092f));
-                case LaserCutter _: return new TransformOffset(new Vector3(-0.017f, 0.123f, -0.133f), new Vector3(17.726f, 151.261f, 233.612f));
-                case Flare _: return new TransformOffset(new Vector3(0.019f, 0.088f, -0.134f), new Vector3(31.170f, 153.374f, 244.228f));
+                case Welder _: return new TransformOffset(new Vector3(-0.016f, -0.012f, -0.086f), new Vector3(23.497f, 167.336f, 260.079f));
+                case ScannerTool _: return new TransformOffset(new Vector3(-0.002f, -0.040f, -0.166f), new Vector3(14.030f, 156.253f, 232.438f));
+                case LaserCutter _: return new TransformOffset(new Vector3(-0.009f, 0.033f, -0.122f), new Vector3(21.491f, 166.349f, 253.114f));
+                case Flare _: return new TransformOffset(new Vector3(0.022f, 0.011f, -0.099f), new Vector3(31.626f, 164.053f, 248.553f));
                 case RepulsionCannon _: return new TransformOffset(new Vector3(-0.002f, 0.088f, -0.166f), new Vector3(33.777f, 149.093f, 232.610f));
+                case SpyPenguinRemote _: return new TransformOffset(new Vector3(0.068f, 0.017f, -0.152f), new Vector3(41.231f, 162.007f, 265.876f));
+                case SpyPenguinPlayerTool _: return new TransformOffset(new Vector3(0.197f, -0.180f, 0.071f), new Vector3(46.797f, 201.137f, 294.992f));
+                case DiveReel _: return new TransformOffset(new Vector3(-0.001f, 0.047f, -0.110f), new Vector3(9.566f, 159.896f, 238.425f));
+                case TeleportationTool _: return new TransformOffset(new Vector3(0.244f, 0.004f, -0.092f), new Vector3(58.865f, 183.560f, 275.236f));
+                case MetalDetector _: return new TransformOffset(new Vector3(0.000f, -0.010f, -0.097f), new Vector3(44.755f, 166.304f, 242.307f));
                 default: return RightHand;
             };
         }
@@ -108,13 +114,12 @@ namespace SubmersedVR
         public Transform leftTarget;
         public Transform rightTarget;
 
-        //public Transform leftHand;
-        //public Transform rightHand;
-        //public Transform leftElbow;
-        //public Transform rightElbow;
-
-        //private Vector3 leftElbowOffset;
-        //private Vector3 rightElbowOffset;
+        public Transform leftHand;
+        public Transform rightHand;
+        public Transform origLeftHand;
+        public Transform origRightHand;
+        public Transform leftElbow;
+        public Transform rightElbow;
 
         public static VRHands instance;
 
@@ -123,28 +128,79 @@ namespace SubmersedVR
         public void Setup(FullBodyBipedIK ik)
         {
             instance = this;
-
+            this.ik = ik;
+ 
             Settings.FullBodyChanged -= OnFullBodyChanged;
             Settings.FullBodyChanged += OnFullBodyChanged;
 
-            this.ik = ik;
+
             var camRig = VRCameraRig.instance;
             leftTarget = camRig.leftHandTarget.transform;
             rightTarget = camRig.rightHandTarget.transform;
+
+            leftHand = ik.solver.leftHandEffector.bone;
+            rightHand = ik.solver.rightHandEffector.bone;
+            origLeftHand = ik.solver.leftHandEffector.bone;
+            origRightHand = ik.solver.rightHandEffector.bone;
+            leftElbow = leftHand.parent;
+            rightElbow = rightHand.parent;
+ 
+            SetHandParents(ik.enabled);
+
             ResetHandTargets();
 
-            var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true);
-            foreach (var bodyRenderer in bodyRenderers)
-            {
-                Mod.logger.LogInfo($"bodyRenderer {bodyRenderer.name}");
-            }
-
             UpdateBody();
+
+            
+            var calibrationTool = new OffsetCalibrationTool(rightTarget, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
+            calibrationTool.enabled = Settings.IsDebugEnabled;
+            Settings.IsDebugChanged += (enabled) =>
+            {
+                 calibrationTool.enabled = enabled;
+            };
+            
+        }
+
+        public void SetHandParents(bool fullbody)
+        {
+            if( fullbody)
+            {
+                leftElbow.localScale = Vector3.one;
+                rightElbow.localScale = Vector3.one;
+
+                leftHand.parent = leftElbow;
+                rightHand.parent = rightElbow;
+            
+                //leftHand.transform.SetPositionAndRotation(origLeftHand.position, origLeftHand.rotation);
+                //rightHand.transform.SetPositionAndRotation(origRightHand.position, origRightHand.rotation);
+            }
+            else
+            {
+                transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true).Where(m => m.name.Contains("glove") || m.name.Contains("hands")).ForEach(
+                mr =>
+                {
+                    var newBounds = new Bounds(Vector3.zero, new Vector3(3.0f, 3.0f, 3.0f));
+                    mr.localBounds = newBounds;
+                    mr.allowOcclusionWhenDynamic = false;
+                    // TODO: This actually fixes the culling, but still not sure why the bbox doesn't work
+                    mr.updateWhenOffscreen = true;
+                });
+
+                leftHand.parent = leftElbow.parent;
+                rightHand.parent = rightElbow.parent;
+                
+                leftElbow.localScale = Vector3.zero;
+                rightElbow.localScale =  Vector3.zero;
+                
+            }
+            //Mod.logger.LogInfo($"SetHandParents {ik.enabled} {leftScale} {rightScale} {leftElbow.localScale} {rightElbow.localScale}");
+
         }
 
         public static void OnFullBodyChanged(bool val)
         {
-            VRUtil.Recenter();
+            VRHands.instance.ik.enabled = val;
+            VRHands.instance.SetHandParents(val);
         }
 
         public void ResetHandTargets()
@@ -173,10 +229,26 @@ namespace SubmersedVR
 
         void LateUpdate()
         {
+            if(!ik.enabled && uGUI_SpyPenguin.main.activePenguin == false)
+            {
+                leftHand.transform.SetPositionAndRotation(leftTarget.position, leftTarget.rotation);
+                rightHand.transform.SetPositionAndRotation(rightTarget.position, rightTarget.rotation);
+
+                // Reset Elbows
+                leftElbow.transform.SetPositionAndRotation(leftHand.position, leftHand.rotation);
+                rightElbow.transform.SetPositionAndRotation(rightHand.position, rightHand.rotation);
+
+            }
         }
 
         public void UpdateBody()
-        {
+        {            
+            //var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true);
+            //foreach (var bodyRenderer in bodyRenderers)
+            //{
+            //    Mod.logger.LogInfo($"bodyRenderer {bodyRenderer.name}");
+            //}
+
            StartCoroutine(UpdateBodyRendering());
         }
 
@@ -238,7 +310,7 @@ namespace SubmersedVR
         {
             Mod.logger.LogInfo($"ArmsController.Start called");
             // Disable IK
-            __instance.ik.enabled = true;
+            __instance.ik.enabled = Settings.FullBody;
             __instance.leftAim.aimer.enabled = false;
             __instance.rightAim.aimer.enabled = false;
 
@@ -248,14 +320,30 @@ namespace SubmersedVR
         }
     }
 
+/*
+    [HarmonyPatch(typeof(ArmsController), nameof(ArmsController.Update))]
+    public static class DisableSwimmingAnimation
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ArmsController __instance)
+        {
+            //SafeAnimator.SetBool(__instance.animator, "is_underwater", false);
+        }
+    }
+*/
     // Reconfigure the aiming
     [HarmonyPatch(typeof(ArmsController), nameof(ArmsController.Reconfigure))]
     public static class ChangeAimAngleForTools
     {
         [HarmonyPostfix]
-        public static void Postfix(PlayerTool tool)
+        public static void Postfix(ArmsController __instance, PlayerTool tool)
         {
             VRHands.instance?.OnToolEquipped(tool);
+            if(!__instance.pda.isInUse)
+            {
+                VRHands.instance.ik.solver.GetBendConstraint(FullBodyBipedChain.LeftArm).bendGoal =  Player.main.armsController.defaultLeftArmBendGoal;  
+            }
+
         }
     }
 

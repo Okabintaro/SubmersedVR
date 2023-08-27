@@ -270,6 +270,10 @@ namespace SubmersedVR
                 camera.transform.localPosition = Vector3.zero; //new Vector3(0.0f, 2.0f, 0.0f);
                 camera.transform.localRotation = Quaternion.identity;
 
+                //should work for hiding ui during screenshots but it doesnt
+                //var obj = camera.gameObject.AddComponent<HideForScreenshots>();
+                //obj.type = HideForScreenshots.HideType.HUD;
+
                 // Set all canvas scalers to static, which makes UI better usable
                 FindObjectsOfType<uGUI_CanvasScaler>().Where(obj => !obj.name.Contains("PDA")).ForEach(cs => cs.vrMode = uGUI_CanvasScaler.Mode.Static);
                 SetupPDA();
@@ -367,6 +371,7 @@ namespace SubmersedVR
                     if(Player.main._cinematicModeActive == false)  
                     {
                         Player.main.armsController.transform.position = SNCameraRoot.main.mainCamera.transform.position + (SNCameraRoot.main.mainCamera.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
+                        //Player.main.armsController.transform.position = MainCameraControl.main.transform.position + (MainCameraControl.main.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
                     }           
                 }
             }
@@ -378,6 +383,7 @@ namespace SubmersedVR
         public void RecenterBodyOnCameraOrientation(float leewayAngle, float duration, float secondaryLeewayAngle, float secondaryDuration)
         {
             float cameraYRot = SNCameraRoot.main.mainCamera.transform.rotation.eulerAngles.y;
+            //float cameraYRot = MainCameraControl.main.transform.rotation.eulerAngles.y;
             float bodyYRot = Player.main.armsController.transform.rotation.eulerAngles.y;
             float diff = Mathf.DeltaAngle(cameraYRot, bodyYRot);
             if(Mathf.Abs(diff) > leewayAngle)

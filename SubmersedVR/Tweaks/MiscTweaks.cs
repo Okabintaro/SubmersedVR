@@ -68,6 +68,10 @@ namespace SubmersedVR
             }
             if(GameInput.lastInputPressed[(int)GameInput.lastDevice] == 106) //F5 key
             {
+                foreach (HideForScreenshots hideForScreenshots in UnityEngine.Object.FindObjectsOfType<HideForScreenshots>())
+                {
+                    Mod.logger.LogInfo($"HideForScreenshots {hideForScreenshots.type} {hideForScreenshots.name} {hideForScreenshots.tag} {hideForScreenshots.enabled}");
+                }           
             }
         }
     }

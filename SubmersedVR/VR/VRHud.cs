@@ -564,6 +564,26 @@ namespace SubmersedVR
         }
     }
 */
+    
+    //turn off the uicamera during screenshots
+    [HarmonyPatch(typeof(HideForScreenshots), nameof(HideForScreenshots.Hide))]
+    public static class HideForScreenshotsFix
+    {
+        public static void Postfix(HideForScreenshots __instance, HideForScreenshots.HideType hide)
+        {
+            Mod.logger.LogInfo($"HideForScreenshots.Hide called {hide}");
+            //HideForScreenshots.HideType.ViewModel is included for InGameMenu. Dont want to hide UI for that.
+            if((hide & HideForScreenshots.HideType.HUD) == HideForScreenshots.HideType.HUD && (hide & HideForScreenshots.HideType.ViewModel) == 0)
+            {
+                VRCameraRig.instance.uiCamera.enabled = false;
+            }
+            else if(hide == HideForScreenshots.HideType.None)
+            {
+                VRCameraRig.instance.uiCamera.enabled = true;
+            }  
+        }
+    }
+
     #endregion
 
 }
