@@ -72,7 +72,7 @@ namespace SubmersedVR
                 case HeatBlade _: return new TransformOffset(new Vector3(0.011f, 0.074f, -0.134f), new Vector3(34.705f, 171.102f, 254.320f));
                 case Knife _: return new TransformOffset(new Vector3(0.011f, 0.074f, -0.134f), new Vector3(34.705f, 171.102f, 254.320f));
                 case FlashLight _: return new TransformOffset(new Vector3(-0.043f, 0.077f, -0.147f), new Vector3(13.952f, 173.934f, 243.317f));
-                case Beacon _: return new TransformOffset(new Vector3(0.006f, 0.137f, -0.165f), new Vector3(31.791f, 151.351f, 242.064f));
+                case Beacon _: return new TransformOffset(new Vector3(-0.056f, 0.065f, -0.166f), new Vector3(45.693f, 162.076f, 253.284f));
                 case StasisRifle _: return new TransformOffset(new Vector3(0.013f, 0.091f, -0.155f), new Vector3(32.203f, 147.266f, 237.102f));
                 case PropulsionCannonWeapon _: return new TransformOffset(new Vector3(-0.048f, 0.108f, -0.157f), new Vector3(11.552f, 167.761f, 242.069f));
                 case BuilderTool _: return new TransformOffset(new Vector3(-0.015f, 0.071f, -0.115f), new Vector3(23.094f, 171.526f, 256.598f)); 
@@ -159,14 +159,14 @@ namespace SubmersedVR
 
             UpdateBody();
 
-            
+            /*
             var calibrationTool = new OffsetCalibrationTool(rightTarget, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
             calibrationTool.enabled = Settings.IsDebugEnabled;
             Settings.IsDebugChanged += (enabled) =>
             {
                  calibrationTool.enabled = enabled;
             };
-            
+            */
         }
 
         public void SetHandParents(bool fullbody)
