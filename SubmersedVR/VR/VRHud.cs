@@ -571,7 +571,8 @@ namespace SubmersedVR
     {
         public static void Postfix(HideForScreenshots __instance, HideForScreenshots.HideType hide)
         {
-            Mod.logger.LogInfo($"HideForScreenshots.Hide called {hide}");
+            //Mod.logger.LogInfo($"HideForScreenshots.Hide called {hide}");
+            
             //HideForScreenshots.HideType.ViewModel is included for InGameMenu. Dont want to hide UI for that.
             if((hide & HideForScreenshots.HideType.HUD) == HideForScreenshots.HideType.HUD && (hide & HideForScreenshots.HideType.ViewModel) == 0)
             {

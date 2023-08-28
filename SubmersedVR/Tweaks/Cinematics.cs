@@ -85,7 +85,7 @@ namespace SubmersedVR
     //Fixes PDA being offset after an animated climb/exit/etc
     //Bypassing the compiled code disables the system hand animation override during the cinematic. 
     //Might be better to somehow reset hands at the end instead?
-    /*
+    
     [HarmonyPatch(typeof(PlayerCinematicController), nameof(PlayerCinematicController.InitDirector))]
     public static class InitDirectorFixer
     {
@@ -104,7 +104,7 @@ namespace SubmersedVR
             VRHands.instance.ResetHandTargets();
         }
     }
-    */
+    
     //Enable specific cinematics to be bypassed
     [HarmonyPatch(typeof(PlayerCinematicController), nameof(PlayerCinematicController.StartCinematicMode))]
     public static class StartCinematicModeFixer

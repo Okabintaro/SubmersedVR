@@ -1,3 +1,4 @@
+
 using HarmonyLib;
 using UnityEngine;
 using System.Collections;
@@ -25,6 +26,11 @@ namespace SubmersedVR
         {
             Pos = transform.localPosition;
             Angles = transform.localEulerAngles;
+        }
+        public TransformOffset(Transform transform, Vector3 pos, Vector3 angles) : this()
+        {
+            Pos = transform.localPosition - pos;
+            Angles = transform.localEulerAngles - angles;
         }
 
         public Vector3 Pos { get; }
@@ -57,30 +63,31 @@ namespace SubmersedVR
             switch (tool)
             {
                 case FireExtinguisher _: return new TransformOffset(new Vector3(0.062f, 0.077f, -0.148f), new Vector3(40.736f, 139.849f, 249.888f));
-                case Seaglide _: return new TransformOffset(new Vector3(0.219f, -0.182f, -0.167f), new Vector3(32.169f, 184.419f, 283.909f));
-                //case Seaglide _: return new TransformOffset(new Vector3(0.223f, -0.164f, -0.009f), new Vector3(43.114f, 176.128f, 278.686f));
-                case Gravsphere _: return new TransformOffset(new Vector3(-0.010f, 0.114f, -0.125f), new Vector3(10.485f, 158.948f, 244.422f));
+                case Seaglide _: return new TransformOffset(new Vector3(0.032f, 0.004f, -0.122f), new Vector3(63.358f, 183.803f, 289.671f));
+                case Gravsphere _: return new TransformOffset(new Vector3(-0.022f, 0.049f, -0.179f), new Vector3(46.409f, 158.708f, 255.986f));
                 case DeployableStorage _: return new TransformOffset(new Vector3(0.017f, 0.099f, -0.135f), new Vector3(27.633f, 159.160f, 251.929f));
                 case Constructor _: return new TransformOffset(new Vector3(0.042f, 0.076f, -0.166f), new Vector3(53.635f, 151.667f, 249.508f));
                 case LEDLight _: return new TransformOffset(new Vector3(0.051f, 0.113f, -0.122f), new Vector3(20.287f, 157.143f, 262.503f));
                 //case Knife _: return new TransformOffset(new Vector3(0.008f, 0.095f, -0.115f), new Vector3(17.193f, 162.033f, 250.308f));
-                case HeatBlade _: return new TransformOffset(new Vector3(-0.020f, -0.029f, -0.087f), new Vector3(22.524f, 166.383f, 239.124f));
-                case FlashLight _: return new TransformOffset(new Vector3(-0.030f, -0.083f, -0.076f), new Vector3(9.447f, 176.207f, 244.878f));
+                case HeatBlade _: return new TransformOffset(new Vector3(0.011f, 0.074f, -0.134f), new Vector3(34.705f, 171.102f, 254.320f));
+                case Knife _: return new TransformOffset(new Vector3(0.011f, 0.074f, -0.134f), new Vector3(34.705f, 171.102f, 254.320f));
+                case FlashLight _: return new TransformOffset(new Vector3(-0.043f, 0.077f, -0.147f), new Vector3(13.952f, 173.934f, 243.317f));
                 case Beacon _: return new TransformOffset(new Vector3(0.006f, 0.137f, -0.165f), new Vector3(31.791f, 151.351f, 242.064f));
                 case StasisRifle _: return new TransformOffset(new Vector3(0.013f, 0.091f, -0.155f), new Vector3(32.203f, 147.266f, 237.102f));
-                case PropulsionCannonWeapon _: return new TransformOffset(new Vector3(-0.004f, 0.044f, -0.069f), new Vector3(11.417f, 171.608f, 248.110f));
-                case BuilderTool _: return new TransformOffset(new Vector3(0.016f, 0.007f, -0.118f), new Vector3(25.544f, 172.357f, 265.022f));
+                case PropulsionCannonWeapon _: return new TransformOffset(new Vector3(-0.048f, 0.108f, -0.157f), new Vector3(11.552f, 167.761f, 242.069f));
+                case BuilderTool _: return new TransformOffset(new Vector3(-0.015f, 0.071f, -0.115f), new Vector3(23.094f, 171.526f, 256.598f)); 
                 case AirBladder _: return new TransformOffset(new Vector3(-0.032f, 0.090f, -0.133f), new Vector3(7.689f, 145.798f, 224.260f));
-                case Welder _: return new TransformOffset(new Vector3(-0.016f, -0.012f, -0.086f), new Vector3(23.497f, 167.336f, 260.079f));
-                case ScannerTool _: return new TransformOffset(new Vector3(-0.002f, -0.040f, -0.166f), new Vector3(14.030f, 156.253f, 232.438f));
-                case LaserCutter _: return new TransformOffset(new Vector3(-0.009f, 0.033f, -0.122f), new Vector3(21.491f, 166.349f, 253.114f));
+                case Welder _: return new TransformOffset(new Vector3(0.003f, 0.061f, -0.174f), new Vector3(38.321f, 165.592f, 251.612f));
+                case ScannerTool _: return new TransformOffset(new Vector3(-0.001f, -0.010f, -0.208f), new Vector3(57.830f, 141.500f, 218.863f));
+                //case ScannerTool _: return new TransformOffset(new Vector3(0.003f, 0.030f, -0.212f), new Vector3(46.895f, 169.689f, 261.732f));
+                case LaserCutter _: return new TransformOffset(new Vector3(0.006f, 0.062f, -0.165f), new Vector3(36.058f, 166.251f, 252.623f));
                 case Flare _: return new TransformOffset(new Vector3(0.022f, 0.011f, -0.099f), new Vector3(31.626f, 164.053f, 248.553f));
                 case RepulsionCannon _: return new TransformOffset(new Vector3(-0.002f, 0.088f, -0.166f), new Vector3(33.777f, 149.093f, 232.610f));
-                case SpyPenguinRemote _: return new TransformOffset(new Vector3(0.068f, 0.017f, -0.152f), new Vector3(41.231f, 162.007f, 265.876f));
-                case SpyPenguinPlayerTool _: return new TransformOffset(new Vector3(0.197f, -0.180f, 0.071f), new Vector3(46.797f, 201.137f, 294.992f));
-                case DiveReel _: return new TransformOffset(new Vector3(-0.001f, 0.047f, -0.110f), new Vector3(9.566f, 159.896f, 238.425f));
-                case TeleportationTool _: return new TransformOffset(new Vector3(0.244f, 0.004f, -0.092f), new Vector3(58.865f, 183.560f, 275.236f));
-                case MetalDetector _: return new TransformOffset(new Vector3(0.000f, -0.010f, -0.097f), new Vector3(44.755f, 166.304f, 242.307f));
+                case SpyPenguinRemote _: return new TransformOffset(new Vector3(0.061f, 0.032f, -0.167f), new Vector3(42.475f, 164.059f, 267.806f));
+                case SpyPenguinPlayerTool _: return new TransformOffset(new Vector3(0.040f, 0.046f, -0.168f), new Vector3(50.492f, 198.253f, 291.693f));
+                case DiveReel _: return new TransformOffset(new Vector3(0.013f, 0.036f, -0.144f), new Vector3(49.622f, 154.604f, 231.200f));
+                case TeleportationTool _: return new TransformOffset(new Vector3(0.048f, 0.016f, -0.172f), new Vector3(59.271f, 178.526f, 272.862f));
+                case MetalDetector _: return new TransformOffset(new Vector3(-0.012f, 0.052f, -0.166f), new Vector3(44.017f, 172.117f, 247.519f));
                 default: return RightHand;
             };
         }
@@ -89,17 +96,18 @@ namespace SubmersedVR
         {
             switch (tool)
             {
-                case BuilderTool _: return new TransformOffset(new Vector3(-0.021f, -0.040f, 0.030f), new Vector3(73.312f, 342.306f, 323.270f));
-                case ScannerTool _: return new TransformOffset(new Vector3(0.008f, -0.106f, -0.016f), new Vector3(73.923f, 62.973f, 42.123f));
+                case BuilderTool _: return new TransformOffset(new Vector3(-0.021f, -0.040f, 0.030f), new Vector3(73.312f, 2.306f, 323.270f));
+                //case ScannerTool _: return new TransformOffset(new Vector3(0.003f, 0.030f, -0.212f) + new Vector3(-0.014f, -0.031f, 0.008f), new Vector3(1.183f, -13.063f, -28.934f) - new Vector3(46.895f, 169.689f, 261.732f) );
                 case FireExtinguisher _: return new TransformOffset(new Vector3(0.003f, -0.101f, -0.054f), new Vector3(64.181f, 10.062f, 346.755f));
-                case Seaglide _: return new TransformOffset(new Vector3(0.003f, -0.101f, -0.054f), new Vector3(64.181f, 10.062f, 346.755f));
+                //case Seaglide _: return new TransformOffset(new Vector3(0.003f, -0.101f, -0.054f), new Vector3(64.181f, 10.062f, 346.755f));
                 case RepulsionCannon _: return new TransformOffset(new Vector3(-0.014f, -0.083f, 0.024f), new Vector3(13.596f, 352.247f, 315.238f));
+                //case PropulsionCannonWeapon _: return new TransformOffset(new Vector3(-0.014f, -0.083f, 0.024f), new Vector3(13.596f, 352.247f, 315.238f));
                 case StasisRifle _: return new TransformOffset(new Vector3(-0.037f, -0.073f, 0.039f), new Vector3(44.380f, 349.016f, 309.364f));
-                case FlashLight _: return new TransformOffset(new Vector3(-0.029f, -0.024f, 0.074f), new Vector3(74.684f, 27.358f, 341.475f));
-                case DiveReel _: return new TransformOffset(new Vector3(0.020f, -0.105f, -0.084f), new Vector3(80.062f, 36.462f, 346.389f));
-                case Welder _: return new TransformOffset(new Vector3(-0.028f, -0.017f, 0.056f), new Vector3(59.356f, 350.101f, 303.392f));
-                case LaserCutter _: return new TransformOffset(new Vector3(-0.014f, -0.042f, 0.068f), new Vector3(60.953f, 4.267f, 316.030f));
-                case HeatBlade _: return new TransformOffset(new Vector3(-0.016f, 0.033f, 0.004f), new Vector3(65.781f, 19.633f, 267.986f));
+                //case FlashLight _: return new TransformOffset(new Vector3(-0.029f, -0.024f, 0.074f), new Vector3(74.684f, 27.358f, 341.475f));
+                //case DiveReel _: return new TransformOffset(new Vector3(0.020f, -0.105f, -0.084f), new Vector3(80.062f, 36.462f, 346.389f));
+                //case Welder _: return new TransformOffset(new Vector3(-0.028f, -0.017f, 0.056f), new Vector3(59.356f, 350.101f, 303.392f));
+                //case LaserCutter _: return new TransformOffset(new Vector3(-0.014f, -0.042f, 0.068f), new Vector3(60.953f, 4.267f, 316.030f));
+                //case HeatBlade _: return new TransformOffset(new Vector3(-0.016f, 0.033f, 0.004f), new Vector3(65.781f, 19.633f, 267.986f));
                 case LEDLight _: return new TransformOffset(new Vector3(-0.021f, 0.005f, -0.008f), new Vector3(63.596f, 40.279f, 283.758f));
                 default: return VRCameraRig.DefaultTargetTransform;
             };
