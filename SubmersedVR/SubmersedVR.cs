@@ -56,17 +56,25 @@ namespace SubmersedVR
 
         private void Awake()
         {
-            if (!IsSetupValid())
-            {
-                return;
-            }
-
             logger = Logger;
             Harmony harmony = new Harmony(PluginInfo.PLUGIN_GUID);
-            harmony.PatchAll();
-            Logger.LogInfo($"{PluginInfo.PLUGIN_NAME} loaded and patches applied!");
-            VROptions.gazeBasedCursor = true;
-            VROptions.aimRightArmWithHead = false;
+            if (!IsSetupValid())
+            {
+                //harmony.PatchAll(typeof(ConstructableMaterialFixer));
+                //harmony.PatchAll(typeof(VFXOverlayMaterialFixer));
+                //harmony.PatchAll(typeof(RebuildCommandBufferFixer));
+                //harmony.PatchAll(typeof(CreateRenderTargets_Patch));
+                //harmony.PatchAll(typeof(VerifyRenderTargets_Patch));
+                               
+                Logger.LogInfo($"{PluginInfo.PLUGIN_NAME} loaded in non-VR mode with specific patches applied!");
+            }
+            else
+            {
+                harmony.PatchAll();
+                Logger.LogInfo($"{PluginInfo.PLUGIN_NAME} loaded and patches applied!");
+                VROptions.gazeBasedCursor = true;
+                VROptions.aimRightArmWithHead = false;
+            }
 
             instance = this;
         }

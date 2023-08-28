@@ -105,7 +105,25 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/a"
+               "path" : "/user/hand/right/input/thumbstick"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/subnautica/in/jump"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/thumbstick"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/subnautica/in/sprint"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/thumbstick"
             },
             {
                "inputs" : {
@@ -122,7 +140,7 @@
                      "output" : "/actions/subnautica/in/uicancel"
                   }
                },
-               "mode" : "toggle_button",
+               "mode" : "button",
                "path" : "/user/hand/right/input/b"
             },
             {
@@ -146,19 +164,25 @@
             {
                "inputs" : {
                   "north" : {
-                     "output" : "/actions/subnautica/in/moveup"
+                     "output" : "/actions/subnautica/in/cyclenext"
+                  },
+                  "south" : {
+                     "output" : "/actions/subnautica/in/cycleprev"
                   }
-               },
-               "mode" : "trackpad",
+              },
+               "mode" : "dpad",
                "path" : "/user/hand/left/input/trackpad"
             },
             {
                "inputs" : {
+                  "north" : {
+                     "output" : "/actions/subnautica/in/uinexttab"
+                  },
                   "south" : {
-                     "output" : "/actions/subnautica/in/movedown"
+                     "output" : "/actions/subnautica/in/uiprevtab"
                   }
-               },
-               "mode" : "trackpad",
+              },
+               "mode" : "dpad",
                "path" : "/user/hand/left/input/trackpad"
             },
             {
@@ -226,20 +250,6 @@
                   "click_deactivate_threshold" : "0.05"
                },
                "path" : "/user/hand/right/input/trackpad"
-            },
-            {
-               "inputs" : {
-                  "click" : {
-                     "output" : "/actions/subnautica/in/jump"
-                  }
-               },
-               "mode" : "button",
-               "parameters" : {
-                  "click_activate_threshold" : "0.1",
-                  "click_deactivate_threshold" : "0.05",
-                  "force_input" : "force"
-               },
-               "path" : "/user/hand/left/input/trackpad"
             },
             {
                "inputs" : {

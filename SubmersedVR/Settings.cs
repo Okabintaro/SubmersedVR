@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace SubmersedVR
 {
@@ -32,6 +33,15 @@ namespace SubmersedVR
         public static bool PutBarsOnWrist;
         public static event BooleanChanged PutBarsOnWristChanged;
 
+        public static bool FullBody;
+        public static event BooleanChanged FullBodyChanged;
+
+        public static float SeaTruckZOffset = 0.0f;
+        public static float SeaTruckYOffset = 0.0f;
+        public static float SnowBikeZOffset = 0.0f;
+        public static float SnowBikeYOffset = 0.0f;
+        public static float ExosuitZOffset = 0.0f;
+        public static float ExosuitYOffset = 0.0f;
         // public static float HudDistance = 1.0f;
         // public static event FloatChanged HudDistanceChanged;
 
@@ -84,7 +94,16 @@ namespace SubmersedVR
                 }
             });
 
+            panel.AddHeading(tab, "Comfort");
+            panel.AddSliderOption(tab, "SeaTruck Pilot Position Offset", SeaTruckZOffset, -0.4f, 0.4f, SeaTruckZOffset, 0.01f, (value) => { SeaTruckZOffset = value; }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, "SeaTruck Pilot Height Offset", SeaTruckYOffset, -0.4f, 0.4f, SeaTruckYOffset, 0.01f, (value) => { SeaTruckYOffset = value; }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, "Prawn Suit Position Offset", ExosuitZOffset, -0.4f, 0.4f, ExosuitZOffset, 0.01f, (value) => { ExosuitZOffset = value; }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, "Prawn Suit Height Offset", ExosuitYOffset, -0.4f, 0.4f, ExosuitYOffset, 0.01f, (value) => { ExosuitYOffset = value; }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, "Snowbike Seated Position Offset", SnowBikeZOffset, -0.4f, 0.4f, SnowBikeZOffset, 0.01f, (value) => { SnowBikeZOffset = value; }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, "Snowbike Seated Height Offset", SnowBikeYOffset, -0.2f, 0.4f, SnowBikeYOffset, 0.01f, (value) => { SnowBikeYOffset = value; }, SliderLabelMode.Float, "0.00");
+        
             panel.AddHeading(tab, "Experimental");
+            panel.AddToggleOption(tab, "Full body", FullBody, (value) => { FullBody = value; FullBodyChanged(value); }, "See the full body instead of just the hands and feet.");
             panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
             panel.AddToggleOption(tab, "Invert Y Axis in Seamoth/Cameras", InvertYAxis, (value) => { InvertYAxis = value; InvertYAxisChanged(value); }, "Enables Y axis inversion for Seamoth and Cameras.");
@@ -145,6 +164,35 @@ namespace SubmersedVR
         }
     }
 
+    // The next two function add back in the ability to toggle fullscreen on the flatscreen display.
+    [HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.AddGeneralTab))]
+    static class ReAddFullscreenOption
+    {
+        public static void Postfix(uGUI_OptionsPanel __instance)
+        {
+			__instance.AddToggleOption(__instance.tabs.Count - 1, "Fullscreen", Screen.fullScreen, new UnityAction<bool>(__instance.OnFullscreenChanged), null);
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.OnScreenChanged))]
+    static class OnScreenChangedFixer
+    {
+        public static bool Prefix(uGUI_OptionsPanel __instance)
+        {
+            if (__instance.AreDisplayOptionsEnabled() && __instance.resolutionOption)
+            {
+                __instance.resolutionOption.value = uGUI_OptionsPanel.GetCurrentResolutionIndex(__instance.resolutions);
+                __instance.toApply.Remove(uGUI_OptionsPanel.Change.Resolution);
+            }
+            if(__instance.hFovSlider != null)
+            {
+                __instance.OnVFovChanged(MiscSettings.fieldOfView);  
+            } 
+
+            return false;    
+        }
+    }
+
 
     // GameOptions.GetVRAnimationMode returns true whenever we want to play the simplified VR Animations instead of the desktop ones
     [HarmonyPatch(typeof(VRGameOptions), nameof(VRGameOptions.GetVrAnimationMode))]
@@ -152,10 +200,28 @@ namespace SubmersedVR
     {
         static bool Prefix(ref bool __result)
         {
-            __result = !VROptions.enableCinematics;
+            __result = false;//!VROptions.enableCinematics;
             return false;
         }
     }
+
+    //XRSettings sets most of the graphics settings correctly for comfort but it still allows Ambient Occlusion to be set
+    //AO appears to only be updating in one eye at the moment so I am disabling it here until we can either
+    //default it to off in new installations or fix the issue with only one eye rendering
+    [HarmonyPatch(typeof(UwePostProcessingManager), nameof(UwePostProcessingManager.ApplySettingsToProfile))]
+    public static class FixGraphicsForVR
+    {
+        public static void Postfix(UwePostProcessingManager __instance)
+        {
+            __instance.SetAO(0);
+            //__instance.SetDof(0);
+            //__instance.SetSSR(0);
+            //__instance.SetMotionBlur(0);
+             MiscSettings.cameraBobbing = VROptions.enableCinematics; 
+
+        }
+    }
+
 
     #endregion
 }

@@ -36,36 +36,41 @@ namespace SubmersedVR
         static void Postfix(uGUI_SceneLoading __instance)
         {
             Image loadingArtwork = __instance.loadingBackground.transform.Find("LoadingArtwork").GetComponent<Image>();
-            Vector2 midCenter = new Vector2(0.5f, 0.5f);
-            uGUI_Logo logo = __instance.loadingBackground.GetComponentInChildren<uGUI_Logo>();
+            GameObject progressBar = __instance.loadingBackground.transform.Find("LoadingBarCanvas").gameObject;
             if (loadingArtwork != null)
             {
-                //remove background image and set background to black
-                loadingArtwork.sprite = null;
-                loadingArtwork.color = Color.black;
-                loadingArtwork.GetComponent<RectTransform>().localScale = Vector3.one;
+                //resize the background image
+                loadingArtwork.GetComponent<RectTransform>().localScale = new Vector3(0.28f, 0.28f, 0.28f);
             }
-            if (logo != null)
+            if (progressBar != null)
             {
-                //center the logo and loading bar
-                RectTransform logoRect = logo.GetComponent<RectTransform>();
-                logoRect.anchoredPosition = new Vector2(0, 120f);
-                logoRect.anchorMax = logoRect.anchorMin = midCenter;
-                RectTransform parentCanvasRect = logo.transform.parent.GetComponent<RectTransform>();
-                parentCanvasRect.anchoredPosition = new Vector2(0, -25f);
-                parentCanvasRect.anchorMin = Vector2.zero;
-                parentCanvasRect.anchorMax = Vector2.one;
+                //adjust the loading bar
+                RectTransform logoRect = progressBar.GetComponent<RectTransform>();
+                logoRect.localScale = new Vector3(0.6f, 0.6f, 0.6f);//Vector3.one;
+                logoRect.anchoredPosition = new Vector2(logoRect.rect.width / 5.0f, 200.0f);
             }
         }
     }
 
-    // [HarmonyPatch(typeof(WaitScreen), nameof(WaitScreen.Update))]
-    // static class LockInputWhileLoading
-    // {
-    //     static void Postfix(WaitScreen __instance)
-    //     {
-    //         SteamVrGameInput.InputLocked = __instance.isWaiting;
-    //     }
-    // }
+    [HarmonyPatch(typeof(WaitScreen), nameof(WaitScreen.Update))]
+    static class LockInputWhileLoading
+    {
+        static void Postfix(WaitScreen __instance)
+        {
+            SteamVrGameInput.InputLocked = __instance.isShown;
+        }
+    }
+
+    //We modified the screen scale to be smaller in order to display all UI items but we want
+    //this screen to cover the entire UI so it needs to be scaled up
+    [HarmonyPatch(typeof(WaitScreen), nameof(WaitScreen.Awake))]
+    public static class WaitScreen_FixVRScale
+    {
+        [HarmonyPostfix]
+        public static void Postfix(WaitScreen __instance)
+        {
+            uGUI.main.loading.transform.localScale = new Vector3(3.4f, 3.4f, 3.4f);
+        }
+    }
 
 }

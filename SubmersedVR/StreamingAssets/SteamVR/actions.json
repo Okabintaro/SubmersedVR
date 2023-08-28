@@ -16,6 +16,11 @@
       "requirement": "suggested"
     },
     {
+      "name": "/actions/subnautica/in/Answer",
+      "type": "boolean",
+      "requirement": "suggested"
+    },
+    {
       "name": "/actions/subnautica/in/Exit",
       "type": "boolean",
       "requirement": "mandatory"
@@ -263,6 +268,7 @@
       "/actions/subnautica/in/Jump": "Jump",
       "/actions/subnautica/in/PDA": "Open PDA",
       "/actions/subnautica/in/Deconstruct": "Deconstruct",
+      "/actions/subnautica/in/Answer": "Answer AI",
       "/actions/subnautica/in/Exit": "Exit/Cancel",
       "/actions/subnautica/in/LeftHand": "Left Hand / Interact",
       "/actions/subnautica/in/RightHand": "Right Hand / Tool Interact",

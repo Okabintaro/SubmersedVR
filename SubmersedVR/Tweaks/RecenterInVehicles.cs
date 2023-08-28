@@ -29,4 +29,23 @@ namespace SubmersedVR
             VRUtil.Recenter();
         }
     }
+
+    [HarmonyPatch(typeof(SeaTruckMotor), nameof(SeaTruckMotor.StartPiloting))]
+    static class RecenterInSeaTruckMotor
+    {
+        public static void Postfix()
+        {
+            VRUtil.Recenter();
+        }
+    }
+
+    [HarmonyPatch(typeof(Hoverbike), nameof(Hoverbike.EnterVehicle))]
+    static class RecenterInHoverbike
+    {
+        public static void Postfix()
+        {
+            VRUtil.Recenter();
+        }
+    }
+
 }

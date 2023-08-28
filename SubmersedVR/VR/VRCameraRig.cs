@@ -50,6 +50,15 @@ namespace SubmersedVR
         public float worldTargetDistance;
         public Transform rigParentTarget;
 
+        public bool photoRequested = false;
+
+        float yVelocity = 0.0f;
+
+        //Using these booleans instead of doing a component lookup during Update() calls
+        public bool isPilotingSeaTruck = false;
+        public bool isPilotingSnowbike = false;
+        public bool isPilotingExosuit = false;
+
         public Camera UIControllerCamera
         {
             get
@@ -204,8 +213,8 @@ namespace SubmersedVR
         {
             var inMainMenu = !uGUI.isMainLevel;
             bool alwaysShow = Settings.AlwaysShowControllers;
-            modelL.SetActive(alwaysShow || inMainMenu);
-            modelR.SetActive(alwaysShow || inMainMenu);
+            modelL?.SetActive(alwaysShow || inMainMenu);
+            modelR?.SetActive(alwaysShow || inMainMenu);
         }
 
         // This is used to get the camera from the main menu
@@ -226,7 +235,7 @@ namespace SubmersedVR
             Vector3 oldPos = camera.transform.position;
             transform.position = oldPos;
             vrCamera.transform.parent = this.transform;
-        }
+       }
 
         public void StealUICamera(Camera camera, bool fromGame = false)
         {
@@ -258,8 +267,12 @@ namespace SubmersedVR
                 camera.depth = oldDepth;
 
                 camera.transform.parent = uiRig.transform;
-                camera.transform.localPosition = new Vector3(0.0f, 2.0f, 0.0f);
+                camera.transform.localPosition = Vector3.zero; //new Vector3(0.0f, 2.0f, 0.0f);
                 camera.transform.localRotation = Quaternion.identity;
+
+                //should work for hiding ui during screenshots but it doesnt
+                //var obj = camera.gameObject.AddComponent<HideForScreenshots>();
+                //obj.type = HideForScreenshots.HideType.HUD;
 
                 // Set all canvas scalers to static, which makes UI better usable
                 FindObjectsOfType<uGUI_CanvasScaler>().Where(obj => !obj.name.Contains("PDA")).ForEach(cs => cs.vrMode = uGUI_CanvasScaler.Mode.Static);
@@ -270,7 +283,7 @@ namespace SubmersedVR
             else
             {
                 camera.transform.parent = uiRig.transform;
-                camera.transform.localPosition = new Vector3(0.0f, 1.0f, 0.0f);
+                camera.transform.localPosition = Vector3.zero; //new Vector3(0.0f, 1.0f, 0.0f);
                 camera.transform.localRotation = Quaternion.identity;
             }
             uiCamera = camera;
@@ -309,6 +322,25 @@ namespace SubmersedVR
             button.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 100);
             button.rectTransform.ForceUpdateRectTransforms();
             button.rectTransform.GetComponentsInChildren<RectTransform>().ForEach(rt => rt.ForceUpdateRectTransforms());
+
+            buttonPrefab = dialog.buttonPrefab;
+            button = Object.Instantiate(buttonPrefab, targetParent).GetComponent<uGUI_DialogButton>();
+            button.button.transform.parent = targetParent;
+            button.button.gameObject.gameObject.name = "ScreenshotButton";
+            button.text.text = "Photo";
+            button.button.onClick.RemoveAllListeners();
+            button.button.onClick.AddListener(() =>
+            {
+                photoRequested = true;
+            });
+            // Move it to the bottom right
+            button.rectTransform.anchoredPosition = new Vector2(780, 50);
+            button.rectTransform.pivot = new Vector2(1, 0);
+            button.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 150);
+            button.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 100);
+            button.rectTransform.ForceUpdateRectTransforms();
+            button.rectTransform.GetComponentsInChildren<RectTransform>().ForEach(rt => rt.ForceUpdateRectTransforms());
+
         }
 
         public IEnumerator SetupGameCameras()
@@ -325,12 +357,44 @@ namespace SubmersedVR
         public void LateUpdate()
         {
             // Move the camera rig to the player each frame and rotate the uiRig accordingly
-            // TODO: This probably has to be changed for roomscale tracking.
-            // Right now if you move too far away from the center, you will rotate the camera with the center as a pivot.
             if (rigParentTarget != null)
             {
                 this.transform.SetPositionAndRotation(rigParentTarget.position, rigParentTarget.rotation);
                 uiRig.transform.rotation = transform.rotation;
+                //Move the body to whereever the head is
+                if(uGUI_SpyPenguin.main.activePenguin == false)
+                {
+                    RecenterBodyOnCameraOrientation(35f, 0.3f, 3.0f, 1.5f);  
+
+                    float zOffset = isPilotingSeaTruck || isPilotingExosuit ? -0.2f : -0.08f;                 
+                    float yOffset = isPilotingSeaTruck || isPilotingExosuit ? -0.2f : -0.1f;    
+                    if(Player.main._cinematicModeActive == false)  
+                    {
+                        Player.main.armsController.transform.position = SNCameraRoot.main.mainCamera.transform.position + (SNCameraRoot.main.mainCamera.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
+                        //Player.main.armsController.transform.position = MainCameraControl.main.transform.position + (MainCameraControl.main.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
+                    }           
+                }
+            }
+        }
+
+        //If the camera turns more than a certain degree (more than the head can normally turn on a human body without rotating the shoulders) then
+        //rotate the body quickly to prevent the "Exorcist" head rotation
+        //If the camera is slightly rotated away from the body direction then very slowly turn the body to center with the head
+        public void RecenterBodyOnCameraOrientation(float leewayAngle, float duration, float secondaryLeewayAngle, float secondaryDuration)
+        {
+            float cameraYRot = SNCameraRoot.main.mainCamera.transform.rotation.eulerAngles.y;
+            //float cameraYRot = MainCameraControl.main.transform.rotation.eulerAngles.y;
+            float bodyYRot = Player.main.armsController.transform.rotation.eulerAngles.y;
+            float diff = Mathf.DeltaAngle(cameraYRot, bodyYRot);
+            if(Mathf.Abs(diff) > leewayAngle)
+            {
+                float yAngle = Mathf.SmoothDampAngle(bodyYRot, cameraYRot + (leewayAngle * Mathf.Sign(diff)), ref yVelocity, duration);
+                Player.main.armsController.transform.rotation = Quaternion.Euler( new Vector3(0f, yAngle, 0f));
+            }
+            else if(Mathf.Abs(diff) > secondaryLeewayAngle)
+            {
+                float yAngle = Mathf.SmoothDampAngle(bodyYRot, cameraYRot + (secondaryLeewayAngle * Mathf.Sign(diff)), ref yVelocity, secondaryDuration);
+                Player.main.armsController.transform.rotation = Quaternion.Euler( new Vector3(0f, yAngle, 0f));
             }
         }
 
@@ -343,7 +407,7 @@ namespace SubmersedVR
             }
         }
 
-        // Gets set by GUIHand Patch, which already does world raycasting so we dont have to do it ourselfs
+        // Gets set by GUIHand Patch, which already does world raycasting so we dont have to do it ourselves
         public void SetWorldTarget(GameObject activeTarget, float activeHitDistance)
         {
             this.worldTarget = activeTarget;
@@ -353,6 +417,35 @@ namespace SubmersedVR
     }
 
     #region Patches
+
+    [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnLateUpdate))]
+    public static class PlayerPositionFixer
+    {
+         static bool Prefix(MainCameraControl __instance)
+        {
+            float zOffset = 0.0f;
+            float yOffset = 0.0f;
+            if(VRCameraRig.instance?.isPilotingSeaTruck == true)
+            {
+                zOffset = 0.2f + Settings.SeaTruckZOffset;
+                yOffset = 0.2f + Settings.SeaTruckYOffset;
+            }
+            else if(VRCameraRig.instance?.isPilotingSnowbike == true)
+            {
+                zOffset = 0.07f + Settings.SnowBikeZOffset;
+                yOffset = 0.2f + Settings.SnowBikeYOffset;
+            }
+            else if(VRCameraRig.instance?.isPilotingExosuit == true)
+            {
+                zOffset = 0.1f + Settings.ExosuitZOffset;
+                yOffset = 0.2f + Settings.ExosuitYOffset;
+            }
+
+            __instance.cameraUPTransform.localPosition = new Vector3(__instance.cameraUPTransform.localPosition.x, yOffset, zOffset);
+            //__instance.cameraUPTransform.localRotation = Quaternion.Euler( new Vector3(0.0f, 0.0f, 0.0f));
+            return false;
+        }
+    }
 
     // Create the Rig together with the uGUI Prefab
     [HarmonyPatch(typeof(uGUI), nameof(uGUI.Awake))]
@@ -432,7 +525,7 @@ namespace SubmersedVR
     {
         public static void Postfix(uGUI_CanvasScaler __instance)
         {
-            // TODO: There gotta be a better way to attach this only to the PDA, maybe custom behaviour, disabling the Scalar?
+             // TODO: There gotta be a better way to attach this only to the PDA, maybe custom behaviour, disabling the Scalar?
             if (__instance.gameObject.GetComponent<uGUI_PDA>() == null)
             {
                 return;
@@ -451,7 +544,7 @@ namespace SubmersedVR
         }
     }
 
-    // Makes the ingame menu spawn infront of you in vr
+     // Makes the ingame menu spawn infront of you in vr
     [HarmonyPatch(typeof(IngameMenu), nameof(IngameMenu.Awake))]
     class MakeIngameMenuStatic
     {
@@ -521,7 +614,6 @@ namespace SubmersedVR
     }
 
 
-
     // Disable the last XRSettings.enabled branch by replacing it with false/0
     [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnUpdate))]
     public static class DisableVRLockMechanic
@@ -546,7 +638,7 @@ namespace SubmersedVR
         }
     }
 
-    // Disalbe LightBar stuff
+    // Disable LightBar stuff
     [HarmonyPatch(typeof(PlatformUtils), nameof(PlatformUtils.DimLightBar))]
     public static class NoDimLightBar {
         public static bool Prefix() {

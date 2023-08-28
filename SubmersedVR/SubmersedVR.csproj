@@ -4,15 +4,16 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>SubmersedVR</AssemblyName>
     <Description>A VR Conversion Mod for Subnautica</Description>
-    <Version>0.1.6</Version>
+    <Version>0.1.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <!-- NOTE: Change this to your own directoy when building -->
-    <SubnauticaDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\SubnauticaZero</SubnauticaDir>
+    <SubnauticaDir>c:\Program Files (x86)\Steam\steamapps\common\SubnauticaZero</SubnauticaDir>
     <NoWarn>$(NoWarn);CS0436</NoWarn>
     <!-- <BuildDir>Build</BuildDir> -->
+    <!-- <BuildDir>../../Build</BuildDir> -->
     <!-- <BuildDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\Subnautica</BuildDir> -->
-    <BuildDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\SubnauticaZero</BuildDir>
+    <BuildDir>c:\Program Files (x86)\Steam\steamapps\common\SubnauticaZero</BuildDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -44,6 +45,13 @@
     </Reference>
     <Reference Include="FMODUnity">
       <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\FMODUnity.dll</HintPath>
+    </Reference>
+
+    <Reference Include="Unity.Timeline" Publicize="true">
+      <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\Unity.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="UWE.EditorModifications" Publicize="true">
+      <HintPath>$(SubnauticaDir)\SubnauticaZero_Data\Managed\UWE.EditorModifications.dll</HintPath>
     </Reference>
 
     <!-- SteamVR + SteamVR Actions: Currenlty prebuilt, should be built from source later -->
@@ -79,6 +87,6 @@
     <Copy SourceFiles="StreamingAssets\SteamVR\bindings_holographic.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="SteamVR\SteamVR.dll" DestinationFolder="@(ManagedFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="SteamVR\SteamVR_Actions.dll" DestinationFolder="@(ManagedFolder)" SkipUnchangedFiles="true"/>
-    <!-- <ZipDirectory SourceDirectory="$(BuildDir)" DestinationFile="$(MSBuildProjectDirectory)\$(AssemblyName)_$(Version).zip" /> -->
+    <!-- <ZipDirectory SourceDirectory="$(BuildDir)" DestinationFile="$(MSBuildProjectDirectory)\$(AssemblyName)_BZ_$(Version).zip" /> -->
   </Target>
 </Project>

@@ -27,8 +27,7 @@ namespace SubmersedVR
                 || button == GameInput.Button.Slot3
                 || button == GameInput.Button.Slot4
                 || button == GameInput.Button.Slot5
-                || button == GameInput.Button.AutoMove
-                || button == GameInput.Button.Answer;
+                || button == GameInput.Button.AutoMove;
         }
 
         public static Vector2 GetScrollDelta()
@@ -43,6 +42,8 @@ namespace SubmersedVR
 
     // The following three patches map the steamvr actions to the button states
     // TODO: They could be optimized by using a switch instead of the GetStateDown(string) lookup
+    // SteamVR_Actions.dll does not contain the Answer action so use the Deconstuct action
+    // as Answer instead
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonDown))]
     public static class SteamVrGetButtonDown
     {
@@ -53,7 +54,66 @@ namespace SubmersedVR
                 return false;
             }
 
-            __result = SteamVR_Input.GetStateDown(button.ToString(), SteamVR_Input_Sources.Any);
+            String actionName = button.ToString();
+            if(actionName == "TakePicture" && VRCameraRig.instance.photoRequested)
+            {
+                __result = true;
+                VRCameraRig.instance.photoRequested = false;
+                return false;
+            }
+            //Use the Sprint action as the Take Picture action when the player is not piloting a vehicle
+            if(actionName == "TakePicture" && !(Player.main?.currentMountedVehicle != null || (Player.main?.IsPiloting() == true)))
+            {
+                actionName = "Sprint";
+            }
+
+            if(actionName == "Answer")
+            {
+                actionName = "Deconstruct";
+            }
+ 
+            __result = SteamVR_Input.GetStateDown(actionName, SteamVR_Input_Sources.Any);
+            return false;
+        }
+    }
+
+
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonUp))]
+    public static class SteamVrGetButtonUp
+    {
+        static bool Prefix(GameInput.Button button, ref bool __result)
+        {
+            if (SteamVrGameInput.ShouldIgnore(button))
+            {
+                return false;
+            }
+
+            String actionName = button.ToString();
+            if(actionName == "Answer")
+            {
+                actionName = "Deconstruct";
+            }          
+            __result = SteamVR_Input.GetStateUp(actionName, SteamVR_Input_Sources.Any);
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonHeld))]
+    public static class SteamVrGetButtonHeld
+    {
+        static bool Prefix(GameInput.Button button, ref bool __result)
+        {
+            if (SteamVrGameInput.ShouldIgnore(button))
+            {
+                return false;
+            }
+
+            String actionName = button.ToString();
+            if(actionName == "Answer")
+            {
+                actionName = "Deconstruct";
+            }          
+             __result = SteamVR_Input.GetState(actionName, SteamVR_Input_Sources.Any);
             return false;
         }
     }
@@ -71,36 +131,6 @@ namespace SubmersedVR
         }
     }
 
-
-
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonUp))]
-    public static class SteamVrGetButtonUp
-    {
-        static bool Prefix(GameInput.Button button, ref bool __result)
-        {
-            if (SteamVrGameInput.ShouldIgnore(button))
-            {
-                return false;
-            }
-            __result = SteamVR_Input.GetStateUp(button.ToString(), SteamVR_Input_Sources.Any);
-            return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonHeld))]
-    public static class SteamVrGetButtonHeld
-    {
-        static bool Prefix(GameInput.Button button, ref bool __result)
-        {
-            if (SteamVrGameInput.ShouldIgnore(button))
-            {
-                return false;
-            }
-
-            __result = SteamVR_Input.GetState(button.ToString(), SteamVR_Input_Sources.Any);
-            return false;
-        }
-    }
 
     // Make the game believe to be controllerd by controllers only
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAvailableDevices))]
@@ -121,7 +151,7 @@ namespace SubmersedVR
     {
         public static void Postfix(ref Vector2 __result)
         {
-            bool isInVehicle = Player.main?.currentMountedVehicle != null;
+            bool isInVehicle = Player.main?.currentMountedVehicle != null || (Player.main?.IsPiloting() == true);
             if (Settings.IsSnapTurningEnabled && !isInVehicle) {
                 float lookX = __result.x;
                 float absX = Mathf.Abs(lookX);
@@ -136,7 +166,7 @@ namespace SubmersedVR
                     }
                 }
             }
-        }
+         }
     }
 
     // Pretend the controlers are always available to make Subnautica not switch to Keyboard/Mouse and mess VR controls up
@@ -150,6 +180,7 @@ namespace SubmersedVR
             return false;
         }
     }
+    
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateKeyboardAvailable))]
     public static class KeyboardNeverAvialable
     {
@@ -253,28 +284,24 @@ namespace SubmersedVR
         }
     }
 
-    // This makes Input.anyKeyDown return true incase any boolean action is pressed. Is needed for the intro skip and credits.
+    // This makes GameInput.AnyKeyDown() return true incase any boolean action is pressed. Is needed for the intro skip and credits.
     // But hmm, where is the any key on the controllers? (https://www.youtube.com/watch?v=st6-DgWeuos)
-    [HarmonyPatch(typeof(Input))]
-    [HarmonyPatch(nameof(Input.anyKeyDown), MethodType.Getter)]
-    public static class UnityAnyKeyDown
+    [HarmonyPatch(typeof(Input), nameof(Input.anyKeyDown), MethodType.Getter)]
+    public static class SteamVRPressAnyKey
     {
-        static void Postfix(GameInput __instance, ref bool __result)
+        static bool Prefix(ref bool __result)
         {
-            if (__result)
-            {
-                return;
-            }
-
+            __result = false;
             foreach (var action in SteamVR_Input.actionsBoolean)
             {
-                if (action.GetStateDown(SteamVR_Input_Sources.Any))
+                if (action.GetStateDown(SteamVR_Input_Sources.Any)) //&& action.GetShortName() != "BuilderRotateRight")
                 {
                     __result = true;
                     break;
                 }
             }
-        }
+            return false;
+       }
     }
 
 
@@ -439,7 +466,6 @@ namespace SubmersedVR
     }
 #endif
 
-#if false
     // Don't scale the tooltips with the controller distance
     [HarmonyPatch(typeof(uGUI_Tooltip), nameof(uGUI_Tooltip.UpdatePosition))]
     [HarmonyDebug]
@@ -452,9 +478,14 @@ namespace SubmersedVR
         {
             if (pda == null)
             {
-                pda = Player.main.GetPDA();
+                pda = Player.main?.GetPDA();
+            }
+            if(pda == null || IngameMenu.main.isActiveAndEnabled) //Dont scale it if PDA is Opened but in the Pause Menu
+            {
+                return 1.0f;
             }
             return pda.isInUse ? PDA_ScaleFactor : 1.0f;
+            
         }
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -470,7 +501,6 @@ namespace SubmersedVR
             return m.InstructionEnumeration();
         }
     }
-#endif
 
     // Previous attempt which tried to emulate controllers, not as clean and not needed
 #if false
