@@ -374,6 +374,8 @@ namespace SubmersedVR
                         //Player.main.armsController.transform.position = MainCameraControl.main.transform.position + (MainCameraControl.main.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
                     }           
                 }
+                Player.main.armsController.transform.localScale = new Vector3(Settings.PlayerScale, Settings.PlayerScale, Settings.PlayerScale);        
+
             }
         }
 
@@ -421,24 +423,24 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnLateUpdate))]
     public static class PlayerPositionFixer
     {
-         static bool Prefix(MainCameraControl __instance)
+        static bool Prefix(MainCameraControl __instance)
         {
             float zOffset = 0.0f;
             float yOffset = 0.0f;
             if(VRCameraRig.instance?.isPilotingSeaTruck == true)
             {
-                zOffset = 0.2f + Settings.SeaTruckZOffset;
-                yOffset = 0.2f + Settings.SeaTruckYOffset;
+                zOffset += 0.2f + Settings.SeaTruckZOffset;
+                yOffset += 0.2f + Settings.SeaTruckYOffset;
             }
             else if(VRCameraRig.instance?.isPilotingSnowbike == true)
             {
-                zOffset = 0.07f + Settings.SnowBikeZOffset;
-                yOffset = 0.2f + Settings.SnowBikeYOffset;
+                zOffset += 0.07f + Settings.SnowBikeZOffset;
+                yOffset += 0.2f + Settings.SnowBikeYOffset;
             }
             else if(VRCameraRig.instance?.isPilotingExosuit == true)
             {
-                zOffset = 0.1f + Settings.ExosuitZOffset;
-                yOffset = 0.2f + Settings.ExosuitYOffset;
+                zOffset += 0.1f + Settings.ExosuitZOffset;
+                yOffset += 0.2f + Settings.ExosuitYOffset;
             }
 
             __instance.cameraUPTransform.localPosition = new Vector3(__instance.cameraUPTransform.localPosition.x, yOffset, zOffset);

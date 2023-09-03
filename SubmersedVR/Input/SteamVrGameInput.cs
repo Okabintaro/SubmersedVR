@@ -61,8 +61,8 @@ namespace SubmersedVR
                 VRCameraRig.instance.photoRequested = false;
                 return false;
             }
-            //Use the Sprint action as the Take Picture action when the player is not piloting a vehicle
-            if(actionName == "TakePicture" && !(Player.main?.currentMountedVehicle != null || (Player.main?.IsPiloting() == true)))
+            //Use the Sprint action as the Take Picture action when the player is not piloting a vehicle or holding a tool
+            if(actionName == "TakePicture" && !(Player.main?.currentMountedVehicle != null || (Player.main?.IsPiloting() == true)) && (Inventory.main.GetHeldTool() == null))
             {
                 actionName = "Sprint";
             }

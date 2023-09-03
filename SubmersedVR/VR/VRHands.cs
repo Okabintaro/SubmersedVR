@@ -272,7 +272,7 @@ namespace SubmersedVR
             bool retry = true;
             while (retry)
             {
-                Mod.logger.LogInfo($"UpdateBodyRendering {Settings.FullBody}");
+                //Mod.logger.LogInfo($"UpdateBodyRendering {Settings.FullBody}");
 
                 var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("body") || r.name.Contains("vest"));
                 foreach (var bodyRenderer in bodyRenderers)
@@ -351,6 +351,18 @@ namespace SubmersedVR
             {
                 VRHands.instance.ik.solver.GetBendConstraint(FullBodyBipedChain.LeftArm).bendGoal =  Player.main.armsController.defaultLeftArmBendGoal;  
             }
+
+        }
+    }
+
+    //Dont do the built in tool animations when first picking up a tool
+    [HarmonyPatch(typeof(PlayerTool), nameof(PlayerTool.Awake))]
+    public static class DisableFirstUseToolAnimations
+    {
+        [HarmonyPostfix]
+        public static void Postfix(PlayerTool __instance)
+        {
+           __instance.hasFirstUseAnimation = false;
 
         }
     }

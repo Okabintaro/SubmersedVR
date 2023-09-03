@@ -314,12 +314,11 @@ namespace SubmersedVR
     {
         public static void Postfix(Vehicle __instance)
         {
-            // TODO: How to check for SeaTruck?
             Mod.logger.LogInfo("Vehicle.OnPilotModeEnd {__instance is Exosuit}");
             if (__instance is Exosuit)
             {
                 VRHud.OnExitVehicle();
-                //This moves player off of the top of the suit
+                //This moves player off of the top of the suit after exiting
                 Player.main.transform.position = Player.main.transform.position + SNCameraRoot.main.transform.forward * -2.5f;
                 Player.main.transform.localPosition += new Vector3(0.0f, 0.5f, 0.0f);
             }
@@ -369,10 +368,15 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(SeaTruckMotor), nameof(SeaTruckMotor.StopPiloting))]
     static class ResetHudStaticInSeaTrucker
     {
-        public static void Postfix()
+        public static void Prefix(SeaTruckMotor __instance, bool waitForDocking = false, bool forceStop = false, bool skipUnsubscribe = false, bool immediate = false, bool forceGetupAnimation = false)
         {
-            Mod.logger.LogInfo("SeaTruckMotor.StopPiloting");
-            VRHud.OnExitVehicle();
+            //Mod.logger.LogInfo($"SeaTruckMotor.StopPiloting waitForDocking = {waitForDocking} forceStop = {forceStop} skipUnsubscribe = {skipUnsubscribe} immediate = {immediate} forceGetupAnimation = {forceGetupAnimation}");
+            //Doing this check because SeaTruckMotor.StopPiloting gets called many times at startup for an unknown reason
+            if (__instance.piloting) 
+            {
+                Mod.logger.LogInfo($"SeaTruckMotor.StopPiloting");
+                VRHud.OnExitVehicle();
+            }
         }
     }
 

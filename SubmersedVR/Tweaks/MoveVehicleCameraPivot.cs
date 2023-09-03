@@ -22,6 +22,7 @@ namespace SubmersedVR
     {
         public static void Postfix(Exosuit __instance)
         {
+            Mod.logger.LogInfo($"Exosuit.OnPilotModeBegin called");
             VRCameraRig.instance.isPilotingExosuit = true;
         }
     }
@@ -41,7 +42,7 @@ namespace SubmersedVR
         {
             if(__instance.IsPiloted())
             {
-            VRCameraRig.instance.isPilotingSeaTruck = true;
+                VRCameraRig.instance.isPilotingSeaTruck = true;
             }
         }
     }
