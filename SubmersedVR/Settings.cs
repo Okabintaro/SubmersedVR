@@ -15,6 +15,15 @@ namespace SubmersedVR
         public static float SnapTurningAngle = 45.0f;
         public static event FloatChanged SnapTurningAngleChanged;
 
+        public static bool IsExosuitSnapTurningEnabled;
+        public static event BooleanChanged IsExosuitSnapTurningEnabledChanged;
+        public static float ExosuitSnapTurningAngle = 45.0f;
+        public static event FloatChanged ExosuitSnapTurningAngleChanged;
+        public static bool IsSnowBikeSnapTurningEnabled;
+        public static event BooleanChanged IsSnowBikeSnapTurningEnabledChanged;
+        public static float SnowBikeSnapTurningAngle = 45.0f;
+        public static event FloatChanged SnowBikeSnapTurningAngleChanged;
+
         public static bool IsDebugEnabled;
         public static event BooleanChanged IsDebugChanged;
        
@@ -87,15 +96,37 @@ namespace SubmersedVR
             int tab = panel.AddTab("Submersed VR");
 
             panel.AddHeading(tab, "Controls");
-            panel.AddToggleOption(tab, "Enable Snap Turning", IsSnapTurningEnabled, (value) => { IsSnapTurningEnabled = value;
+            panel.AddToggleOption(tab, "Enable Player Snap Turning", IsSnapTurningEnabled, (value) => { IsSnapTurningEnabled = value;
                 if (IsSnapTurningEnabledChanged != null) {
                     IsSnapTurningEnabledChanged(value);
                 }
             });
-            panel.AddChoiceOption<float>(tab, "Snap Turning Angle(°)", new float[] {22.5f, 45, 90}, SnapTurningAngle, (value) => {
+            panel.AddChoiceOption<float>(tab, "Player Snap Turning Angle(°)", new float[] {22.5f, 30f, 45f, 90f}, SnapTurningAngle, (value) => {
                 SnapTurningAngle = value;
                 if (SnapTurningAngleChanged != null) {
                     SnapTurningAngleChanged(value);
+                }
+            });
+            panel.AddToggleOption(tab, "Enable Prawn Suit Snap Turning", IsExosuitSnapTurningEnabled, (value) => { IsExosuitSnapTurningEnabled = value;
+                if (IsExosuitSnapTurningEnabledChanged != null) {
+                    IsExosuitSnapTurningEnabledChanged(value);
+                }
+            });
+            panel.AddChoiceOption<float>(tab, "Prawn Suit Snap Turning Angle(°)", new float[] {22.5f, 30f, 45f, 90f}, ExosuitSnapTurningAngle, (value) => {
+                ExosuitSnapTurningAngle = value;
+                if (ExosuitSnapTurningAngleChanged != null) {
+                    ExosuitSnapTurningAngleChanged(value);
+                }
+            });
+           panel.AddToggleOption(tab, "Enable Snowfox Snap Turning", IsSnowBikeSnapTurningEnabled, (value) => { IsSnowBikeSnapTurningEnabled = value;
+                if (IsSnowBikeSnapTurningEnabledChanged != null) {
+                    IsSnowBikeSnapTurningEnabledChanged(value);
+                }
+            });
+            panel.AddChoiceOption<float>(tab, "Snowfox Snap Turning Angle(°)", new float[] {22.5f, 30f, 45f, 90f}, SnowBikeSnapTurningAngle, (value) => {
+                SnowBikeSnapTurningAngle = value;
+                if (SnowBikeSnapTurningAngleChanged != null) {
+                    SnowBikeSnapTurningAngleChanged(value);
                 }
             });
 

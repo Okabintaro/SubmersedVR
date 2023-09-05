@@ -43,13 +43,17 @@ namespace SubmersedVR
                 entry.enabled = true;
         }
 
-        public static void Show(string message)
+        public static void Show(string message, bool writeToLog = false)
         {
             if (DebugPanel.main == null)
             {
                 return;
             }
             DebugPanel.main.entry.text = message;
+            if(writeToLog)
+            {
+                Mod.logger.LogInfo($"{message}");
+            }
         }
 
         // There might be a better hook for this

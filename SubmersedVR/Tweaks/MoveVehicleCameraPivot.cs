@@ -14,7 +14,7 @@ namespace SubmersedVR
     //         __instance.playerPosition.transform.localPosition = new Vector3(0.0f, 0.0f, 0.2f);
     //     }
     // }
-
+/*
     //Set booleans in the VRCameraRig so component lookups dont need to be called during OnLateUpdate()
     //Actual offsets are handled in MainCameraControl.OnLateUpdate
     [HarmonyPatch(typeof(Exosuit), nameof(Exosuit.OnPilotModeBegin))]
@@ -74,5 +74,5 @@ namespace SubmersedVR
             VRCameraRig.instance.isPilotingSnowbike = false;
         }
     }
-
+*/
 }

@@ -11,6 +11,7 @@ namespace SubmersedVR
     using SteamVRActions.Valve.VR;
     using System.Collections.Generic;
     using System.Reflection;
+    using rail;
 
     #region Patches
     static class SteamVrGameInput
@@ -18,6 +19,7 @@ namespace SubmersedVR
         public static bool InputLocked = false;
         public static bool IsSteamVrReady = false;
         public static bool SnapTurned = false;
+        public static bool debugSnapTurn = false;
 
         public static bool ShouldIgnore(GameInput.Button button)
         {
@@ -151,21 +153,47 @@ namespace SubmersedVR
     {
         public static void Postfix(ref Vector2 __result)
         {
-            bool isInVehicle = Player.main?.currentMountedVehicle != null || (Player.main?.IsPiloting() == true);
-            if (Settings.IsSnapTurningEnabled && !isInVehicle) {
+           //bool isInVehicle = Player.main?.currentMountedVehicle != null || (Player.main?.IsPiloting() == true);
+            bool isInExosuit = Player.main?.inExosuit == true;
+            bool isOnSnowBike = Player.main?.inHovercraft == true;
+            bool isPilotingSeatruck = Player.main?.inSeatruckPilotingChair == true;
+            
+            if ((Settings.IsSnapTurningEnabled && !(isInExosuit || isOnSnowBike || isPilotingSeatruck)) || (Settings.IsExosuitSnapTurningEnabled && isInExosuit) || (Settings.IsSnowBikeSnapTurningEnabled && isOnSnowBike))
+            {
+                float angle = Settings.SnapTurningAngle; //player
+                if(Settings.IsExosuitSnapTurningEnabled && isInExosuit)
+                {
+                    angle = Settings.ExosuitSnapTurningAngle;
+                }
+                if(Settings.IsSnowBikeSnapTurningEnabled && isOnSnowBike)
+                {
+                    angle = Settings.SnowBikeSnapTurningAngle;
+                }
+
                 float lookX = __result.x;
                 float absX = Mathf.Abs(lookX);
                 float threshold = 0.5f;
-                if (absX > threshold && !SteamVrGameInput.SnapTurned) {
-                    __result.x = Settings.SnapTurningAngle * Mathf.Sign(lookX);
+                if(SteamVrGameInput.debugSnapTurn)
+                {
+                    Mod.logger.LogInfo($"GameInput.GetLookDelta inExosuit = {isInExosuit} onSnowBike = {isOnSnowBike} angle = {angle} looX = {lookX} absX = {absX} snapTurned = {SteamVrGameInput.SnapTurned}");
+                }
+                if (absX > threshold && !SteamVrGameInput.SnapTurned) 
+                {
+                    __result.x = angle * Mathf.Sign(lookX);
                     SteamVrGameInput.SnapTurned = true;
-                } else  {
+                } 
+                else  
+                {
                     __result.x = 0;
                     if (absX <= threshold) {
                         SteamVrGameInput.SnapTurned = false;
                     }
                 }
             }
+            //else
+            //{
+            //    Shader.SetGlobalFloat(ShaderPropertyID._UweVrFadeAmount, 1000f);
+            //}
          }
     }
 

@@ -141,7 +141,6 @@ namespace SubmersedVR
             Settings.FullBodyChanged -= OnFullBodyChanged;
             Settings.FullBodyChanged += OnFullBodyChanged;
 
-
             var camRig = VRCameraRig.instance;
             leftTarget = camRig.leftHandTarget.transform;
             rightTarget = camRig.rightHandTarget.transform;
@@ -246,6 +245,10 @@ namespace SubmersedVR
                 leftElbow.transform.SetPositionAndRotation(leftHand.position, leftHand.rotation);
                 rightElbow.transform.SetPositionAndRotation(rightHand.position, rightHand.rotation);
 
+                //if(WristHud.GetIndexFingerTip() is Transform indexTip)
+                //{
+                //    DebugPanel.Show($" uiIndexPos = {indexTip.transform.position} {indexTip.localPosition} ");
+                //}
             }
         }
 

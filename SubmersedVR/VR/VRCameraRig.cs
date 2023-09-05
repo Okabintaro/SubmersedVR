@@ -54,11 +54,12 @@ namespace SubmersedVR
 
         float yVelocity = 0.0f;
 
+/*
         //Using these booleans instead of doing a component lookup during Update() calls
         public bool isPilotingSeaTruck = false;
         public bool isPilotingSnowbike = false;
         public bool isPilotingExosuit = false;
-
+*/
         public Camera UIControllerCamera
         {
             get
@@ -366,8 +367,8 @@ namespace SubmersedVR
                 {
                     RecenterBodyOnCameraOrientation(35f, 0.3f, 3.0f, 1.5f);  
 
-                    float zOffset = isPilotingSeaTruck || isPilotingExosuit ? -0.2f : -0.08f;                 
-                    float yOffset = isPilotingSeaTruck || isPilotingExosuit ? -0.2f : -0.1f;    
+                    float zOffset = Player.main?.inSeatruckPilotingChair == true || Player.main?.inExosuit == true ? -0.2f : -0.08f;                 
+                    float yOffset = Player.main?.inSeatruckPilotingChair == true || Player.main?.inExosuit == true ? -0.2f : -0.1f;    
                     if(Player.main._cinematicModeActive == false)  
                     {
                         Player.main.armsController.transform.position = SNCameraRoot.main.mainCamera.transform.position + (SNCameraRoot.main.mainCamera.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
@@ -427,17 +428,17 @@ namespace SubmersedVR
         {
             float zOffset = 0.0f;
             float yOffset = 0.0f;
-            if(VRCameraRig.instance?.isPilotingSeaTruck == true)
+            if(Player.main?.inSeatruckPilotingChair == true)
             {
                 zOffset += 0.2f + Settings.SeaTruckZOffset;
                 yOffset += 0.2f + Settings.SeaTruckYOffset;
             }
-            else if(VRCameraRig.instance?.isPilotingSnowbike == true)
+            else if(Player.main?.inHovercraft == true)
             {
                 zOffset += 0.07f + Settings.SnowBikeZOffset;
                 yOffset += 0.2f + Settings.SnowBikeYOffset;
             }
-            else if(VRCameraRig.instance?.isPilotingExosuit == true)
+            else if(Player.main?.inExosuit == true)
             {
                 zOffset += 0.1f + Settings.ExosuitZOffset;
                 yOffset += 0.2f + Settings.ExosuitYOffset;
