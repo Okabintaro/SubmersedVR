@@ -165,6 +165,14 @@ namespace SubmersedVR
 
         public void Activate(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
         {
+            bool isInExosuit = Player.main?.inExosuit == true;
+            bool isOnSnowBike = Player.main?.inHovercraft == true;
+            bool isPilotingSeatruck = Player.main?.inSeatruckPilotingChair == true;
+            if(isOnSnowBike || isPilotingSeatruck)
+            {
+                return;
+            }
+
             canvas.enabled = true;
             transform.position = controllerTarget.transform.position;
             bool isVehicleSlot = GetTarget() is Vehicle;

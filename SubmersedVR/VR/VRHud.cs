@@ -204,6 +204,8 @@ namespace SubmersedVR
                 entry.rectTransform.SetParent(wristCanvasGo.transform, false);
                 //obj.SetActive(true);
                 obj.layer = LayerMask.NameToLayer("UI");
+                HideForScreenshots h = obj.AddComponent<HideForScreenshots>();
+                h.type = HideForScreenshots.HideType.HUD;
                 entry.horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center;
                 entry.enabled = false;
                 entry.transform.localPosition = new Vector3(0f, 0.1f, 0f);

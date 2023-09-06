@@ -29,7 +29,7 @@ namespace SubmersedVR
         {
             if (__instance.activeManager && !Player.main.GetPDA().isInUse && !VROptions.enableCinematics)
 		    {
-            Mod.logger.LogInfo($"HoverbikeHeadControlManager.Update called vector2 = { __instance.overflowInput}");
+                //Mod.logger.LogInfo($"HoverbikeHeadControlManager.Update called vector2 = { __instance.overflowInput}");
                 __instance.smoothedBikeRot = new Vector3(0f, __instance.smoothedBikeRot.y, 0f);
                 Vector3 b2 = new Vector3(__instance.defaultCameraPitch, 0f, 0f);
 		        MainCameraControl.main.vehicleOverrideHeadRot = __instance.smoothedBikeRot + __instance.lookOffset + b2;

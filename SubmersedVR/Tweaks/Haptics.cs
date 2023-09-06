@@ -31,6 +31,9 @@ namespace SubmersedVR
         public static float effectsDuration = 0.0f;
         
 
+        public static float defaultUIDuration = 0.05f;
+        public static float defaultUIAmplitude = 0.4f;
+
         public static void PlayHaptics(float secondsFromNow, float durationSeconds, float frequency, float amplitude, bool isUI = false, bool rightController = true, bool leftController = false, float leftAmplitude = -1.0f)
         {
             if((isUI && Settings.EnableUIHaptics == true) || !isUI && Settings.EnableGameHaptics == true)
@@ -114,8 +117,8 @@ namespace SubmersedVR
                 }
 
                 HapticsVR.lastHoverComponent = target;
-                Mod.logger.LogInfo($"GUIHand.Send Hover called"); 
-                HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.5f);
+                //Mod.logger.LogInfo($"GUIHand.Send Hover called"); 
+                HapticsVR.PlayHaptics(0.0f, 0.05f, 10f, 0.7f);
             }
         }
     }
@@ -350,7 +353,7 @@ namespace SubmersedVR
         }
     } 
 
-    //Haptics while Seatruck is Blending attacked
+    //Haptics while Seatruck is being attacked
     [HarmonyPatch(typeof(SeaTruckSegment), nameof(SeaTruckSegment.Update))]
     public static class SeaTruckAttackHaptics
     {
@@ -401,7 +404,7 @@ namespace SubmersedVR
     {
         public static void Postfix(Player __instance, DamageInfo damageInfo)
         {    
-            float intensity = damageInfo.damage * 2f / 100f;
+            float intensity = damageInfo.damage * 3f / 100f;
             float shakeAmount = Mathf.Clamp(intensity, 0f, 5f);
             Mod.logger.LogInfo($"Player.OnTakeDamage called damage = {damageInfo.damage} intensity = {intensity} duration = {shakeAmount * 2f}");
             HapticsVR.PlayHaptics(0.0f, shakeAmount * 2f, 10f, Mathf.Clamp(intensity, 0f, 1f), false, true, true);
@@ -677,7 +680,7 @@ namespace SubmersedVR
         public static void Postfix(uGUI_ButtonSound __instance)
         {
             //Mod.logger.LogInfo($"uGUI_ButtonSound.OnPointerEnter");
-            HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.3f, true);
+            HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f,HapticsVR.defaultUIAmplitude, true);
         }
     }     
     [HarmonyPatch(typeof(uGUI_OptionSelection), nameof(uGUI_OptionSelection.OnSelect))]
@@ -686,7 +689,7 @@ namespace SubmersedVR
         public static void Postfix(uGUI_OptionSelection __instance)
         {
             //Mod.logger.LogInfo($"uGUI_ChoiceSound.OnValueChanged");
-            HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.3f, true);
+            HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f,HapticsVR.defaultUIAmplitude, true);
         }
     } 
 
@@ -696,7 +699,7 @@ namespace SubmersedVR
         public static void Postfix(uGUI_ToggleOptionSound __instance)
         {
             //Mod.logger.LogInfo($"uGUI_ToggleOptionSound.OnValueChanged");
-            HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.3f, true);
+            HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude, true);
         }
     } 
 
@@ -717,7 +720,7 @@ namespace SubmersedVR
         public static void Postfix(Selectable __instance)
         {
             //Mod.logger.LogInfo($"Selectable.OnPointerEnter");
-            HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.3f, true);
+            HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude, true);
         }
     }  
 
@@ -728,7 +731,7 @@ namespace SubmersedVR
         public static void Postfix(uGUI_ListEntry __instance)
         {          
             //Mod.logger.LogInfo($"uGUI_ListEntry.OnPointerEnter");
-            HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.3f, true);
+            HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude, true);
         }
     }
 
@@ -739,7 +742,7 @@ namespace SubmersedVR
         public static void Postfix(uGUI_EquipmentSlot __instance)
         {          
             //Mod.logger.LogInfo($"uGUI_EquipmentSlot.OnPointerEnter");
-            HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.3f, true);
+            HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude, true);
         }
     }
 
@@ -749,7 +752,7 @@ namespace SubmersedVR
         public static void Postfix(uGUI_BlueprintsTab __instance)
         {          
             //Mod.logger.LogInfo($"uGUI_EquipmentSlot.OnPointerEnter");
-            HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.3f, true);
+            HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude, true);
         }
     }
 
@@ -760,7 +763,7 @@ namespace SubmersedVR
         public static void Postfix(uGUI_ItemIcon __instance)
         {          
             //Mod.logger.LogInfo($"uGUI_ItemIcon.OnPointerEnter");
-            HapticsVR.PlayHaptics(0.0f, 0.05f, 10f, 0.15f, true);
+            HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude, true);
         }
     }
 

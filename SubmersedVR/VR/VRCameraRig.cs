@@ -271,10 +271,6 @@ namespace SubmersedVR
                 camera.transform.localPosition = Vector3.zero; //new Vector3(0.0f, 2.0f, 0.0f);
                 camera.transform.localRotation = Quaternion.identity;
 
-                //should work for hiding ui during screenshots but it doesnt
-                //var obj = camera.gameObject.AddComponent<HideForScreenshots>();
-                //obj.type = HideForScreenshots.HideType.HUD;
-
                 // Set all canvas scalers to static, which makes UI better usable
                 FindObjectsOfType<uGUI_CanvasScaler>().Where(obj => !obj.name.Contains("PDA")).ForEach(cs => cs.vrMode = uGUI_CanvasScaler.Mode.Static);
                 SetupPDA();

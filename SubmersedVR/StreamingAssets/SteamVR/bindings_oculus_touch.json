@@ -42,6 +42,15 @@
             {
                "inputs" : {
                   "click" : {
+                     "output" : "/actions/subnautica/in/sprint"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/right/input/joystick"
+            },
+            {
+               "inputs" : {
+                  "click" : {
                      "output" : "/actions/subnautica/in/movedown"
                   }
                },
@@ -204,6 +213,21 @@
                "mode" : "dpad",
                "parameters" : {
                   "sub_mode" : "touch"
+               },
+               "path" : "/user/hand/left/input/joystick"
+            },
+            {
+               "inputs" : {
+                  "east" : {
+                     "output" : "/actions/subnautica/in/cycleprev"
+                  },
+                  "west" : {
+                     "output" : "/actions/subnautica/in/cyclenext"
+                  }
+               },
+               "mode" : "dpad",
+               "parameters" : {
+                  "sub_mode" : "click"
                },
                "path" : "/user/hand/left/input/joystick"
             },

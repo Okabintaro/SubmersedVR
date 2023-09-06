@@ -69,6 +69,7 @@ namespace SubmersedVR
             if(GameInput.lastInputPressed[(int)GameInput.lastDevice] == 106) //F5 key
             {
                 //SteamVrGameInput.debugSnapTurn = !SteamVrGameInput.debugSnapTurn;
+                //Mod.logger.LogInfo($"Snap turn debugging is {SteamVrGameInput.debugSnapTurn}");
                 /*
                 foreach (HideForScreenshots hideForScreenshots in UnityEngine.Object.FindObjectsOfType<HideForScreenshots>())
                 {
