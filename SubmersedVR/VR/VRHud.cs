@@ -173,7 +173,7 @@ namespace SubmersedVR
         private static bool touchingWrist = false;
         private static bool prevTouchingWrist = false;
 
-        public static GameObject pointerDot;
+        //public static GameObject pointerDot;
         public static TextMeshProUGUI entry;
 
         public static FMODAsset CreateFMODAsset(string eventPath)

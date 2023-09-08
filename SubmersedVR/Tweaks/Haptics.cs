@@ -397,6 +397,71 @@ namespace SubmersedVR
         }
     }
 
+    [HarmonyPatch(typeof(uGUI_FoodBar), nameof(uGUI_FoodBar.OnPulse))]
+    public static class FoodbarHaptics
+    {
+        public static void Postfix(uGUI_FoodBar __instance, float scalar)
+        {
+            if (__instance.pulseAnimationState == null)
+		    {
+			    return;
+		    }
+            //Mod.logger.LogInfo($"uGUI_FoodBar.OnPulse called scaler = {scalar} statePulse = {__instance.pulseAnimationState.normalizedTime}");
+            if((__instance.pulseAnimationState.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.pulseAnimationState.normalizedTime < HapticsVR.effectsTimer && __instance.pulseAnimationState.normalizedTime != 0f))
+            {
+                //HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.3f, false, !Settings.PutBarsOnWrist, true);
+                CoroutineHost.StartCoroutine(HapticsVR.PlayerHeartbeat());
+            }
+            HapticsVR.effectsTimer = __instance.pulseAnimationState.normalizedTime;
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_OxygenBar), nameof(uGUI_OxygenBar.OnPulse))]
+    public static class OxygenBarHaptics
+    {
+        public static void Postfix(uGUI_OxygenBar __instance, float scalar)
+        {
+            //Mod.logger.LogInfo($"uGUI_OxygenBar.OnPulse called scaler = {scalar} statePulse = {__instance.pulseAnimationState.normalizedTime}");
+            if((__instance.statePulse.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.statePulse.normalizedTime < HapticsVR.effectsTimer && __instance.statePulse.normalizedTime != 0f))
+            {
+                CoroutineHost.StartCoroutine(HapticsVR.PlayerHeartbeat());
+            }
+            HapticsVR.effectsTimer = __instance.statePulse.normalizedTime;
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_WaterBar), nameof(uGUI_WaterBar.OnPulse))]
+    public static class WaterbarHaptics
+    {
+        public static void Postfix(uGUI_WaterBar __instance, float scalar)
+        {
+            if (__instance.pulseAnimationState == null)
+		    {
+			    return;
+		    }
+            //Mod.logger.LogInfo($"uGUI_WaterBar.OnPulse called scaler = {scalar} statePulse = {__instance.pulseAnimationState.normalizedTime}");
+            if((__instance.pulseAnimationState.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.pulseAnimationState.normalizedTime < HapticsVR.effectsTimer && __instance.pulseAnimationState.normalizedTime != 0f))
+            {
+                CoroutineHost.StartCoroutine(HapticsVR.PlayerHeartbeat());
+            }
+            HapticsVR.effectsTimer = __instance.pulseAnimationState.normalizedTime;
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_BodyHeatMeter), nameof(uGUI_BodyHeatMeter.OnPulse))]
+    public static class BodyHeatMeterHaptics
+    {
+        public static void Postfix(uGUI_BodyHeatMeter __instance, float scalar)
+        {
+            //Mod.logger.LogInfo($"uGUI_BodyHeatMeter.OnPulse called scaler = {scalar} statePulse = {__instance.pulseAnimationState.normalizedTime}");
+            if((__instance.statePulse.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.statePulse.normalizedTime < HapticsVR.effectsTimer && __instance.statePulse.normalizedTime != 0f))
+            {
+                CoroutineHost.StartCoroutine(HapticsVR.PlayerHeartbeat());
+            }
+            HapticsVR.effectsTimer = __instance.statePulse.normalizedTime;
+        }
+    }
+
     //Player taking direct damage
     //This is not called if the damage is enough to kill the player
     [HarmonyPatch(typeof(Player), nameof(Player.OnTakeDamage))]
@@ -592,7 +657,7 @@ namespace SubmersedVR
                 HapticsVR.effectsTimer += Time.deltaTime;
                 if(HapticsVR.effectsTimer > 0.10)
                 {
-                    Mod.logger.LogInfo($"ScannerTool.Update {Time.deltaTime}"); 
+                    //Mod.logger.LogInfo($"ScannerTool.Update {Time.deltaTime}"); 
                     HapticsVR.PlayHaptics(0.0f, 0.10f, 10f, HapticsVR.effectsScale, false);
                     HapticsVR.effectsTimer = 0.0f;
                     HapticsVR.effectsScale += 0.20f;

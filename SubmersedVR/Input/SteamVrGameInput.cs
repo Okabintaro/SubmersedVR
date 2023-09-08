@@ -152,9 +152,89 @@ namespace SubmersedVR
     }
 
     // Implement Snap turning for the player
+    //Using Prefix for now while trying to figure out snap turning bug
+    //Can use PostFix version when issue has been resolved
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetLookDelta))]
     public static class SnapTurning
     {
+        public static bool Prefix(GameInput __instance, ref Vector2 __result)
+        {
+            float r = 0.0f;
+            float l = 0.0f;
+            Vector2 vector = Vector2.zero;
+            if (!GameInput.scanningInput && !GameInput.clearInput)
+            {
+                if (GameInput.controllerEnabled)
+                {
+                    Vector2 zero = Vector2.zero;
+                    r = GameInput.GetAnalogValueForButton(GameInput.Button.LookRight);
+                    l = GameInput.GetAnalogValueForButton(GameInput.Button.LookLeft);
+                    float f = r - l;
+                    float f2 = GameInput.GetAnalogValueForButton(GameInput.Button.LookUp) - GameInput.GetAnalogValueForButton(GameInput.Button.LookDown);
+                    zero.x = Mathf.Sign(f) * Mathf.Pow(Mathf.Abs(f), 2f) * 500f * GameInput.controllerSensitivity.x * Time.deltaTime;
+                    zero.y = Mathf.Sign(f2) * Mathf.Pow(Mathf.Abs(f2), 2f) * 500f * GameInput.controllerSensitivity.y * Time.deltaTime;
+                    if (GameInput.invertController)
+                    {
+                        zero.y = -zero.y;
+                    }
+                    vector += zero;
+                }
+                if (GameInput.IsKeyboardAvailable())
+                {
+                    float num = GameInput.mouseSensitivity;
+                    float num2 = GameInput.mouseSensitivity;
+                    Vector2 zero2 = Vector2.zero;
+                    zero2.x += GameInput.axisValues[8] * num2;
+                    zero2.y += GameInput.axisValues[9] * num;
+                    if (GameInput.invertMouse)
+                    {
+                        zero2.y = -zero2.y;
+                    }
+                    vector += zero2;
+                }
+            }
+            bool isInExosuit = Player.main?.inExosuit == true;
+            bool isOnSnowBike = Player.main?.inHovercraft == true;
+            bool isPilotingSeatruck = Player.main?.inSeatruckPilotingChair == true;
+            
+            if ((Settings.IsSnapTurningEnabled && !(isInExosuit || isOnSnowBike || isPilotingSeatruck)) || (Settings.IsExosuitSnapTurningEnabled && isInExosuit) || (Settings.IsSnowBikeSnapTurningEnabled && isOnSnowBike))
+            {
+                float angle = Settings.SnapTurningAngle; //player
+                if(Settings.IsExosuitSnapTurningEnabled && isInExosuit)
+                {
+                    angle = Settings.ExosuitSnapTurningAngle;
+                }
+                if(Settings.IsSnowBikeSnapTurningEnabled && isOnSnowBike)
+                {
+                    angle = Settings.SnowBikeSnapTurningAngle;
+                }
+
+                float lookX = vector.x;
+                float absX = Mathf.Abs(lookX);
+                float threshold = 0.5f;
+
+                if (absX > threshold && !SteamVrGameInput.SnapTurned) 
+                {
+                    vector.x = angle * Mathf.Sign(lookX);
+                    SteamVrGameInput.SnapTurned = true;
+                } 
+                else  
+                {
+                    vector.x = 0;
+                    if (absX <= threshold) {
+                        SteamVrGameInput.SnapTurned = false;
+                    }
+                }
+                //DebugPanel.Show($"GetLookDelta: r={r} l={l} lr={r - l} delta={Time.deltaTime} lookX={lookX} absX = {absX} res={vector.x}");
+            }
+
+            __result = vector;
+
+            return false;
+        }
+    
+
+#if false
         public static void Postfix(ref Vector2 __result)
         {
            //bool isInVehicle = Player.main?.currentMountedVehicle != null || (Player.main?.IsPiloting() == true);
@@ -179,37 +259,6 @@ namespace SubmersedVR
                 float threshold = 0.5f;
                 if(SteamVrGameInput.debugSnapTurn)
                 {
-                    //When snap turning temporarily stops working the absX values are consistently way too small.
-                    //For example 
-                    /*
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -1.278882E-05 absX = 1.278882E-05 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.006563202 absX = 0.006563202 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.01748386 absX = 0.01748386 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.01372059 absX = 0.01372059 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.007662193 absX = 0.007662193 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.00552019 absX = 0.00552019 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.001945586 absX = 0.001945586 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.001071194 absX = 0.001071194 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.0006412331 absX = 0.0006412331 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = 0.0005760753 absX = 0.0005760753 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = 0.001943999 absX = 0.001943999 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = 0.003332607 absX = 0.003332607 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = 0.002658113 absX = 0.002658113 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = 0.003036913 absX = 0.003036913 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = 0.003188544 absX = 0.003188544 snapTurned = False
-                    */
-                    //As compared to a correct output
-                    /*
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.008898057 absX = 0.008898057 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.3006316 absX = 0.3006316 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -0.6367133 absX = 0.6367133 snapTurned = False
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -1.722365 absX = 1.722365 snapTurned = True
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -2.857881 absX = 2.857881 snapTurned = True
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -2.429947 absX = 2.429947 snapTurned = True
-                    [Info   :SubmersedVR] GameInput.GetLookDelta inExosuit = False onSnowBike = False angle = 30 looX = -2.409516 absX = 2.409516 snapTurned = True
-                    */
-                    //So Either GetAnalogValueForButton is returning the wrong value or GameInput.controllerSensitivity is getting changed somehow
-                    //Hard coding GameInput.controllerSensitivity below in case thats the issue
                     Mod.logger.LogInfo($"GameInput.GetLookDelta inExosuit = {isInExosuit} onSnowBike = {isOnSnowBike} angle = {angle} looX = {lookX} absX = {absX} snapTurned = {SteamVrGameInput.SnapTurned}");
                 }
                 if (absX > threshold && !SteamVrGameInput.SnapTurned) 
@@ -221,17 +270,14 @@ namespace SubmersedVR
                 {
                     __result.x = 0;
                     if (absX <= threshold) {
-                        GameInput.controllerSensitivity.x = 0.405f;
                         SteamVrGameInput.SnapTurned = false;
                     }
                 }
             }
-            //else
-            //{
-            //    Shader.SetGlobalFloat(ShaderPropertyID._UweVrFadeAmount, 1000f);
-            //}
          }
+ #endif
     }
+
 
     // Pretend the controlers are always available to make Subnautica not switch to Keyboard/Mouse and mess VR controls up
     // TODO: This should/could probably be changed though, asking SteamVR if controllers are available?
@@ -333,6 +379,7 @@ namespace SubmersedVR
                     break;
                 case GameInput.Button.LookLeft:
                     vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
+                    //DebugPanel.Show($"LookLeft: {vec}");
                     value = vec.x < 0.0f ? -vec.x : 0.0f;
                     break;
             }

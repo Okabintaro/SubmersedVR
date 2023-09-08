@@ -19,6 +19,7 @@ namespace SubmersedVR
     using System.Collections.Generic;
     using UWEXR;
     using System.Reflection.Emit;
+    using System.CodeDom;
 
     class VRCameraRig : MonoBehaviour
     {
@@ -372,7 +373,7 @@ namespace SubmersedVR
                     }           
                 }
                 Player.main.armsController.transform.localScale = new Vector3(Settings.PlayerScale, Settings.PlayerScale, Settings.PlayerScale);        
-
+                Player.main.playerController.standheight = 1.5f * Settings.PlayerScale; 
             }
         }
 
@@ -416,6 +417,43 @@ namespace SubmersedVR
     }
 
     #region Patches
+
+    [HarmonyPatch(typeof(PlayerController), nameof(PlayerController.forwardReference), MethodType.Getter)]
+    public static class MoveDirectionOverride
+    {
+        public static Transform controllerTransform;
+        static bool Prefix(PlayerController __instance, ref Transform __result)
+        {
+            if(Settings.HandBasedTurning)
+            {
+                //Use the Camera's position and the laser pointer's rotation
+                if(controllerTransform == null)
+                {
+                    controllerTransform = new GameObject().transform;
+                }
+                controllerTransform.position = MainCamera.camera.transform.position;
+                controllerTransform.rotation = VRCameraRig.instance.laserPointer.transform.rotation;
+                __result = controllerTransform;
+            }
+            else
+            {
+                __result = MainCamera.camera.transform;
+            }
+            return false;
+        }
+    }
+
+/*
+    [HarmonyPatch(typeof(UnderwaterMotor), nameof(UnderwaterMotor.UpdateMove))]
+    public static class MovementDirectionTest
+    {
+        static bool Prefix(UnderwaterMotor __instance)
+        {
+            //__instance.playerController.forwardReference.rotation = Quaternion.Euler(new Vector3(0f,Player.main.playerController.forwardReference.rotation.eulerAngles.y, Player.main.playerController.forwardReference.rotation.eulerAngles.z));
+            return true;
+        }
+    }
+*/
 
     [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnLateUpdate))]
     public static class PlayerPositionFixer

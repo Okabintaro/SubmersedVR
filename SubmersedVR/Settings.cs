@@ -58,6 +58,8 @@ namespace SubmersedVR
         public static bool EnableGameHaptics = false;
         public static bool EnableUIHaptics = false;
 
+        public static bool HandBasedTurning = false;
+
 
         // Saves or loads all public static properties as settings using the given serializer
         internal static void Serialize(GameSettings.ISerializer serializer)
@@ -96,6 +98,9 @@ namespace SubmersedVR
             int tab = panel.AddTab("Submersed VR");
 
             panel.AddHeading(tab, "Controls");
+            panel.AddChoiceOption<string>(tab, "Movement Mode", new string[] {"Head Based", "Hand Based"}, HandBasedTurning ? "Hand Based" : "Head Based", (value) => {
+                HandBasedTurning = value == "Hand Based";
+            });
             panel.AddToggleOption(tab, "Enable Player Snap Turning", IsSnapTurningEnabled, (value) => { IsSnapTurningEnabled = value;
                 if (IsSnapTurningEnabledChanged != null) {
                     IsSnapTurningEnabledChanged(value);

@@ -69,8 +69,8 @@ namespace SubmersedVR
                 case Constructor _: return new TransformOffset(new Vector3(0.042f, 0.076f, -0.166f), new Vector3(53.635f, 151.667f, 249.508f));
                 case LEDLight _: return new TransformOffset(new Vector3(0.051f, 0.113f, -0.122f), new Vector3(20.287f, 157.143f, 262.503f));
                 //case Knife _: return new TransformOffset(new Vector3(0.008f, 0.095f, -0.115f), new Vector3(17.193f, 162.033f, 250.308f));
-                case HeatBlade _: return new TransformOffset(new Vector3(0.011f, 0.074f, -0.134f), new Vector3(34.705f, 171.102f, 254.320f));
-                case Knife _: return new TransformOffset(new Vector3(0.011f, 0.074f, -0.134f), new Vector3(34.705f, 171.102f, 254.320f));
+                case HeatBlade _: return new TransformOffset(new Vector3(0.002f, 0.070f, -0.139f), new Vector3(35.311f, 158.499f, 244.373f));
+                case Knife _: return new TransformOffset(new Vector3(0.002f, 0.070f, -0.139f), new Vector3(35.311f, 158.499f, 244.373f));
                 case FlashLight _: return new TransformOffset(new Vector3(-0.043f, 0.077f, -0.147f), new Vector3(13.952f, 173.934f, 243.317f));
                 case Beacon _: return new TransformOffset(new Vector3(-0.056f, 0.065f, -0.166f), new Vector3(45.693f, 162.076f, 253.284f));
                 case StasisRifle _: return new TransformOffset(new Vector3(0.013f, 0.091f, -0.155f), new Vector3(32.203f, 147.266f, 237.102f));
