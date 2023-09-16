@@ -59,6 +59,7 @@ namespace SubmersedVR
         public static bool EnableUIHaptics = false;
 
         public static bool HandBasedTurning = false;
+        public static bool ArticulatedHands = false;
 
 
         // Saves or loads all public static properties as settings using the given serializer
@@ -144,6 +145,7 @@ namespace SubmersedVR
             panel.AddSliderOption(tab, "Snowbike Height Offset", SnowBikeYOffset, -0.2f, 0.4f, SnowBikeYOffset, 0.01f, (value) => { SnowBikeYOffset = value; }, SliderLabelMode.Float, "0.00");
         
             panel.AddHeading(tab, "Experimental");
+            panel.AddToggleOption(tab, "Articulated Hands", ArticulatedHands, (value) => { ArticulatedHands = value;  }, "Hands animate based on the movement of your physical hands.");
             panel.AddToggleOption(tab, "Full body", FullBody, (value) => { FullBody = value; FullBodyChanged(value); }, "See the full body instead of just the hands and feet.");
             panel.AddSliderOption(tab, "Body Scale", PlayerScale, 0.8f, 1.2f, PlayerScale, 0.01f, (value) => { PlayerScale = value; }, SliderLabelMode.Float, "0.00");
             panel.AddToggleOption(tab, "Enable Game Haptics", EnableGameHaptics, (value) => { EnableGameHaptics = value; }, "Enable controller vibration while interacting with world objects.");

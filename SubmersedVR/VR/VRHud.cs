@@ -155,7 +155,7 @@ namespace SubmersedVR
     {
         //private static TransformOffset wristOffset = new TransformOffset(new Vector3(-0.079f, 0.148f, -0.158f), new Vector3(350.494f, 88.400f, 244.161f));
         //This works for Valve Index
-        private static TransformOffset wristOffset = new TransformOffset(new Vector3(-0.05f, 0.15f, -0.142f), new Vector3(15.494f, 88.400f, 244.161f));
+        private static TransformOffset wristOffset = new TransformOffset(new Vector3(-0.016f, 0.123f, -0.128f), new Vector3(15.494f, 74.4f, 245.161f));
         //private static TransformOffset wristOffset = new TransformOffset(new Vector3(-0.044f, 0.16f, -0.158f), new Vector3(15.494f, 88.400f, 244.161f));
         private static GameObject wristTarget;
         private static Canvas canvas;
@@ -176,6 +176,12 @@ namespace SubmersedVR
         //public static GameObject pointerDot;
         public static TextMeshProUGUI entry;
 
+        public static string AdjustHUD(float pX, float pY, float pZ, float aX, float aY, float aZ)
+        {
+            WristHud.wristOffset = new TransformOffset(new Vector3(WristHud.wristOffset.Pos.x + (pX/1000), WristHud.wristOffset.Pos.y + (pY/1000), WristHud.wristOffset.Pos.z + (pZ/1000)), new Vector3(WristHud.wristOffset.Angles.x + aX, WristHud.wristOffset.Angles.y + aY, WristHud.wristOffset.Angles.z + aZ));
+            WristHud.wristOffset.Apply(WristHud.wristTarget.transform);
+            return $"AdjustHUD\npX={WristHud.wristOffset.Pos.x.ToString("0.000")}\npY={WristHud.wristOffset.Pos.y.ToString("0.000")}\npZ={WristHud.wristOffset.Pos.z.ToString("0.000")}\naX={WristHud.wristOffset.Angles.x}\naY={WristHud.wristOffset.Angles.y}\naZ={WristHud.wristOffset.Angles.z}";
+        }
         public static FMODAsset CreateFMODAsset(string eventPath)
         {
             FMODAsset asset = ScriptableObject.CreateInstance<FMODAsset>();

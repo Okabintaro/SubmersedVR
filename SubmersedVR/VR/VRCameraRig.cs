@@ -55,12 +55,11 @@ namespace SubmersedVR
 
         float yVelocity = 0.0f;
 
-/*
-        //Using these booleans instead of doing a component lookup during Update() calls
-        public bool isPilotingSeaTruck = false;
-        public bool isPilotingSnowbike = false;
-        public bool isPilotingExosuit = false;
-*/
+        //SetTarget can be called before the quickslots are set up. For example when a game
+        //first loads and you were piloting the SeaTruck in the save. This holds the target
+        //reference until the quickslots exist
+        IQuickSlots deferredTarget = null;
+
         public Camera UIControllerCamera
         {
             get
@@ -114,7 +113,120 @@ namespace SubmersedVR
         {
             this.rigParentTarget = target;
         }
+/*
+ -export_skeleton
+ --head_rig
+ ---Cam
+ ----cam_offset
+ -----cam_forward
+ -----cam_up
+ ---neck
+ ----chest
+ -----clav_L
+ ------clav_L_aim
+ -------LArm_PoleTarg
+ -------shoulder_L
+ --------elbow_L
+ ---------elbow_L_twist_rig
+ ---------hand_L
+ ----------attachL
+ -----------PlayerPDA
+ ------------Mesh
+ ------------ScreenAnchor
+ -----------spikeytrap_tentacle_attach
+ ----------hand_L_midl_base
+ -----------hand_L_midl_mid
+ ------------hand_L_midl_tip
+ ----------hand_L_pinky_base
+ -----------hand_L_pinky_mid
+ ------------hand_L_pinky_tip
+ ----------hand_L_point_base
+ -----------hand_L_point_mid
+ ------------hand_L_point_tip
+ ----------hand_L_ring_base
+ -----------hand_L_ring_mid
+ ------------hand_L_ring_tip
+ ----------hand_L_thumb_base
+ -----------hand_L_thumb_mid
+ ------------hand_L_thumb_tip
+ ----------metacarpal_L
+ ----------bleeder_attach
+ --------shoulder_L_twist1_rig
+ --------shoulder_L_twist2_rig
+ -----clav_R
+ ------clav_R_aim
+ -------RArm_PoleTarg
+ -------shoulder_R
+ --------elbow_R
+ ---------elbow_R_twist_rig
+ ---------hand_R
+ ----------attach1
+ -----------attach1_forward
+ -----------attach1_up
+ ----------hand_R_midl_base
+ -----------hand_R_midl_mid
+ ------------hand_R_midl_tip_rig
+ ----------hand_R_pinky_base
+ -----------hand_R_pinky_mid
+ ------------hand_R_pinky_tip_rig
+ ----------hand_R_point_base
+ -----------hand_R_point_mid
+ ------------hand_R_point_tip_rig
+ ----------hand_R_ring_base
+ -----------hand_R_ring_mid
+ ------------hand_R_ring_tip_rig
+ ----------hand_R_thumb_base
+ -----------hand_R_thumb_mid
+ ------------hand_R_thumb_tip_rig
+ ----------left_hand_elbowTarget
+ ----------left_hand_target
+ ----------metacarpal_R
+ --------shoulder_R_twist1_rig
+ --------shoulder_R_twist2_rig
+ -----spine_3
+ ------spine_2
+ -------spine_1
+ --------hips
+ ---------thigh_L
+ ----------calf_L
+ -----------ankle_L
+ ------------toe_L_rig
+ -------------Flipper1_L
+ ---------thigh_R
+ ----------calf_R
+ -----------ankle_R
+ ------------toe_R
+ -------------Flipper1_R
+ ---ponytail_base
+ ----ponytail_1
+ -----ponytail_2
+ ------ponytail_3
+ -------ponytail_4
+ ---robin_head_selfies
+ ----Robin_Head_geo
+ ---FlashlightHelmet
+ ----helmet_geo
+ -female_geo
+ --base
+ ---female_base_body_geo
+ ---female_base_flipper_geo
+ ---female_base_gloves_geo
+ ---female_base_hand_geo
+ ---female_base_head_geo
+ ---female_base_mask_geo
+ --coldProtective
+ ---female_coldProtectiveSuit_body_geo
+ ---female_coldProtectiveSuit_hands_geo
+ ---female_coldProtectiveSuit_head_geo
+ ---female_coldProtectiveSuit_mask_geo
+ --reinforced
+ ---female_reinforced_body_geo
+ ---female_reinforced_hands_geo
+ --stillSuit
+ ---female_stillSuit_body_geo
+ --bottom
 
+*/
         public void SetupControllers()
         {
             // TODO: Naming is inconsistent, clean this mess up, only need 1/2 pointers?
@@ -277,6 +389,11 @@ namespace SubmersedVR
                 SetupPDA();
                 VrQuickSlots = new GameObject("VRQuickSlots").ResetTransform().AddComponent<VRQuickSlots>();
                 VrQuickSlots.Setup(SteamVR_Actions.subnautica_OpenQuickSlotWheel);
+                if(deferredTarget != null)
+                {
+                    VrQuickSlots.SetTarget(deferredTarget);
+                    deferredTarget = null;
+                }
             }
             else
             {
@@ -288,6 +405,17 @@ namespace SubmersedVR
             VRHud.Setup(uiCamera, rightControllerUI.transform);
         }
 
+        public void SetQuickSlotsTarget(IQuickSlots target)
+        {
+            if(VrQuickSlots == null)
+            {
+                deferredTarget = target;
+            }
+            else
+            {
+                VrQuickSlots.SetTarget(target);
+            }
+        }
         void SetupPDA()
         {
             // Move the quickslots to bottom of PDA bottom left and make it bigger
@@ -372,6 +500,7 @@ namespace SubmersedVR
                         //Player.main.armsController.transform.position = MainCameraControl.main.transform.position + (MainCameraControl.main.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
                     }           
                 }
+                //Experimental player scaling
                 Player.main.armsController.transform.localScale = new Vector3(Settings.PlayerScale, Settings.PlayerScale, Settings.PlayerScale);        
                 Player.main.playerController.standheight = 1.5f * Settings.PlayerScale; 
             }
@@ -418,6 +547,7 @@ namespace SubmersedVR
 
     #region Patches
 
+    //Head based vs Hand based movement
     [HarmonyPatch(typeof(PlayerController), nameof(PlayerController.forwardReference), MethodType.Getter)]
     public static class MoveDirectionOverride
     {
@@ -427,12 +557,13 @@ namespace SubmersedVR
             if(Settings.HandBasedTurning)
             {
                 //Use the Camera's position and the laser pointer's rotation
+                //Use a dummy object to hold the transform
                 if(controllerTransform == null)
                 {
                     controllerTransform = new GameObject().transform;
                 }
                 controllerTransform.position = MainCamera.camera.transform.position;
-                controllerTransform.rotation = VRCameraRig.instance.laserPointer.transform.rotation;
+                controllerTransform.rotation = VRCameraRig.GetTargetTansform().rotation; //the laser pointer transform
                 __result = controllerTransform;
             }
             else
@@ -455,6 +586,7 @@ namespace SubmersedVR
     }
 */
 
+    //Adjust the player position while piloting vehicles with vr offset positions and user overrides
     [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnLateUpdate))]
     public static class PlayerPositionFixer
     {

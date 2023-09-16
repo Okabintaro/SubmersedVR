@@ -7,12 +7,16 @@ using RootMotion.FinalIK;
 using System;
 using System.Globalization;
 
+
+
 namespace SubmersedVR
 {
     extern alias SteamVRActions;
     extern alias SteamVRRef;
+    using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
     using System.Collections.Generic;
+
 
     public struct TransformOffset
     {
@@ -54,40 +58,44 @@ namespace SubmersedVR
     static class HandOffsets
     {
         // Default Offset when no tool is Equipped
-        public static TransformOffset RightHand = new TransformOffset(new Vector3(0.05f, 0.06f, -0.17f), new Vector3(40.0f, 175.0f, 270.0f));
-        public static TransformOffset LeftHand = new TransformOffset(new Vector3(-0.05f, 0.06f, -0.17f), new Vector3(-40.0f, 0.0f, 90.0f));
-        public static TransformOffset PDA = new TransformOffset(new Vector3(-0.05f, 0.05f, -0.14f), new Vector3(305.0f, 355.0f, 100.0f));
+        //public static TransformOffset RightHand = new TransformOffset(new Vector3(0.05f, 0.06f, -0.17f), new Vector3(40.0f, 175.0f, 270.0f));
+        //public static TransformOffset LeftHand = new TransformOffset(new Vector3(-0.05f, 0.06f, -0.17f), new Vector3(-40.0f, 0.0f, 90.0f));
+        public static TransformOffset RightHand =  new TransformOffset(new Vector3(0.008f, 0.048f, -0.153f), new Vector3(36.736f, 204.358f, 281.731f));
+        public static TransformOffset LeftHand =  new TransformOffset(new Vector3(-0.008f, 0.048f, -0.153f), new Vector3(-36.736f, -22.358f, 101.731f));
+        public static TransformOffset PDA = new TransformOffset(new Vector3(-0.04f, -0.01f, -0.18f), new Vector3(312.0f, 339.0f, 118.0f));
 
         internal static TransformOffset GetHandOffset(this PlayerTool tool)
         {
             switch (tool)
             {
                 case FireExtinguisher _: return new TransformOffset(new Vector3(0.062f, 0.077f, -0.148f), new Vector3(40.736f, 139.849f, 249.888f));
-                case Seaglide _: return new TransformOffset(new Vector3(0.032f, 0.004f, -0.122f), new Vector3(63.358f, 183.803f, 289.671f));
-                case Gravsphere _: return new TransformOffset(new Vector3(-0.022f, 0.049f, -0.179f), new Vector3(46.409f, 158.708f, 255.986f));
-                case DeployableStorage _: return new TransformOffset(new Vector3(0.017f, 0.099f, -0.135f), new Vector3(27.633f, 159.160f, 251.929f));
-                case Constructor _: return new TransformOffset(new Vector3(0.042f, 0.076f, -0.166f), new Vector3(53.635f, 151.667f, 249.508f));
-                case LEDLight _: return new TransformOffset(new Vector3(0.051f, 0.113f, -0.122f), new Vector3(20.287f, 157.143f, 262.503f));
+                case Seaglide _: return new TransformOffset(new Vector3(0.055f, -0.008f, -0.170f), new Vector3(56.208f, 190.815f, 300.073f));
+                case Gravsphere _: return new TransformOffset(new Vector3(0.000f, 0.026f, -0.187f), new Vector3(39.548f, 161.521f, 241.912f));
+                case DeployableStorage _: return new TransformOffset(new Vector3(0.000f, -0.025f, -0.173f), new Vector3(63.504f, 123.350f, 192.938f));
+                case Constructor _: return new TransformOffset(new Vector3(0.011f, 0.016f, -0.175f), new Vector3(46.927f, 159.837f, 244.111f));
+                case LEDLight _: return new TransformOffset(new Vector3(-0.014f, 0.052f, -0.174f), new Vector3(25.686f, 159.462f, 230.006f));
                 //case Knife _: return new TransformOffset(new Vector3(0.008f, 0.095f, -0.115f), new Vector3(17.193f, 162.033f, 250.308f));
-                case HeatBlade _: return new TransformOffset(new Vector3(0.002f, 0.070f, -0.139f), new Vector3(35.311f, 158.499f, 244.373f));
-                case Knife _: return new TransformOffset(new Vector3(0.002f, 0.070f, -0.139f), new Vector3(35.311f, 158.499f, 244.373f));
-                case FlashLight _: return new TransformOffset(new Vector3(-0.043f, 0.077f, -0.147f), new Vector3(13.952f, 173.934f, 243.317f));
-                case Beacon _: return new TransformOffset(new Vector3(-0.056f, 0.065f, -0.166f), new Vector3(45.693f, 162.076f, 253.284f));
+                case HeatBlade _: return new TransformOffset(new Vector3(-0.006f, 0.053f, -0.144f), new Vector3(22.605f, 169.347f, 253.672f));
+                case Knife _: return new TransformOffset(new Vector3(-0.006f, 0.053f, -0.144f), new Vector3(22.605f, 169.347f, 253.672f));
+                case FlashLight _: return new TransformOffset(new Vector3(-0.001f, 0.056f, -0.205f), new Vector3(42.308f, 176.628f, 250.467f));
+                case Beacon _: return new TransformOffset(new Vector3(-0.007f, 0.048f, -0.208f), new Vector3(53.772f, 166.540f, 253.121f));
                 case StasisRifle _: return new TransformOffset(new Vector3(0.013f, 0.091f, -0.155f), new Vector3(32.203f, 147.266f, 237.102f));
-                case PropulsionCannonWeapon _: return new TransformOffset(new Vector3(-0.048f, 0.108f, -0.157f), new Vector3(11.552f, 167.761f, 242.069f));
-                case BuilderTool _: return new TransformOffset(new Vector3(-0.015f, 0.071f, -0.115f), new Vector3(23.094f, 171.526f, 256.598f)); 
-                case AirBladder _: return new TransformOffset(new Vector3(-0.032f, 0.090f, -0.133f), new Vector3(7.689f, 145.798f, 224.260f));
-                case Welder _: return new TransformOffset(new Vector3(0.003f, 0.061f, -0.174f), new Vector3(38.321f, 165.592f, 251.612f));
-                case ScannerTool _: return new TransformOffset(new Vector3(-0.001f, -0.010f, -0.208f), new Vector3(57.830f, 141.500f, 218.863f));
+                case PropulsionCannonWeapon _: return new TransformOffset(new Vector3(-0.009f, 0.064f, -0.150f), new Vector3(13.698f, 168.461f, 244.767f));
+                case BuilderTool _: return new TransformOffset(new Vector3(0.025f, 0.012f, -0.198f), new Vector3(53.604f, 163.256f, 247.458f)); 
+                case AirBladder _: return new TransformOffset(new Vector3(-0.011f, 0.032f, -0.175f), new Vector3(35.419f, 161.485f, 227.887f));
+                case Welder _: return new TransformOffset(new Vector3(0.005f, 0.049f, -0.187f), new Vector3(36.966f, 165.995f, 252.229f));
+                case ScannerTool _: return new TransformOffset(new Vector3(0.000f, 0.022f, -0.202f), new Vector3(52.459f, 153.129f, 231.355f));
                 //case ScannerTool _: return new TransformOffset(new Vector3(0.003f, 0.030f, -0.212f), new Vector3(46.895f, 169.689f, 261.732f));
-                case LaserCutter _: return new TransformOffset(new Vector3(0.006f, 0.062f, -0.165f), new Vector3(36.058f, 166.251f, 252.623f));
-                case Flare _: return new TransformOffset(new Vector3(0.022f, 0.011f, -0.099f), new Vector3(31.626f, 164.053f, 248.553f));
+                case LaserCutter _: return new TransformOffset(new Vector3(0.006f, 0.051f, -0.178f), new Vector3(37.351f, 166.002f, 252.017f));
+                case Flare _: return new TransformOffset(new Vector3(0.005f, 0.035f, -0.176f), new Vector3(30.936f, 159.593f, 233.597f));
                 case RepulsionCannon _: return new TransformOffset(new Vector3(-0.002f, 0.088f, -0.166f), new Vector3(33.777f, 149.093f, 232.610f));
-                case SpyPenguinRemote _: return new TransformOffset(new Vector3(0.061f, 0.032f, -0.167f), new Vector3(42.475f, 164.059f, 267.806f));
-                case SpyPenguinPlayerTool _: return new TransformOffset(new Vector3(0.040f, 0.046f, -0.168f), new Vector3(50.492f, 198.253f, 291.693f));
-                case DiveReel _: return new TransformOffset(new Vector3(0.013f, 0.036f, -0.144f), new Vector3(49.622f, 154.604f, 231.200f));
-                case TeleportationTool _: return new TransformOffset(new Vector3(0.048f, 0.016f, -0.172f), new Vector3(59.271f, 178.526f, 272.862f));
-                case MetalDetector _: return new TransformOffset(new Vector3(-0.012f, 0.052f, -0.166f), new Vector3(44.017f, 172.117f, 247.519f));
+                case SpyPenguinRemote _: return new TransformOffset(new Vector3(0.040f, 0.041f, -0.181f), new Vector3(36.275f, 155.571f, 251.696f));
+                case SpyPenguinPlayerTool _: return new TransformOffset(new Vector3(0.030f, 0.023f, -0.193f), new Vector3(47.005f, 196.721f, 289.403f));
+                case DiveReel _: return new TransformOffset(new Vector3(0.008f, 0.020f, -0.167f), new Vector3(46.825f, 153.870f, 230.479f));
+                case TeleportationTool _: return new TransformOffset(new Vector3(0.011f, 0.013f, -0.199f), new Vector3(60.300f, 173.113f, 254.254f));
+                case MetalDetector _: return new TransformOffset(new Vector3(0.000f, 0.042f, -0.170f), new Vector3(46.441f, 174.227f, 249.639f));
+                case CreatureTool _: return new TransformOffset(new Vector3(0.003f, 0.007f, -0.179f), new Vector3(51.316f, 171.030f, 244.545f));
+                case DropTool _: return new TransformOffset(new Vector3(0.020f, 0.038f, -0.172f), new Vector3(32.201f, 167.764f, 268.554f));
                 default: return RightHand;
             };
         }
@@ -96,7 +104,7 @@ namespace SubmersedVR
         {
             switch (tool)
             {
-                case BuilderTool _: return new TransformOffset(new Vector3(-0.021f, -0.040f, 0.030f), new Vector3(73.312f, 2.306f, 323.270f));
+                //case BuilderTool _: return new TransformOffset(new Vector3(-0.021f, -0.040f, 0.030f), new Vector3(73.312f, 2.306f, 323.270f));
                 //case ScannerTool _: return new TransformOffset(new Vector3(0.003f, 0.030f, -0.212f) + new Vector3(-0.014f, -0.031f, 0.008f), new Vector3(1.183f, -13.063f, -28.934f) - new Vector3(46.895f, 169.689f, 261.732f) );
                 case FireExtinguisher _: return new TransformOffset(new Vector3(0.003f, -0.101f, -0.054f), new Vector3(64.181f, 10.062f, 346.755f));
                 //case Seaglide _: return new TransformOffset(new Vector3(0.003f, -0.101f, -0.054f), new Vector3(64.181f, 10.062f, 346.755f));
@@ -108,7 +116,7 @@ namespace SubmersedVR
                 //case Welder _: return new TransformOffset(new Vector3(-0.028f, -0.017f, 0.056f), new Vector3(59.356f, 350.101f, 303.392f));
                 //case LaserCutter _: return new TransformOffset(new Vector3(-0.014f, -0.042f, 0.068f), new Vector3(60.953f, 4.267f, 316.030f));
                 //case HeatBlade _: return new TransformOffset(new Vector3(-0.016f, 0.033f, 0.004f), new Vector3(65.781f, 19.633f, 267.986f));
-                case LEDLight _: return new TransformOffset(new Vector3(-0.021f, 0.005f, -0.008f), new Vector3(63.596f, 40.279f, 283.758f));
+                //case LEDLight _: return new TransformOffset(new Vector3(-0.021f, 0.005f, -0.008f), new Vector3(63.596f, 40.279f, 283.758f));
                 default: return VRCameraRig.DefaultTargetTransform;
             };
         }
@@ -117,6 +125,42 @@ namespace SubmersedVR
 
     class VRHands : MonoBehaviour
     {
+        public enum HandSkeletonBone: int
+        {
+            eBone_Root = 0,
+            eBone_Wrist,
+            eBone_Thumb0,
+            eBone_Thumb1,
+            eBone_Thumb2,
+            eBone_Thumb3,
+            eBone_IndexFinger0,
+            eBone_IndexFinger1,
+            eBone_IndexFinger2,
+            eBone_IndexFinger3,
+            eBone_IndexFinger4,
+            eBone_MiddleFinger0,
+            eBone_MiddleFinger1,
+            eBone_MiddleFinger2,
+            eBone_MiddleFinger3,
+            eBone_MiddleFinger4,
+            eBone_RingFinger0,
+            eBone_RingFinger1,
+            eBone_RingFinger2,
+            eBone_RingFinger3,
+            eBone_RingFinger4,
+            eBone_PinkyFinger0,
+            eBone_PinkyFinger1,
+            eBone_PinkyFinger2,
+            eBone_PinkyFinger3,
+            eBone_PinkyFinger4,
+            eBone_Aux_Thumb,
+            eBone_Aux_IndexFinger,
+            eBone_Aux_MiddleFinger,
+            eBone_Aux_RingFinger,
+            eBone_Aux_PinkyFinger,
+            eBone_Count
+        };  
+
         public FullBodyBipedIK ik = null;
 
         public Transform leftTarget;
@@ -128,6 +172,12 @@ namespace SubmersedVR
         public Transform origRightHand;
         public Transform leftElbow;
         public Transform rightElbow;
+
+        public Transform[] leftHandFingers;
+        public Transform[] rightHandFingers;
+        public Vector3[] minRotation;
+        public Vector3[] maxRotation;
+        public int currentEditFinger = (int)HandSkeletonBone.eBone_IndexFinger1;
 
         public static VRHands instance;
 
@@ -158,6 +208,8 @@ namespace SubmersedVR
 
             UpdateBody();
 
+            SetupFingers();
+
             /*
             var calibrationTool = new OffsetCalibrationTool(rightTarget, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
             calibrationTool.enabled = Settings.IsDebugEnabled;
@@ -167,6 +219,121 @@ namespace SubmersedVR
             };
             */
         }
+
+        public void SetCurrentEditFinger(int val)
+        {
+            currentEditFinger = val;
+        }
+
+        public static string AdjustPDA(float pX, float pY, float pZ, float aX, float aY, float aZ)
+        {
+            HandOffsets.PDA = new TransformOffset(new Vector3(HandOffsets.PDA.Pos.x + (pX/1000), HandOffsets.PDA.Pos.y + (pY/1000), HandOffsets.PDA.Pos.z + (pZ/1000)), new Vector3(HandOffsets.PDA.Angles.x + aX,HandOffsets.PDA.Angles.y + aY,HandOffsets.PDA.Angles.z + aZ));
+            HandOffsets.PDA.Apply(VRHands.instance.leftTarget);
+            return $"AdjustPDA\npX={HandOffsets.PDA.Pos.x.ToString("0.000")}\npY={HandOffsets.PDA.Pos.y.ToString("0.000")}\npZ={HandOffsets.PDA.Pos.z.ToString("0.000")}\naX={HandOffsets.PDA.Angles.x}\naY={HandOffsets.PDA.Angles.y}\naZ={HandOffsets.PDA.Angles.z}";
+        }
+
+        public static string AdjustFinger(float x, float y, float z)
+        {
+            Vector3[] rotation = VRHands.instance.maxRotation;
+            rotation[VRHands.instance.currentEditFinger] += new Vector3(x, y, z);
+            return $"AdjustFinger\nindex={VRHands.instance.currentEditFinger} x={rotation[VRHands.instance.currentEditFinger].x} y={rotation[VRHands.instance.currentEditFinger].y} z={rotation[VRHands.instance.currentEditFinger].z}";
+        }
+        public void SetupFingers()
+        {     
+            string[] boneNamesLeft = new string[(int)HandSkeletonBone.eBone_Count];
+            boneNamesLeft[(int)HandSkeletonBone.eBone_Thumb1] = "/hand_L_thumb_base";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_Thumb2] = "/hand_L_thumb_base/hand_L_thumb_mid";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_Thumb3] = "/hand_L_thumb_base/hand_L_thumb_mid/hand_L_thumb_tip";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_IndexFinger1] = "/hand_L_point_base";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_IndexFinger2] = "/hand_L_point_base/hand_L_point_mid";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_IndexFinger3] = "/hand_L_point_base/hand_L_point_mid/hand_L_point_tip";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_MiddleFinger1] = "/hand_L_midl_base";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_MiddleFinger2] = "/hand_L_midl_base/hand_L_midl_mid";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_MiddleFinger3] = "/hand_L_midl_base/hand_L_midl_mid/hand_L_midl_tip";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_RingFinger1] = "/hand_L_ring_base";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_RingFinger2] = "/hand_L_ring_base/hand_L_ring_mid";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_RingFinger3] = "/hand_L_ring_base/hand_L_ring_mid/hand_L_ring_tip";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_PinkyFinger1] = "/hand_L_pinky_base";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_PinkyFinger2] = "/hand_L_pinky_base/hand_L_pinky_mid";
+            boneNamesLeft[(int)HandSkeletonBone.eBone_PinkyFinger3] = "/hand_L_pinky_base/hand_L_pinky_mid/hand_L_pinky_tip";
+
+            string[] boneNamesRight = new string[(int)HandSkeletonBone.eBone_Count];
+            boneNamesRight[(int)HandSkeletonBone.eBone_Thumb1] = "/hand_R_thumb_base";
+            boneNamesRight[(int)HandSkeletonBone.eBone_Thumb2] = "/hand_R_thumb_base/hand_R_thumb_mid";
+            boneNamesRight[(int)HandSkeletonBone.eBone_Thumb3] = "/hand_R_thumb_base/hand_R_thumb_mid/hand_R_thumb_tip_rig";
+            boneNamesRight[(int)HandSkeletonBone.eBone_IndexFinger1] = "/hand_R_point_base";
+            boneNamesRight[(int)HandSkeletonBone.eBone_IndexFinger2] = "/hand_R_point_base/hand_R_point_mid";
+            boneNamesRight[(int)HandSkeletonBone.eBone_IndexFinger3] = "/hand_R_point_base/hand_R_point_mid/hand_R_point_tip_rig";
+            boneNamesRight[(int)HandSkeletonBone.eBone_MiddleFinger1] = "/hand_R_midl_base";
+            boneNamesRight[(int)HandSkeletonBone.eBone_MiddleFinger2] = "/hand_R_midl_base/hand_R_midl_mid";
+            boneNamesRight[(int)HandSkeletonBone.eBone_MiddleFinger3] = "/hand_R_midl_base/hand_R_midl_mid/hand_R_midl_tip_rig";
+            boneNamesRight[(int)HandSkeletonBone.eBone_RingFinger1] = "/hand_R_ring_base";
+            boneNamesRight[(int)HandSkeletonBone.eBone_RingFinger2] = "/hand_R_ring_base/hand_R_ring_mid";
+            boneNamesRight[(int)HandSkeletonBone.eBone_RingFinger3] = "/hand_R_ring_base/hand_R_ring_mid/hand_R_ring_tip_rig";
+            boneNamesRight[(int)HandSkeletonBone.eBone_PinkyFinger1] = "/hand_R_pinky_base";
+            boneNamesRight[(int)HandSkeletonBone.eBone_PinkyFinger2] = "/hand_R_pinky_base/hand_R_pinky_mid";
+            boneNamesRight[(int)HandSkeletonBone.eBone_PinkyFinger3] = "/hand_R_pinky_base/hand_R_pinky_mid/hand_R_pinky_tip_rig";
+
+            minRotation = new Vector3[(int)HandSkeletonBone.eBone_Count];
+            for(int i = 0; i < minRotation.Length; i++)
+            {
+                minRotation[i] = Vector3.zero;
+            }
+
+            minRotation[(int)HandSkeletonBone.eBone_Thumb1] = new Vector3(50.2f, 65.0f, 23.1f);
+            minRotation[(int)HandSkeletonBone.eBone_Thumb2] = new Vector3(2.7f, -8f, 10f);
+            minRotation[(int)HandSkeletonBone.eBone_Thumb3] = new Vector3(0.0f, 0.0f, 2.2f);            
+
+            maxRotation = new Vector3[(int)HandSkeletonBone.eBone_Count];
+            maxRotation[(int)HandSkeletonBone.eBone_Thumb1] = new Vector3(20.2f, 50.2f, 31.6f);
+            maxRotation[(int)HandSkeletonBone.eBone_Thumb2] = new Vector3(37.7f, -8f, 34.0f);
+            maxRotation[(int)HandSkeletonBone.eBone_Thumb3] = new Vector3(0.0f, 0.0f, 52.9f);
+            maxRotation[(int)HandSkeletonBone.eBone_IndexFinger1] = new Vector3(-10f, -16f, 79.1f);
+            maxRotation[(int)HandSkeletonBone.eBone_IndexFinger2] = new Vector3(30.0f, 0.0f, 109.8f);
+            maxRotation[(int)HandSkeletonBone.eBone_IndexFinger3] = new Vector3(0.0f, 2.7f, 76.5f);
+            maxRotation[(int)HandSkeletonBone.eBone_MiddleFinger1] = new Vector3(-9f, -16f, 77.1f);
+            maxRotation[(int)HandSkeletonBone.eBone_MiddleFinger2] = new Vector3(20.0f, 0.0f, 96.8f);
+            maxRotation[(int)HandSkeletonBone.eBone_MiddleFinger3] = new Vector3(7.0f, 2.7f, 78.5f);
+            maxRotation[(int)HandSkeletonBone.eBone_RingFinger1] = new Vector3(-10f, -20f, 74.1f);
+            maxRotation[(int)HandSkeletonBone.eBone_RingFinger2] = new Vector3(15.0f, 0.0f, 94.8f);
+            maxRotation[(int)HandSkeletonBone.eBone_RingFinger3] = new Vector3(0.0f, 2.7f, 78.5f);
+            maxRotation[(int)HandSkeletonBone.eBone_PinkyFinger1] = new Vector3(-7f, -15f, 71.1f);
+            maxRotation[(int)HandSkeletonBone.eBone_PinkyFinger2] = new Vector3(6.0f, 0.0f, 101.8f);
+            maxRotation[(int)HandSkeletonBone.eBone_PinkyFinger3] = new Vector3(-8f, 2.7f, 78.5f);
+            
+            leftHandFingers = new Transform[(int)HandSkeletonBone.eBone_Count];
+            rightHandFingers = new Transform[(int)HandSkeletonBone.eBone_Count];
+            var animator = Player.main?.playerAnimator;
+            if (animator is Animator anim)
+            {
+                for(int i = 0; i < boneNamesLeft.Length; i++)
+                {
+                    String boneName = boneNamesLeft[i];
+                    if(boneName != null)
+                    {
+                        leftHandFingers[i] = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_L/clav_L_aim/shoulder_L/hand_L" + boneName);
+                        if(leftHandFingers[i] == null)
+                        {
+                            leftHandFingers[i] = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_L/clav_L_aim/shoulder_L/elbow_L/hand_L" + boneName);
+                        }
+                    }
+                }
+                for(int i = 0; i < boneNamesRight.Length; i++)
+                {
+                    String boneName = boneNamesRight[i];
+                    if(boneName != null)
+                    {
+                        rightHandFingers[i] = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_R/clav_R_aim/shoulder_R/hand_R" + boneName);
+                        if(rightHandFingers[i] == null)
+                        {
+                            rightHandFingers[i] = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_R/clav_R_aim/shoulder_R/elbow_R/hand_R" + boneName);
+                        }
+                    }
+                }
+            }
+
+        }
+
 
         public void SetHandParents(bool fullbody)
         {
@@ -244,12 +411,72 @@ namespace SubmersedVR
                 // Reset Elbows
                 leftElbow.transform.SetPositionAndRotation(leftHand.position, leftHand.rotation);
                 rightElbow.transform.SetPositionAndRotation(rightHand.position, rightHand.rotation);
-
-                //if(WristHud.GetIndexFingerTip() is Transform indexTip)
-                //{
-                //    DebugPanel.Show($" uiIndexPos = {indexTip.transform.position} {indexTip.localPosition} ");
-                //}
             }
+
+            if(Settings.ArticulatedHands)
+            {
+                SteamVR_Action_Skeleton rightSkeletonAction = SteamVR_Input.GetSkeletonAction("RightHandSkeleton");
+                SteamVR_Action_Skeleton leftSkeletonAction = SteamVR_Input.GetSkeletonAction("LeftHandSkeleton");
+                //DebugPanel.Show($"GetLookDelta: 0={skeletonAction.boneRotations[11].eulerAngles}\n 1={skeletonAction.boneRotations[12].eulerAngles}\n2={skeletonAction.boneRotations[13].eulerAngles}\n3={skeletonAction.boneRotations[14].eulerAngles}\ncurl={skeletonAction.middleCurl}", true);
+                //DebugPanel.Show($"Fingers: 1={rightHandFingers[(int)HandSkeletonBone.eBone_Thumb1].transform.localRotation.eulerAngles}\n2={rightHandFingers[(int)HandSkeletonBone.eBone_Thumb2].transform.localRotation.eulerAngles}\n3={rightHandFingers[(int)HandSkeletonBone.eBone_Thumb3].transform.localRotation.eulerAngles}", true);
+                //DebugPanel.Show($"Fingers: {leftSkeletonAction.skeletalTrackingLevel} {leftSkeletonAction.indexCurl} {leftSkeletonAction.pinkyCurl}", true);
+
+                if(!Player.main.pda.isOpen)
+                {
+                    UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_PinkyFinger1, leftSkeletonAction.pinkyCurl);
+                    UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_RingFinger1, leftSkeletonAction.ringCurl);
+                    UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_MiddleFinger1, leftSkeletonAction.middleCurl);
+                    UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_IndexFinger1, leftSkeletonAction.indexCurl);
+                    UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_Thumb1, leftSkeletonAction.thumbCurl);
+                }
+               
+                if(Inventory.main.GetHeld() == null)
+                {
+                    UpdateFinger(rightHandFingers, (int)HandSkeletonBone.eBone_PinkyFinger1, rightSkeletonAction.pinkyCurl);
+                    UpdateFinger(rightHandFingers, (int)HandSkeletonBone.eBone_RingFinger1, rightSkeletonAction.ringCurl);
+                    UpdateFinger(rightHandFingers, (int)HandSkeletonBone.eBone_MiddleFinger1, rightSkeletonAction.middleCurl);
+                    UpdateFinger(rightHandFingers, (int)HandSkeletonBone.eBone_IndexFinger1, rightSkeletonAction.indexCurl);
+                    UpdateFinger(rightHandFingers, (int)HandSkeletonBone.eBone_Thumb1, rightSkeletonAction.thumbCurl);
+                    
+                    //SN right ring finger is deformed for some reason so this corrects it
+                    Vector3 minRotation =  new Vector3(8.0f, -5.0f, -2.2f);
+                    Vector3 maxRotation = new Vector3(-5f, -20f, 74.1f); //this.maxRotation[(int)HandSkeletonBone.eBone_RingFinger1]; //
+                    rightHandFingers[(int)HandSkeletonBone.eBone_RingFinger1].transform.localRotation = Quaternion.Euler(minRotation.x + ((maxRotation.x - minRotation.x) * rightSkeletonAction.ringCurl), minRotation.y + ((maxRotation.y - minRotation.y) * rightSkeletonAction.ringCurl), minRotation.z + ((maxRotation.z - minRotation.z) * rightSkeletonAction.ringCurl));
+                    minRotation = Vector3.zero;
+                    maxRotation = new Vector3(28f, 0f, 94.8f); 
+                    rightHandFingers[(int)HandSkeletonBone.eBone_RingFinger2].transform.localRotation = Quaternion.Euler(minRotation.x + ((maxRotation.x - minRotation.x) * rightSkeletonAction.ringCurl), minRotation.y + ((maxRotation.y - minRotation.y) * rightSkeletonAction.ringCurl), minRotation.z + ((maxRotation.z - minRotation.z) * rightSkeletonAction.ringCurl));
+                }
+
+            }
+           
+
+/*
+            for(int i = 0; i < leftHandFingers.Length; i++)
+            {
+                Transform finger = leftHandFingers[i];
+                if(finger != null)
+                {
+                    //finger.transform.localRotation = Quaternion.Euler(-skeletonAction.boneRotations[i].eulerAngles.x, -skeletonAction.boneRotations[i].eulerAngles.y, -skeletonAction.boneRotations[i].eulerAngles.z); //skeletonAction.boneRotations[12] * new Quaternion(-1, 1, -1, 1); //Quaternion.Euler(0f,0f,0f); 
+                    finger.transform.localRotation = skeletonAction.boneRotations[i].GetInverse();
+                }
+            }
+*/
+            /*
+            leftMidBase.transform.localRotation = Quaternion.Euler(-skeletonAction.boneRotations[(int)HandSkeletonBone.eBone_MiddleFinger1].eulerAngles.x, -skeletonAction.boneRotations[12].eulerAngles.y, -skeletonAction.boneRotations[12].eulerAngles.z); //skeletonAction.boneRotations[12] * new Quaternion(-1, 1, -1, 1); //Quaternion.Euler(0f,0f,0f); 
+            leftMidMid.transform.localRotation = Quaternion.Euler(-skeletonAction.boneRotations[13].eulerAngles.x, -skeletonAction.boneRotations[13].eulerAngles.y, -skeletonAction.boneRotations[13].eulerAngles.z); //skeletonAction.boneRotations[13] * new Quaternion(-1, 1, -1, 1); //Quaternion.Euler(0f,0f,0f); 
+            leftMidTip.transform.localRotation = Quaternion.Euler(-skeletonAction.boneRotations[14].eulerAngles.x, -skeletonAction.boneRotations[14].eulerAngles.y, -skeletonAction.boneRotations[14].eulerAngles.z); //skeletonAction.boneRotations[14] * new Quaternion(-1, 1, -1, 1); //Quaternion.Euler(0f,0f,0f); 
+            
+            rightMidBase.transform.localRotation = rightSkeletonAction.boneRotations[12].GetInverse();
+            rightMidMid.transform.localRotation = rightSkeletonAction.boneRotations[13].GetInverse();
+            rightMidTip.transform.localRotation = rightSkeletonAction.boneRotations[14].GetInverse();
+            */
+        }
+
+        public void UpdateFinger(Transform[] fingers,int fingerID, float percent)
+        {
+            fingers[fingerID].transform.localRotation = Quaternion.Euler(minRotation[fingerID].x + ((maxRotation[fingerID].x - minRotation[fingerID].x) * percent), minRotation[fingerID].y + ((maxRotation[fingerID].y - minRotation[fingerID].y) * percent), minRotation[fingerID].z + ((maxRotation[fingerID].z - minRotation[fingerID].z) * percent));
+            fingers[fingerID+1].transform.localRotation = Quaternion.Euler(minRotation[fingerID+1].x + ((maxRotation[fingerID+1].x - minRotation[fingerID+1].x) * percent), minRotation[fingerID+1].y + ((maxRotation[fingerID+1].y - minRotation[fingerID+1].y) * percent), minRotation[fingerID+1].z + ((maxRotation[fingerID+1].z - minRotation[fingerID+1].z) * percent));
+            fingers[fingerID+2].transform.localRotation = Quaternion.Euler(minRotation[fingerID+2].x + ((maxRotation[fingerID+2].x - minRotation[fingerID+2].x) * percent), minRotation[fingerID+2].y + ((maxRotation[fingerID+2].y - minRotation[fingerID+2].y) * percent), minRotation[fingerID+2].z + ((maxRotation[fingerID+2].z - minRotation[fingerID+2].z) * percent));
         }
 
         public void UpdateBody()

@@ -2,6 +2,7 @@ using System;
 using HarmonyLib;
 using UnityEngine;
 
+
 #pragma warning disable Harmony003
 namespace SubmersedVR
 {
@@ -40,7 +41,8 @@ namespace SubmersedVR
             }
             return SteamVR_Actions.subnautica.UIScroll.GetAxis(SteamVR_Input_Sources.Any);
         }
-    }
+
+     }
 
     // The following three patches map the steamvr actions to the button states
     // TODO: They could be optimized by using a switch instead of the GetStateDown(string) lookup
@@ -77,8 +79,15 @@ namespace SubmersedVR
             {
                 actionName = "Deconstruct";
             }
- 
+
             __result = SteamVR_Input.GetStateDown(actionName, SteamVR_Input_Sources.Any);
+
+            //When sprint and Open Quick Slot actions conflict, dont sprint
+            if(Player.main?.inSeatruckPilotingChair == true && actionName == "Sprint" && SteamVR_Input.GetStateDown("OpenQuickSlotWheel", SteamVR_Input_Sources.Any))
+            {
+                __result = false;
+            }
+
             return false;
         }
     }
@@ -100,6 +109,13 @@ namespace SubmersedVR
                 actionName = "Deconstruct";
             }          
             __result = SteamVR_Input.GetStateUp(actionName, SteamVR_Input_Sources.Any);
+            
+            //When sprint and Open Quick Slot actions conflict, dont sprint
+            if(Player.main?.inSeatruckPilotingChair == true && actionName == "Sprint" && SteamVR_Input.GetStateDown("OpenQuickSlotWheel", SteamVR_Input_Sources.Any))
+            {
+                __result = false;
+            }
+
             return false;
         }
     }
@@ -120,6 +136,12 @@ namespace SubmersedVR
                 actionName = "Deconstruct";
             }          
              __result = SteamVR_Input.GetState(actionName, SteamVR_Input_Sources.Any);
+            
+            //When sprint and Open Quick Slot actions conflict, dont sprint
+            if(Player.main?.inSeatruckPilotingChair == true && actionName == "Sprint" && SteamVR_Input.GetStateDown("OpenQuickSlotWheel", SteamVR_Input_Sources.Any))
+            {
+                __result = false;
+            }
             return false;
         }
     }
@@ -225,7 +247,7 @@ namespace SubmersedVR
                         SteamVrGameInput.SnapTurned = false;
                     }
                 }
-                //DebugPanel.Show($"GetLookDelta: r={r} l={l} lr={r - l} delta={Time.deltaTime} lookX={lookX} absX = {absX} res={vector.x}");
+                //DebugPanel.Show($"GetLookDelta: r={r} l={l} lr={r - l} delta={Time.deltaTime} lookX={lookX} absX = {absX} res={vector.x}", true);
             }
 
             __result = vector;
@@ -406,6 +428,18 @@ namespace SubmersedVR
             return false;
         }
     }
+
+    
+    //Why doesnt this work?
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.SetupDefaultControllerBindings))]
+    public static class SetupDefaultControllerBindingsFix
+    {
+        static void Postfix(GameInput __instance)
+        {
+            GameInput.SetBindingInternal(GameInput.Device.Controller, GameInput.Button.Sprint, GameInput.BindingSet.Primary, "ControllerButtonRightStick");
+        }
+    }
+    
 
     // This makes GameInput.AnyKeyDown() return true incase any boolean action is pressed. Is needed for the intro skip and credits.
     // But hmm, where is the any key on the controllers? (https://www.youtube.com/watch?v=st6-DgWeuos)

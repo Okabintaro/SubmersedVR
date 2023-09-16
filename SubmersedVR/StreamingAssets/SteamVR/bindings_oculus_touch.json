@@ -25,7 +25,16 @@
                "path" : "/user/hand/right/pose/raw"
             }
          ],
-         "skeleton" : [],
+         "skeleton" : [
+            {
+               "output" : "/actions/subnautica/in/lefthandskeleton",
+               "path" : "/user/hand/left/input/skeleton/left"
+            },
+            {
+               "output" : "/actions/subnautica/in/righthandskeleton",
+               "path" : "/user/hand/right/input/skeleton/right"
+            }
+         ],
          "sources" : [
             {
                "inputs" : {
@@ -43,6 +52,18 @@
                "inputs" : {
                   "click" : {
                      "output" : "/actions/subnautica/in/sprint"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/right/input/joystick"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/subnautica/in/openquickslotwheel"
+                  },
+                  "position" : {
+                     "output" : "/actions/subnautica/in/look"
                   }
                },
                "mode" : "joystick",
@@ -101,18 +122,6 @@
                },
                "mode" : "button",
                "path" : "/user/hand/right/input/trigger"
-            },
-            {
-               "inputs" : {
-                  "click" : {
-                     "output" : "/actions/subnautica/in/openquickslotwheel"
-                  },
-                  "position" : {
-                     "output" : "/actions/subnautica/in/look"
-                  }
-               },
-               "mode" : "joystick",
-               "path" : "/user/hand/right/input/joystick"
             },
             {
                "inputs" : {
