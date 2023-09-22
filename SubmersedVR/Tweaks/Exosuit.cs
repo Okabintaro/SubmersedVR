@@ -10,7 +10,7 @@ namespace SubmersedVR
     }
 
     #region Patches
-
+/*
     //Snap turning override
     [HarmonyPatch(typeof(Vehicle), nameof(Vehicle.Update))]
     static class VehicleSnapTurnFixer
@@ -27,6 +27,8 @@ namespace SubmersedVR
                     __instance.mainAnimator.SetFloat("view_pitch", __instance.steeringWheelPitch * 45f);
                 }
             }
+            Mod.logger.LogInfo($"Vehicle.Update controlScheme = {__instance.controlSheme}");                       
+
             if (__instance.GetPilotingMode() && __instance.CanPilot() && (__instance.moveOnLand || __instance.transform.position.y < Ocean.GetOceanLevel()))
             {
                 Vector2 vector = AvatarInputHandler.main.IsEnabled() ? GameInput.GetLookDelta() : Vector2.zero;
@@ -42,6 +44,7 @@ namespace SubmersedVR
                 }
                 else if (__instance.controlSheme == Vehicle.ControlSheme.Submarine || __instance.controlSheme == Vehicle.ControlSheme.Mech)
                 {
+                    Mod.logger.LogInfo($"Vehicle.Update in Exosuit {vector}");                       
                     //Exosuit
                     if (vector.x != 0f)
                     {
@@ -51,6 +54,7 @@ namespace SubmersedVR
                         }
                         if(Settings.IsExosuitSnapTurningEnabled == true)
                         {
+                            Mod.logger.LogInfo($"Vehicle.Update with snap turning called x = {vector.x}");                       
                             __instance.useRigidbody.transform.rotation = Quaternion.Euler( new Vector3(  __instance.useRigidbody.transform.rotation.eulerAngles.x, __instance.useRigidbody.transform.rotation.eulerAngles.y + vector.x,  __instance.useRigidbody.transform.rotation.eulerAngles.z));
                         }
                     }
@@ -72,7 +76,7 @@ namespace SubmersedVR
             return false;
         }
     }
-
+*/
     #endregion
 
 }

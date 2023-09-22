@@ -179,6 +179,7 @@ namespace SubmersedVR
         public Vector3[] maxRotation;
         public int currentEditFinger = (int)HandSkeletonBone.eBone_IndexFinger1;
 
+
         public static VRHands instance;
 
         // private OffsetCalibrationTool calibrationTool;
@@ -392,12 +393,15 @@ namespace SubmersedVR
             ResetHandTargets();
         }
 
+
         void Update()
         {
             if (ik.enabled && uGUI_SpyPenguin.main.activePenguin == false)
             {
-                ik.solver.leftHandEffector.target = leftTarget;
-                ik.solver.rightHandEffector.target = rightTarget;
+                Transform t = PhysicalPilotingVR.GetCurrentPilotingTarget(PhysicalPilotingVR.PhysicalPilotingHand.Left);
+                ik.solver.leftHandEffector.target = t ?? leftTarget;
+                t = PhysicalPilotingVR.GetCurrentPilotingTarget(PhysicalPilotingVR.PhysicalPilotingHand.Right);
+                ik.solver.rightHandEffector.target = t ?? rightTarget;
             }
         }
 
@@ -405,12 +409,13 @@ namespace SubmersedVR
         {
             if(!ik.enabled && uGUI_SpyPenguin.main.activePenguin == false)
             {
-                leftHand.transform.SetPositionAndRotation(leftTarget.position, leftTarget.rotation);
-                rightHand.transform.SetPositionAndRotation(rightTarget.position, rightTarget.rotation);
+                Transform t = PhysicalPilotingVR.GetCurrentPilotingTarget(PhysicalPilotingVR.PhysicalPilotingHand.Left);
+                leftHand.transform.SetPositionAndRotation((t ?? leftTarget).position, (t ?? leftTarget).rotation);
+                leftElbow.transform.SetPositionAndRotation(leftHand.position, leftHand.rotation); // Reset Elbows
 
-                // Reset Elbows
-                leftElbow.transform.SetPositionAndRotation(leftHand.position, leftHand.rotation);
-                rightElbow.transform.SetPositionAndRotation(rightHand.position, rightHand.rotation);
+                t = PhysicalPilotingVR.GetCurrentPilotingTarget(PhysicalPilotingVR.PhysicalPilotingHand.Right);
+                rightHand.transform.SetPositionAndRotation((t ?? rightTarget).position, (t ?? rightTarget).rotation);
+                rightElbow.transform.SetPositionAndRotation(rightHand.position, rightHand.rotation); // Reset Elbows
             }
 
             if(Settings.ArticulatedHands)
@@ -480,14 +485,22 @@ namespace SubmersedVR
         }
 
         public void UpdateBody()
-        {            
-            //var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true);
-            //foreach (var bodyRenderer in bodyRenderers)
-            //{
-            //    Mod.logger.LogInfo($"bodyRenderer {bodyRenderer.name}");
-            //}
+        {    
+            /*        
+            var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true);
+            foreach (var bodyRenderer in bodyRenderers)
+            {
+                Mod.logger.LogInfo($"bodyRenderer {bodyRenderer.name}");
+            }
+            */
 
-           StartCoroutine(UpdateBodyRendering());
+            StartCoroutine(UpdateBodyRendering());
+        }
+
+        public void SetHandRendering(bool val)
+        {
+            var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("hand") || r.name.Contains("glove"));
+            bodyRenderers.ForEach(r => r.enabled = val);
         }
 
         public void SetBodyRendering(bool val)
@@ -577,6 +590,8 @@ namespace SubmersedVR
         public static void Postfix(ArmsController __instance, PlayerTool tool)
         {
             VRHands.instance?.OnToolEquipped(tool);
+
+            //Fix weird left arm elbow bend
             if(!__instance.pda.isInUse)
             {
                 VRHands.instance.ik.solver.GetBendConstraint(FullBodyBipedChain.LeftArm).bendGoal =  Player.main.armsController.defaultLeftArmBendGoal;  
@@ -584,6 +599,7 @@ namespace SubmersedVR
 
         }
     }
+
 
     //Dont do the built in tool animations when first picking up a tool
     [HarmonyPatch(typeof(PlayerTool), nameof(PlayerTool.Awake))]

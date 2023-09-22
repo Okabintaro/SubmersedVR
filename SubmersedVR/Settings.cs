@@ -60,6 +60,8 @@ namespace SubmersedVR
 
         public static bool HandBasedTurning = false;
         public static bool ArticulatedHands = false;
+        public static bool PhysicalDriving = false;
+        public static bool PhysicalLockedGrips = false;
 
 
         // Saves or loads all public static properties as settings using the given serializer
@@ -146,7 +148,9 @@ namespace SubmersedVR
         
             panel.AddHeading(tab, "Experimental");
             panel.AddToggleOption(tab, "Articulated Hands", ArticulatedHands, (value) => { ArticulatedHands = value;  }, "Hands animate based on the movement of your physical hands.");
-            panel.AddToggleOption(tab, "Full body", FullBody, (value) => { FullBody = value; FullBodyChanged(value); }, "See the full body instead of just the hands and feet.");
+            panel.AddToggleOption(tab, "Physical Driving", PhysicalDriving, (value) => { PhysicalDriving = value;  }, "Grip Vehicle controls to steer.");
+            panel.AddToggleOption(tab, "Locked Steering Grips", PhysicalLockedGrips, (value) => { PhysicalLockedGrips = value;  }, "Gripping the steering control locks your hands to the steering so you dont have to constantly grip. Grip again to unlock.");
+            panel.AddToggleOption(tab, "Full Body", FullBody, (value) => { FullBody = value; FullBodyChanged(value); }, "See the full body instead of just the hands and feet.");
             panel.AddSliderOption(tab, "Body Scale", PlayerScale, 0.8f, 1.2f, PlayerScale, 0.01f, (value) => { PlayerScale = value; }, SliderLabelMode.Float, "0.00");
             panel.AddToggleOption(tab, "Enable Game Haptics", EnableGameHaptics, (value) => { EnableGameHaptics = value; }, "Enable controller vibration while interacting with world objects.");
             panel.AddToggleOption(tab, "Enable UI Haptics", EnableUIHaptics, (value) => { EnableUIHaptics = value; }, "Enable controller vibration while interacting with the User Interface.");

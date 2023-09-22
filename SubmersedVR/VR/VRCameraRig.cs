@@ -782,7 +782,7 @@ namespace SubmersedVR
         }
     }
 
-
+/* Moved to SnapTurning.cs
     // Disable the last XRSettings.enabled branch by replacing it with false/0
     [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnUpdate))]
     public static class DisableVRLockMechanic
@@ -794,7 +794,7 @@ namespace SubmersedVR
             }).ThrowIfNotMatch("Could not find last thingy").SetInstruction(new CodeInstruction(OpCodes.Ldc_I4_0)).InstructionEnumeration();
         }
     }
-
+*/
     // Disable the XRSettings.enabled to disable HandReticle Patch
     [HarmonyPatch(typeof(HandReticle), nameof(HandReticle.LateUpdate))]
     public static class DisableHandReticleVR
