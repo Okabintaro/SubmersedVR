@@ -52,7 +52,9 @@ Feel free to suggest changes if it's not already reported yet.
 
 #### Will this work with Below Zero?
 
-No. At least not yet. We might see how hard it is to port it to Below Zero, but it's not a priority right now.
+Yes! @jbusfield ported the mod to Below Zero and is working on a lot of other nice features.
+
+Take a look at [the releases of the fork](https://github.com/jbusfield/SubmersedVR/releases) to try that version out.
 
 Credits/Thanks
 --------------
