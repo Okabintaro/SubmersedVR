@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace SubmersedVR
 {
@@ -32,6 +33,12 @@ namespace SubmersedVR
         public static bool PutBarsOnWrist;
         public static event BooleanChanged PutBarsOnWristChanged;
 
+        public static bool EnableGameHaptics = false;
+        public static bool EnableUIHaptics = false;
+        public static bool ArticulatedHands = false;
+
+        public static bool PhysicalDriving = false;
+        public static bool PhysicalLockedGrips = false;
 
         // public static float HudDistance = 1.0f;
         // public static event FloatChanged HudDistanceChanged;
@@ -86,6 +93,11 @@ namespace SubmersedVR
             });
 
             panel.AddHeading(tab, "Experimental");
+            panel.AddToggleOption(tab, "Articulated Hands", ArticulatedHands, (value) => { ArticulatedHands = value;  }, "Hands animate based on the movement of your physical hands.");
+            panel.AddToggleOption(tab, "Enable Game Haptics", EnableGameHaptics, (value) => { EnableGameHaptics = value; }, "Enable controller vibration while interacting with world objects.");
+            panel.AddToggleOption(tab, "Enable UI Haptics", EnableUIHaptics, (value) => { EnableUIHaptics = value; }, "Enable controller vibration while interacting with the User Interface.");
+            panel.AddToggleOption(tab, "Physical Driving", PhysicalDriving, (value) => { PhysicalDriving = value;  }, "Grip Vehicle controls to steer.");
+            panel.AddToggleOption(tab, "Locked Steering Grips", PhysicalLockedGrips, (value) => { PhysicalLockedGrips = value;  }, "Gripping the steering control locks your hands to the steering so you dont have to constantly grip. Grip again to unlock.");
             panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
             panel.AddToggleOption(tab, "Invert Y Axis in Seamoth/Cameras", InvertYAxis, (value) => { InvertYAxis = value; InvertYAxisChanged(value); }, "Enables Y axis inversion for Seamoth and Cameras.");
@@ -146,6 +158,19 @@ namespace SubmersedVR
         {
             __result = !VROptions.enableCinematics;
             return false;
+        }
+    }
+
+    // This function add back in the ability to toggle fullscreen on the flatscreen display.
+    [HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.AddGeneralTab))]
+    static class ReAddFullscreenOption
+    {
+        public static void Postfix(uGUI_OptionsPanel __instance)
+        {
+			__instance.AddToggleOption(__instance.tabs.Count - 1, "Fullscreen", Screen.fullScreen, new UnityAction<bool>(__instance.OnFullscreenChanged), null);
+			string[] resolutionOptions = uGUI_OptionsPanel.GetResolutionOptions(out __instance.resolutions);
+			int currentResolutionIndex = uGUI_OptionsPanel.GetCurrentResolutionIndex(__instance.resolutions);
+			__instance.resolutionOption = __instance.AddChoiceOption(__instance.tabs.Count - 1, "Resolution", resolutionOptions, currentResolutionIndex, new UnityAction<int>(__instance.OnResolutionChanged), null);
         }
     }
 

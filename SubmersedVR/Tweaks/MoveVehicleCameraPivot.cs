@@ -20,7 +20,7 @@ namespace SubmersedVR
     {
         public static void Postfix(Exosuit __instance)
         {
-            __instance.playerPosition.transform.localPosition = new Vector3(0.0f, 0.0f, 0.2f);
+            __instance.playerPosition.transform.localPosition = new Vector3(0.0f, 0.2f, 0.2f);
         }
     }
 
