@@ -8,7 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <!-- NOTE: Change this to your own directoy when building -->
-    <SubnauticaDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\Subnautica</SubnauticaDir>
+    <SubnauticaDir>I:\Program Files (x86)\Steam\steamapps\common\Subnautica</SubnauticaDir>
     <NoWarn>$(NoWarn);CS0436</NoWarn>
     <BuildDir>Build</BuildDir>
     <!-- <BuildDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\Subnautica</BuildDir> -->

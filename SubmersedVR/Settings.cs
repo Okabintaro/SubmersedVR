@@ -13,6 +13,11 @@ namespace SubmersedVR
         public static event BooleanChanged IsSnapTurningEnabledChanged;
         public static float SnapTurningAngle = 45.0f;
         public static event FloatChanged SnapTurningAngleChanged;
+        
+        public static float PlayerTurnSpeed = 1.0f;
+        public static float PlayerMoveSpeed = 1.0f;
+        public static float VehicleTurnSpeed = 1.0f;
+        public static float VehicleMoveSpeed = 1.0f;
 
         public static bool IsDebugEnabled;
         public static event BooleanChanged IsDebugChanged;
@@ -62,7 +67,7 @@ namespace SubmersedVR
                         p.SetValue(null, serializer.Serialize($"{ns}/{name}", val));
                         break;
                     default:
-                        Mod.logger.LogError($"Can't save/load setting {name} with type {value.GetType()}");
+                        Mod.logger.LogError($"Cant save/load setting {name} with type {value.GetType()}");
                         break;
                 }
             }
@@ -78,14 +83,32 @@ namespace SubmersedVR
                     IsSnapTurningEnabledChanged(value);
                 }
             });
+            
             panel.AddChoiceOption<float>(tab, "Snap Turning Angle(°)", new float[] {22.5f, 45, 90}, SnapTurningAngle, (value) => {
                 SnapTurningAngle = value;
                 if (SnapTurningAngleChanged != null) {
                     SnapTurningAngleChanged(value);
                 }
             });
+            
+            panel.AddSliderOption(tab, "Player Turn Speed", PlayerTurnSpeed * 100f, 25, 100, 75,1f, delegate (float v){
+                PlayerTurnSpeed = v/100f;
+            }, SliderLabelMode.Float, "F0");
+
+            panel.AddSliderOption(tab, "Player Movement Speed", PlayerMoveSpeed * 100f, 25, 100, 75,1f, delegate (float v){
+                PlayerMoveSpeed = v/100f;
+            }, SliderLabelMode.Float, "F0");
+            
+            panel.AddSliderOption(tab, "Vehicle Turn Speed", VehicleTurnSpeed * 100f, 25, 100, 75,1f, delegate (float v){
+                VehicleTurnSpeed = v/100f;
+            }, SliderLabelMode.Float, "F0");
+            
+            panel.AddSliderOption(tab, "Vehicle Movement Speed", VehicleMoveSpeed * 100f, 25, 100, 75,1f, delegate (float v){
+                VehicleMoveSpeed = v/100f;
+            }, SliderLabelMode.Float, "F0");
 
             panel.AddHeading(tab, "Experimental");
+            
             panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
             panel.AddToggleOption(tab, "Invert Y Axis in Seamoth/Cameras", InvertYAxis, (value) => { InvertYAxis = value; InvertYAxisChanged(value); }, "Enables Y axis inversion for Seamoth and Cameras.");
