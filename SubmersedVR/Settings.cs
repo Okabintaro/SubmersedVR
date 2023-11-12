@@ -40,6 +40,31 @@ namespace SubmersedVR
         public static bool PhysicalDriving = false;
         public static bool PhysicalLockedGrips = false;
 
+        public static float SeamothLeftHorizontalCenterAngle = 0.0f;
+        public static float SeamothLeftVerticleCenterAngle = 0.0f;
+        public static float SeamothLeftDeadZone = 5.0f;
+        public static float SeamothLeftSensitivity = 0.0f;
+
+        public static float SeamothRightHorizontalCenterAngle = 0.0f;
+        public static float SeamothRightVerticleCenterAngle = 0.0f;
+        public static float SeamothRightDeadZone = 5.0f;
+
+        public static float ExosuitLeftHorizontalCenterAngle = 0.0f;
+        public static float ExosuitLeftVerticleCenterAngle = 0.0f;
+        public static float ExosuitLeftDeadZone = 5.0f;
+
+        public static float ExosuitRightHorizontalCenterAngle = 0.0f;
+        public static float ExosuitRightVerticleCenterAngle = 0.0f;
+        public static float ExosuitRightDeadZone = 5.0f;
+
+        public static float CyclopsLeftHorizontalCenterAngle = 0.0f;
+        public static float CyclopsLeftVerticleCenterAngle = 0.0f;
+        public static float CyclopsLeftDeadZone = 5.0f;
+
+        public static float CyclopsRightHorizontalCenterAngle = 0.0f;
+        public static float CyclopsRightVerticleCenterAngle = 0.0f;
+        public static float CyclopsRightDeadZone = 5.0f;
+
         // public static float HudDistance = 1.0f;
         // public static event FloatChanged HudDistanceChanged;
 
@@ -96,8 +121,6 @@ namespace SubmersedVR
             panel.AddToggleOption(tab, "Articulated Hands", ArticulatedHands, (value) => { ArticulatedHands = value;  }, "Hands animate based on the movement of your physical hands.");
             panel.AddToggleOption(tab, "Enable Game Haptics", EnableGameHaptics, (value) => { EnableGameHaptics = value; }, "Enable controller vibration while interacting with world objects.");
             panel.AddToggleOption(tab, "Enable UI Haptics", EnableUIHaptics, (value) => { EnableUIHaptics = value; }, "Enable controller vibration while interacting with the User Interface.");
-            panel.AddToggleOption(tab, "Physical Driving", PhysicalDriving, (value) => { PhysicalDriving = value;  }, "Grip Vehicle controls to steer.");
-            panel.AddToggleOption(tab, "Locked Steering Grips", PhysicalLockedGrips, (value) => { PhysicalLockedGrips = value;  }, "Gripping the steering control locks your hands to the steering so you dont have to constantly grip. Grip again to unlock.");
             panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
             panel.AddToggleOption(tab, "Invert Y Axis in Seamoth/Cameras", InvertYAxis, (value) => { InvertYAxis = value; InvertYAxisChanged(value); }, "Enables Y axis inversion for Seamoth and Cameras.");
@@ -112,6 +135,62 @@ namespace SubmersedVR
             panel.AddToggleOption(tab, "Always show controllers", AlwaysShowControllers, (value) => { AlwaysShowControllers = value; AlwaysShowControllersChanged(value); }, "Shows the controllers at all times.");
             panel.AddToggleOption(tab, "Always show laserpointer", AlwaysShowLaserPointer, (value) => { AlwaysShowLaserPointer = value; AlwaysShowLaserPointerChanged(value); }, "Show the laserpointer at all times.");
 
+            tab = panel.AddTab("Vehicles");
+            panel.AddHeading(tab, "Options");
+            panel.AddToggleOption(tab, "Physical Driving", PhysicalDriving, (value) => { PhysicalDriving = value;  }, "Grip Vehicle controls to steer.");
+            panel.AddToggleOption(tab, "Locked Steering Grips", PhysicalLockedGrips, (value) => { PhysicalLockedGrips = value;  }, "Gripping the steering control locks your hands to the steering so you dont have to constantly grip. Grip again to unlock.");
+            
+            panel.AddHeading(tab, "SeaMoth Left Hand");
+            panel.AddSliderOption(tab, "Center (Left/Right)", SeamothLeftHorizontalCenterAngle, -10f, 10f, SeamothLeftHorizontalCenterAngle, 1f, (value) => { SeamothLeftHorizontalCenterAngle = value; }, SliderLabelMode.Float, "0");
+            panel.AddSliderOption(tab, "Center (Up/Down)", SeamothLeftVerticleCenterAngle, -10f, 10f, SeamothLeftVerticleCenterAngle, 1f, (value) => { SeamothLeftVerticleCenterAngle = value; }, SliderLabelMode.Float, "0");
+            //Call dead zone "Sensitivity" for users
+            panel.AddSliderOption(tab, "Sensitivity", SeamothLeftDeadZone, 1f, 10f, SeamothLeftDeadZone, 1f, (value) => { SeamothLeftDeadZone = value; }, SliderLabelMode.Float, "0", "Higher value means turns more quickly");
+            //panel.AddSliderOption(tab, "Sensitivity", SeamothLeftSensitivity, 0f, 100f, SeamothLeftSensitivity, 1f, (value) => { SeamothLeftSensitivity = value; }, SliderLabelMode.Float, "0");
+
+            panel.AddHeading(tab, "SeaMoth Right Hand");
+            panel.AddSliderOption(tab, "Center (Left/Right)", SeamothRightHorizontalCenterAngle, -10f, 10f, SeamothRightHorizontalCenterAngle, 1f, (value) => { SeamothRightHorizontalCenterAngle = value; }, SliderLabelMode.Float, "0");
+            panel.AddSliderOption(tab, "Center (Up/Down)", SeamothRightVerticleCenterAngle, -10f, 10f, SeamothRightVerticleCenterAngle, 1f, (value) => { SeamothRightVerticleCenterAngle = value; }, SliderLabelMode.Float, "0");
+            //Call dead zone "Sensitivity" for users
+            panel.AddSliderOption(tab, "Sensitivity", SeamothRightDeadZone, 1f, 10f, SeamothRightDeadZone, 1f, (value) => { SeamothRightDeadZone = value; }, SliderLabelMode.Float, "0", "Higher value means turns more quickly");
+            //panel.AddSliderOption(tab, "Sensitivity", SeamothRightSensitivity, 0f, 100f, SeamothRightSensitivity, 1f, (value) => { SeamothRightSensitivity = value; }, SliderLabelMode.Float, "0");
+
+            panel.AddHeading(tab, "Prawn Suit Left Hand");
+            panel.AddSliderOption(tab, "Center (Left/Right)", ExosuitLeftHorizontalCenterAngle, -10f, 10f, ExosuitLeftHorizontalCenterAngle, 1f, (value) => { ExosuitLeftHorizontalCenterAngle = value; }, SliderLabelMode.Float, "0");
+            panel.AddSliderOption(tab, "Center (Up/Down)", ExosuitLeftVerticleCenterAngle, -10f, 10f, ExosuitLeftVerticleCenterAngle, 1f, (value) => { ExosuitLeftVerticleCenterAngle = value; }, SliderLabelMode.Float, "0");
+            //Call dead zone "Sensitivity" for users
+            panel.AddSliderOption(tab, "Sensitivity", ExosuitLeftDeadZone, 1f, 10f, ExosuitLeftDeadZone, 1f, (value) => { ExosuitLeftDeadZone = value; }, SliderLabelMode.Float, "0", "Higher value means turns more quickly");
+            //panel.AddSliderOption(tab, "Sensitivity", SeamothLeftSensitivity, 0f, 100f, SeamothLeftSensitivity, 1f, (value) => { SeamothLeftSensitivity = value; }, SliderLabelMode.Float, "0");
+
+            panel.AddHeading(tab, "Prawn Suit Right Hand");
+            panel.AddSliderOption(tab, "Center (Left/Right)", ExosuitRightHorizontalCenterAngle, -10f, 10f, ExosuitRightHorizontalCenterAngle, 1f, (value) => { ExosuitRightHorizontalCenterAngle = value; }, SliderLabelMode.Float, "0");
+            panel.AddSliderOption(tab, "Center (Up/Down)", ExosuitRightVerticleCenterAngle, -10f, 10f, ExosuitRightVerticleCenterAngle, 1f, (value) => { ExosuitRightVerticleCenterAngle = value; }, SliderLabelMode.Float, "0");
+            //Call dead zone "Sensitivity" for users
+            panel.AddSliderOption(tab, "Sensitivity", ExosuitRightDeadZone, 1f, 10f, ExosuitRightDeadZone, 1f, (value) => { ExosuitRightDeadZone = value; }, SliderLabelMode.Float, "0", "Higher value means turns more quickly");
+            //panel.AddSliderOption(tab, "Sensitivity", SeamothRightSensitivity, 0f, 100f, SeamothRightSensitivity, 1f, (value) => { SeamothRightSensitivity = value; }, SliderLabelMode.Float, "0");
+
+            panel.AddHeading(tab, "Cyclops Left Hand");
+            panel.AddSliderOption(tab, "Center (Left/Right)", CyclopsLeftHorizontalCenterAngle, -10f, 10f, CyclopsLeftHorizontalCenterAngle, 1f, (value) => { CyclopsLeftHorizontalCenterAngle = value; }, SliderLabelMode.Float, "0");
+            panel.AddSliderOption(tab, "Center (Up/Down)", CyclopsLeftVerticleCenterAngle, -10f, 10f, CyclopsLeftVerticleCenterAngle, 1f, (value) => { CyclopsLeftVerticleCenterAngle = value; }, SliderLabelMode.Float, "0");
+            //Call dead zone "Sensitivity" for users
+            panel.AddSliderOption(tab, "Sensitivity", CyclopsLeftDeadZone, 1f, 10f, CyclopsLeftDeadZone, 1f, (value) => { CyclopsLeftDeadZone = value; }, SliderLabelMode.Float, "0", "Higher value means turns more quickly");
+            //panel.AddSliderOption(tab, "Sensitivity", SeamothLeftSensitivity, 0f, 100f, SeamothLeftSensitivity, 1f, (value) => { SeamothLeftSensitivity = value; }, SliderLabelMode.Float, "0");
+
+            panel.AddHeading(tab, "Cyclops Right Hand");
+            panel.AddSliderOption(tab, "Center (Left/Right)", CyclopsRightHorizontalCenterAngle, -10f, 10f, CyclopsRightHorizontalCenterAngle, 1f, (value) => { CyclopsRightHorizontalCenterAngle = value; }, SliderLabelMode.Float, "0");
+            panel.AddSliderOption(tab, "Center (Up/Down)", CyclopsRightVerticleCenterAngle, -10f, 10f, CyclopsRightVerticleCenterAngle, 1f, (value) => { CyclopsRightVerticleCenterAngle = value; }, SliderLabelMode.Float, "0");
+            //Call dead zone "Sensitivity" for users
+            panel.AddSliderOption(tab, "Sensitivity", CyclopsRightDeadZone, 1f, 10f, CyclopsRightDeadZone, 1f, (value) => { CyclopsRightDeadZone = value; }, SliderLabelMode.Float, "0", "Higher value means turns more quickly");
+            //panel.AddSliderOption(tab, "Sensitivity", SeamothRightSensitivity, 0f, 100f, SeamothRightSensitivity, 1f, (value) => { SeamothRightSensitivity = value; }, SliderLabelMode.Float, "0");
+
+            /*
+            panel.AddHeading(tab, "Comfort");
+            panel.AddSliderOption(tab, "SeaTruck Pilot Position Offset", SeaTruckZOffset, -0.4f, 0.4f, SeaTruckZOffset, 0.01f, (value) => { SeaTruckZOffset = value; }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, "SeaTruck Pilot Height Offset", SeaTruckYOffset, -0.4f, 0.4f, SeaTruckYOffset, 0.01f, (value) => { SeaTruckYOffset = value; }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, "Prawn Suit Position Offset", ExosuitZOffset, -0.4f, 0.4f, ExosuitZOffset, 0.01f, (value) => { ExosuitZOffset = value; }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, "Prawn Suit Height Offset", ExosuitYOffset, -0.4f, 0.4f, ExosuitYOffset, 0.01f, (value) => { ExosuitYOffset = value; }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, "Snowbike Position Offset", SnowBikeZOffset, -0.4f, 0.4f, SnowBikeZOffset, 0.01f, (value) => { SnowBikeZOffset = value; }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, "Snowbike Height Offset", SnowBikeYOffset, -0.2f, 0.4f, SnowBikeYOffset, 0.01f, (value) => { SnowBikeYOffset = value; }, SliderLabelMode.Float, "0.00");
+            */
         }
     }
 

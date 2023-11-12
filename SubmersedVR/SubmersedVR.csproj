@@ -7,6 +7,8 @@
     <Version>0.1.6</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
+    <!-- NOTE: Preprocessor directive SV = SubmersedVR, BZ = Below Zero -->
+    <DefineConstants>SV</DefineConstants>
     <!-- NOTE: Change this to your own directoy when building -->
     <!-- <SubnauticaDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\Subnautica</SubnauticaDir> -->
     <SubnauticaDir>c:\Program Files (x86)\Steam\steamapps\common\Subnautica</SubnauticaDir>
