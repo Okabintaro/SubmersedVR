@@ -4,11 +4,13 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>SubmersedVR</AssemblyName>
     <Description>A VR Conversion Mod for Subnautica</Description>
-    <Version>0.5.0</Version>
+    <Version>0.6.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <!-- NOTE: Change this to your own directoy when building -->
     <SubnauticaDir>c:\Program Files (x86)\Steam\steamapps\common\SubnauticaZero</SubnauticaDir>
+    <!-- NOTE: Preprocessor directive SV = SubmersedVR, BZ = Below Zero -->
+    <DefineConstants>BZ</DefineConstants>    
     <NoWarn>$(NoWarn);CS0436</NoWarn>
     <!-- <BuildDir>Build</BuildDir> -->
     <!-- <BuildDir>../../Build</BuildDir> -->
