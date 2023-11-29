@@ -101,9 +101,14 @@ namespace SubmersedVR
                 _targetTransform = value;
                 value.Apply(laserPointerUI.transform);
                 value.Apply(laserPointer.transform);
+                value.Apply(laserPointerLeft.transform);
             }
         }
 
+        public static Transform GetLeftTargetTansform()
+        {
+            return VRCameraRig.instance.laserPointerLeft.transform;
+        }
         public static Transform GetTargetTansform()
         {
             return VRCameraRig.instance.laserPointer.transform;
@@ -298,6 +303,9 @@ namespace SubmersedVR
 
         public void Start()
         {
+            Settings.AmbientOcclusionSettingsChanged -= OnAmbientOcclusionSettingsChanged;
+            Settings.AmbientOcclusionSettingsChanged += OnAmbientOcclusionSettingsChanged;
+
             SetupControllers();
             StartCoroutine(DelayedRecenter(1.0f));
         }
@@ -331,6 +339,11 @@ namespace SubmersedVR
             modelR?.SetActive(alwaysShow || inMainMenu);
         }
 
+        public static void OnAmbientOcclusionSettingsChanged()
+        {
+            AmbientOcclusionVR.OnAmbientOcclusionSettingsChanged(VRCameraRig.instance.vrCamera);
+        }
+
         // This is used to get the camera from the main menu
         // Main issue with making a new camera was the water surface but that should also be fixable
         // TODO: Maybe remove this, so we only have one common camera
@@ -349,6 +362,8 @@ namespace SubmersedVR
             Vector3 oldPos = camera.transform.position;
             transform.position = oldPos;
             vrCamera.transform.parent = this.transform;
+
+            AmbientOcclusionVR.AddOcclusionEffect(vrCamera);
        }
 
         public void StealUICamera(Camera camera, bool fromGame = false)
@@ -563,7 +578,7 @@ namespace SubmersedVR
                     controllerTransform = new GameObject().transform;
                 }
                 controllerTransform.position = MainCamera.camera.transform.position;
-                controllerTransform.rotation = VRCameraRig.GetTargetTansform().rotation; //the laser pointer transform
+                controllerTransform.rotation = Settings.LeftHandBasedTurning ? VRCameraRig.GetLeftTargetTansform().rotation : VRCameraRig.GetTargetTansform().rotation; //the laser pointer transform
                 __result = controllerTransform;
             }
             else

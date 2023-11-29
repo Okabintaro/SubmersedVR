@@ -2,6 +2,9 @@
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.Events;
+using Yangrc.VolumeCloud;
+using UnityEngine.XR;
+using rail;
 
 namespace SubmersedVR
 {
@@ -9,6 +12,7 @@ namespace SubmersedVR
     {
         public delegate void BooleanChanged(bool newValue);
         public delegate void FloatChanged(float newValue);
+        public delegate void VoidChanged();
 
         public static bool IsSnapTurningEnabled;
         public static event BooleanChanged IsSnapTurningEnabledChanged;
@@ -29,6 +33,26 @@ namespace SubmersedVR
        
         public static bool InvertYAxis;
         public static event BooleanChanged InvertYAxisChanged;
+
+        //Ambient Occlusion Settings
+        public static bool AOEnabled = false;
+        public static string AOMethod = "Post Effect";
+        public static string AOSampleCount = "Medium";
+        public static string AOPerPixelNormals = "Camera";
+        public static float AOIntensity = 1.0f;
+        public static float AORadius = 2.0f;
+        public static float AOPowerExponent = 1.8f;
+        public static float AOBias = 0.05f;
+        public static float AOThickness = 1.0f;
+        public static bool AODownSample = true;
+        public static bool AOCacheAware = true; 
+        public static bool AOTemporalFilterEnabled = true;
+        public static bool AOTemporalFilterDownsampleEnabled = true; 
+        public static float AOTemporalFilterBlending = 0.8f;
+        public static float AOTemporalFilterResponse = 0.5f;
+        
+        public static event VoidChanged AmbientOcclusionSettingsChanged;
+        //
 
         public static bool AlwaysShowControllers;
         public static event BooleanChanged AlwaysShowControllersChanged;
@@ -61,6 +85,7 @@ namespace SubmersedVR
         
 
         public static bool HandBasedTurning = false;
+        public static bool LeftHandBasedTurning = false;
         public static bool ArticulatedHands = true;
         public static bool PhysicalDriving = false;
         public static bool PhysicalLockedGrips = false;
@@ -142,13 +167,54 @@ namespace SubmersedVR
             }
         }
 
+        internal static void AddToGraphicsOptions(uGUI_OptionsPanel panel)
+        {
+            int tab = panel.tabs.Count - 1;
+
+            string space = "   ";
+            panel.AddHeading(tab, "Ambient Occlusion");
+            panel.AddToggleOption(tab, space + "Enable", AOEnabled, (value) => { AOEnabled = AmbientOcclusionVR.enabled = value; AmbientOcclusionSettingsChanged(); }, "Use ambient occlusion. Increases demand on GPU.");
+            panel.AddChoiceOption<string>(tab, space + "Method", new string[] {"Post Effect", "Deferred", "Debug"}, AOMethod, (value) => {
+                AOMethod = value;
+                if (AmbientOcclusionSettingsChanged != null) {
+                    AmbientOcclusionSettingsChanged();
+                }
+            });
+            panel.AddChoiceOption<string>(tab, space + "Sample Count", new string[] {"Low", "Medium", "High", "Very High"}, AOSampleCount, (value) => {
+                AOSampleCount = value;
+                if (AmbientOcclusionSettingsChanged != null) {
+                    AmbientOcclusionSettingsChanged();
+                }
+            });
+            panel.AddChoiceOption<string>(tab, space + "Per Pixel Normals", new string[] {"None", "Camera", "GBuffer", "Octa"}, AOPerPixelNormals, (value) => {
+                AOPerPixelNormals = value;
+                if (AmbientOcclusionSettingsChanged != null) {
+                    AmbientOcclusionSettingsChanged();
+                }
+            });
+            panel.AddSliderOption(tab, space + "Intensity", AOIntensity, 0f, 1.0f, AOIntensity, 0.02f, (value) => { AOIntensity = value; AmbientOcclusionSettingsChanged(); }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, space + "Radius", AORadius, 0f, 10.0f, AORadius, 0.1f, (value) => { AORadius = value; AmbientOcclusionSettingsChanged(); }, SliderLabelMode.Float, "0.0");
+            panel.AddSliderOption(tab, space + "Power Exponent", AOPowerExponent, 0f, 16f, AOPowerExponent, 0.1f, (value) => { AOPowerExponent = value; AmbientOcclusionSettingsChanged(); }, SliderLabelMode.Float, "0.0");
+            panel.AddSliderOption(tab, space + "Bias", AOBias, 0f, 0.99f, AOBias, 0.02f, (value) => { AOBias = value; AmbientOcclusionSettingsChanged(); }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, space + "Thickness", AOThickness, 0f, 1.0f, AOThickness, 0.02f, (value) => { AOThickness = value; AmbientOcclusionSettingsChanged(); }, SliderLabelMode.Float, "0.00");
+            panel.AddToggleOption(tab, space + "Downsample", AODownSample, (value) => { AODownSample = value; AmbientOcclusionSettingsChanged(); }, "Compute the Occlusion and Blur at half of the resolution.");
+            panel.AddToggleOption(tab, space + "Cache Aware", AOCacheAware, (value) => { AOCacheAware = value; AmbientOcclusionSettingsChanged(); }, "Cache optimization for best performance / quality tradeoff.");
+            panel.AddToggleOption(tab, space + "Enable Temporal Filter", AOTemporalFilterEnabled, (value) => { AOTemporalFilterEnabled = AmbientOcclusionVR.FilterEnabled = value; AmbientOcclusionSettingsChanged(); }, "Accumulates the effect over the time.");
+            panel.AddToggleOption(tab, space + "Temporal Filter Downsample", AOTemporalFilterDownsampleEnabled, (value) => { AOTemporalFilterDownsampleEnabled = value; AmbientOcclusionSettingsChanged(); }, "Effect at half of the resolution.");
+            panel.AddSliderOption(tab, space + "Temporal Filter Blending", AOTemporalFilterBlending, 0f, 1.0f, AOTemporalFilterBlending, 0.02f, (value) => { AOTemporalFilterBlending = value; AmbientOcclusionSettingsChanged(); }, SliderLabelMode.Float, "0.00");
+            panel.AddSliderOption(tab, space + "Temporal Filter Response", AOTemporalFilterResponse, 0f, 1.0f, AOTemporalFilterResponse, 0.02f, (value) => { AOTemporalFilterResponse = value; AmbientOcclusionSettingsChanged(); }, SliderLabelMode.Float, "0.00");
+
+
+        }
+
         internal static void AddMenu(uGUI_OptionsPanel panel)
         {
             int tab = panel.AddTab("Submersed VR");
 
             panel.AddHeading(tab, "Controls");
-            panel.AddChoiceOption<string>(tab, "Movement Mode", new string[] {"Head Based", "Hand Based"}, HandBasedTurning ? "Hand Based" : "Head Based", (value) => {
-                HandBasedTurning = value == "Hand Based";
+            panel.AddChoiceOption<string>(tab, "Movement Mode", new string[] {"Head Based", "Right Hand Based", "Left Hand Based"}, HandBasedTurning ? (LeftHandBasedTurning ? "Left Hand Based" : "Right Hand Based") : "Head Based", (value) => {
+                HandBasedTurning = value == "Right Hand Based" || value == "Left Hand Based";
+                LeftHandBasedTurning = value == "Left Hand Based";
             });
             panel.AddToggleOption(tab, "Enable Player Snap Turning", IsSnapTurningEnabled, (value) => { IsSnapTurningEnabled = value;
                 if (IsSnapTurningEnabledChanged != null) {
@@ -209,7 +275,7 @@ namespace SubmersedVR
             panel.AddToggleOption(tab, "Always show controllers", AlwaysShowControllers, (value) => { AlwaysShowControllers = value; AlwaysShowControllersChanged(value); }, "Shows the controllers at all times.");
             //panel.AddToggleOption(tab, "Always show laserpointer", AlwaysShowLaserPointer, (value) => { AlwaysShowLaserPointer = value; AlwaysShowLaserPointerChanged(value); }, "Show the laserpointer at all times.");
 
-            tab = panel.AddTab("Vehicles");
+            tab = panel.AddTab("Vehicles VR");
             panel.AddHeading(tab, "Comfort");
             panel.AddSliderOption(tab, "SeaTruck Pilot Position Offset", SeaTruckZOffset, -0.4f, 0.4f, SeaTruckZOffset, 0.01f, (value) => { SeaTruckZOffset = value; }, SliderLabelMode.Float, "0.00");
             panel.AddSliderOption(tab, "SeaTruck Pilot Height Offset", SeaTruckYOffset, -0.4f, 0.4f, SeaTruckYOffset, 0.01f, (value) => { SeaTruckYOffset = value; }, SliderLabelMode.Float, "0.00");
@@ -323,6 +389,61 @@ namespace SubmersedVR
         }
     }
 
+    [HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.AddGraphicsTab))]
+    static class UpdateGraphicsOptions
+    {
+        //Get rid of the default Ambient Occlusion Option
+        public static bool Prefix(uGUI_OptionsPanel __instance)
+        {
+            int tabIndex = __instance.AddTab("Graphics");
+            __instance.AddSliderOption(tabIndex, "Gamma", GammaCorrection.gamma, 0.1f, 2.8f, 1f, 0.01f, delegate(float value)
+            {
+                GammaCorrection.gamma = value;
+            }, SliderLabelMode.Float, "0.00", null);
+            int qualityPresetIndex = __instance.GetQualityPresetIndex();
+            __instance.qualityPresetOption = __instance.AddChoiceOption(tabIndex, "Preset", uGUI_OptionsPanel.presetOptions, qualityPresetIndex, new UnityAction<int>(__instance.OnQualityPresetChanged), null);
+            __instance.ApplyQualityPreset(qualityPresetIndex);
+            __instance.AddHeading(tabIndex, "Advanced");
+            if (uGUI_MainMenu.main)
+            {
+                int currentIndex;
+                string[] detailOptions = uGUI_OptionsPanel.GetDetailOptions(out currentIndex);
+                __instance.detailOption = __instance.AddChoiceOption(tabIndex, "Detail", detailOptions, currentIndex, new UnityAction<int>(__instance.OnDetailChanged), null);
+            }
+            __instance.waterQualityOption = __instance.AddChoiceOption<WaterSurface.Quality>(tabIndex, "WaterQuality", WaterSurface.GetQualityOptions(), WaterSurface.GetQuality(), new UnityAction<WaterSurface.Quality>(__instance.OnWaterQualityChanged), null);
+            __instance.skyboxQualityOption = __instance.AddChoiceOption(tabIndex, "SkyboxQuality", uGUI_OptionsPanel.skyboxQualityOptions, VolumeCloudRenderer.GetQuality(), new UnityAction<int>(__instance.OnASkyboxqualityChanged), null);
+            int currentIndex2;
+            string[] antiAliasingOptions = uGUI_OptionsPanel.GetAntiAliasingOptions(out currentIndex2);
+            __instance.aaModeOption = __instance.AddChoiceOption(tabIndex, "Antialiasing", antiAliasingOptions, currentIndex2, new UnityAction<int>(__instance.OnAAmodeChanged), null);
+            __instance.aaQualityOption = __instance.AddChoiceOption(tabIndex, "AntialiasingQuality", uGUI_OptionsPanel.postFXQualityNames, UwePostProcessingManager.GetAaQuality(), new UnityAction<int>(__instance.OnAAqualityChanged), null);
+            __instance.bloomOption = __instance.AddToggleOption(tabIndex, "Bloom", UwePostProcessingManager.GetBloomEnabled(), new UnityAction<bool>(__instance.OnBloomChanged), null);
+            if (!XRSettings.enabled)
+            {
+                __instance.lensDirtOption = __instance.AddToggleOption(tabIndex, "LensDirt", UwePostProcessingManager.GetBloomLensDirtEnabled(), new UnityAction<bool>(__instance.OnBloomLensDirtChanged), null);
+                if (!GraphicsUtil.IsOpenGL())
+                {
+                    __instance.dofOption = __instance.AddToggleOption(tabIndex, "DepthOfField", UwePostProcessingManager.GetDofEnabled(), new UnityAction<bool>(__instance.OnDofChanged), null);
+                }
+                __instance.motionBlurQualityOption = __instance.AddChoiceOption(tabIndex, "MotionBlurQuality", uGUI_OptionsPanel.postFXQualityNames, UwePostProcessingManager.GetMotionBlurQuality(), new UnityAction<int>(__instance.OnMotionBlurQualityChanged), null);
+            }
+            //__instance.aoQualityOption = __instance.AddChoiceOption(tabIndex, "AmbientOcclusion", uGUI_OptionsPanel.postFXQualityNames, UwePostProcessingManager.GetAoQuality(), new UnityAction<int>(this.OnAOqualityChanged), null);
+            if (!XRSettings.enabled)
+            {
+                __instance.ssrQualityOption = __instance.AddChoiceOption(tabIndex, "ScreenSpaceReflections", uGUI_OptionsPanel.postFXQualityNames, UwePostProcessingManager.GetSsrQuality(), new UnityAction<int>(__instance.OnSSRqualityChanged), null);
+                __instance.ditheringOption = __instance.AddToggleOption(tabIndex, "Dithering", UwePostProcessingManager.GetDitheringEnabled(), new UnityAction<bool>(__instance.OnDitheringChanged), null);
+            }
+            __instance.weatherQualityOption = __instance.AddChoiceOption(tabIndex, "WeatherQuality", uGUI_OptionsPanel.weatherQualityOptions, VFXWeatherManager.GetQuality(), new UnityAction<int>(__instance.OnAWeatherQualityChanged), null);       
+        
+            return false;
+        }
+        
+        //Add in our own Ambient Occlusion Option
+        public static void Postfix(uGUI_OptionsPanel __instance)
+        {
+			Settings.AddToGraphicsOptions(__instance);
+        }
+    }
+
     [HarmonyPatch(typeof(uGUI_OptionsPanel), nameof(uGUI_OptionsPanel.OnScreenChanged))]
     static class OnScreenChangedFixer
     {
@@ -362,11 +483,15 @@ namespace SubmersedVR
     {
         public static void Postfix(UwePostProcessingManager __instance)
         {
+            //Mod.logger.LogInfo($"UwePostProcessingManager ApplySettingsToProfile called");
             __instance.SetAO(0);
             //__instance.SetDof(0);
             //__instance.SetSSR(0);
             //__instance.SetMotionBlur(0);
              MiscSettings.cameraBobbing = VROptions.enableCinematics; 
+
+             //AmbientOcclusionVR.enabled = Settings.UseAmbientOcclusion;
+             //AmbientOcclusionVR.FilterEnabled = Settings.AmbientOcclusionTemporalFilterEnabled;
 
         }
     }
