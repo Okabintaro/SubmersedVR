@@ -1,6 +1,7 @@
 using System;
 using HarmonyLib;
 using UnityEngine;
+using TMPro;
 
 namespace SubmersedVR
 {
@@ -152,7 +153,10 @@ namespace SubmersedVR
 
     static class WristHud
     {
-        private static TransformOffset wristOffset = new TransformOffset(new Vector3(-0.079f, 0.148f, -0.158f), new Vector3(350.494f, 88.400f, 244.161f));
+        //private static TransformOffset wristOffset = new TransformOffset(new Vector3(-0.079f, 0.148f, -0.158f), new Vector3(350.494f, 88.400f, 244.161f));
+        //This works for Valve Index
+        private static TransformOffset wristOffset = new TransformOffset(new Vector3(-0.016f, 0.123f, -0.128f), new Vector3(15.494f, 74.4f, 245.161f));
+        //private static TransformOffset wristOffset = new TransformOffset(new Vector3(-0.044f, 0.16f, -0.158f), new Vector3(15.494f, 88.400f, 244.161f));
         private static GameObject wristTarget;
         private static Canvas canvas;
         private static CanvasGroup canvasGroup;
@@ -169,6 +173,15 @@ namespace SubmersedVR
         private static bool touchingWrist = false;
         private static bool prevTouchingWrist = false;
 
+        //public static GameObject pointerDot;
+        public static TextMeshProUGUI entry;
+
+        public static string AdjustHUD(float pX, float pY, float pZ, float aX, float aY, float aZ)
+        {
+            WristHud.wristOffset = new TransformOffset(new Vector3(WristHud.wristOffset.Pos.x + (pX/1000), WristHud.wristOffset.Pos.y + (pY/1000), WristHud.wristOffset.Pos.z + (pZ/1000)), new Vector3(WristHud.wristOffset.Angles.x + aX, WristHud.wristOffset.Angles.y + aY, WristHud.wristOffset.Angles.z + aZ));
+            WristHud.wristOffset.Apply(WristHud.wristTarget.transform);
+            return $"AdjustHUD\npX={WristHud.wristOffset.Pos.x.ToString("0.000")}\npY={WristHud.wristOffset.Pos.y.ToString("0.000")}\npZ={WristHud.wristOffset.Pos.z.ToString("0.000")}\naX={WristHud.wristOffset.Angles.x}\naY={WristHud.wristOffset.Angles.y}\naZ={WristHud.wristOffset.Angles.z}";
+        }
         public static FMODAsset CreateFMODAsset(string eventPath)
         {
             FMODAsset asset = ScriptableObject.CreateInstance<FMODAsset>();
@@ -191,6 +204,50 @@ namespace SubmersedVR
                 canvasGroup = wristCanvasGo.AddComponent<CanvasGroup>();
                 wristCanvasGo.transform.localScale = new Vector3(0.0004f, 0.0004f, 0.0004f);
                 wristOffset.Apply(wristTarget.transform);
+
+                GameObject obj = UnityEngine.Object.Instantiate(ErrorMessage.main.prefabMessage);
+                entry = obj.GetComponent<TextMeshProUGUI>();
+                entry.rectTransform.SetParent(wristCanvasGo.transform, false);
+                //obj.SetActive(true);
+                obj.layer = LayerMask.NameToLayer("UI");
+                HideForScreenshots h = obj.AddComponent<HideForScreenshots>();
+                h.type = HideForScreenshots.HideType.HUD;
+                entry.horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center;
+                entry.enabled = false;
+                entry.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+                entry.transform.localScale = new Vector3(0.66f, 1f, 1f);
+                UpdateWristText();
+
+/*
+                Material newMaterial = new Material(ShaderManager.preloadedShaders.DebugDisplaySolid);
+                newMaterial.SetColor(ShaderPropertyID._Color, Color.cyan);
+
+                // Setup PointerDot at the end
+                pointerDot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                pointerDot.transform.localScale = new Vector3(0.03f, 0.03f, 0.03f);
+                pointerDot.transform.SetParent(wristCanvasGo.transform, false);
+                //pointerDot.transform.parent = wristCanvasGo.transform;
+                LaserPointer.Destroy(pointerDot.GetComponent<SphereCollider>());
+                pointerDot.GetComponent<Renderer>().material = newMaterial;
+                pointerDot.SetActive(true);
+                //wristDotOffset.Apply(pointerDot.transform);
+*/
+
+            //laserPointer = new GameObject(nameof(laserPointer)).WithParent(wristTarget).AddComponent<LaserPointer>();
+            //laserPointer.gameObject.SetActive(true);
+
+                //var cube = GameObject.CreatePrimitive(PrimitiveType.Cube).WithParent(wristTarget).ResetTransform();
+                //cube.GetComponent<MeshRenderer>().sharedMaterial.color = new Color(0,1,1,1);
+/*
+                var primitive = GameObject.CreatePrimitive(PrimitiveType.Cube).WithParent(wristTarget).ResetTransform();
+                //primitive.position = pos;
+                primitive.transform.localScale = Vector3.one * .01f;
+                primitive.name = "HI";
+                primitive.SetActive(true);
+            
+                var renderer = primitive.GetComponent<MeshRenderer>();
+                renderer.material.SetColor("_Color", Color.red);
+*/
             }
 
             Settings.PutBarsOnWristChanged -= OnPutBarsOnHandChanged;
@@ -201,6 +258,18 @@ namespace SubmersedVR
             turnOffSound = CreateFMODAsset("event:/tools/flashlight/turn_off");
         }
 
+        static void LogDescendants(Transform transform, int level) 
+        {  
+            foreach(Transform child in transform) {
+                Mod.logger.LogInfo($"{new String('-', level)}{child.name}");
+                LogDescendants(child, level + 1);   
+            }
+        }
+
+        public static void UpdateWristText()
+        {
+            entry.text = isHudOn ? "HUD ON" : "HUD OFF";
+        }
         public static Transform GetIndexFingerTip()
         {
             if (cachedIndexTip != null)
@@ -208,10 +277,18 @@ namespace SubmersedVR
                 return cachedIndexTip;
             }
             var animator = Player.main?.playerAnimator;
+            //animator.enabled = false;
             if (animator is Animator anim)
             {
                 // TODO: Test this
+                //LogDescendants(anim.transform, 1) ;
+                //IK disabled
                 var tip = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_R/clav_R_aim/shoulder_R/hand_R/hand_R_point_base/hand_R_point_mid/hand_R_point_tip_rig");
+                if(tip == null)
+                {
+                    //IK enabled
+                    tip = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_R/clav_R_aim/shoulder_R/elbow_R/hand_R/hand_R_point_base/hand_R_point_mid/hand_R_point_tip_rig");
+                }
                 if (tip != null)
                 {
                     cachedIndexTip = tip;
@@ -235,29 +312,32 @@ namespace SubmersedVR
             }
             var camPos = uiCamera.transform.position;
             var worldRigPos = VRCameraRig.instance.rigParentTarget.position;
-            var wristPos = wristTarget.transform.position;
+            var wristPos = wristTarget.transform.position + wristTarget.transform.right * 0.05f + wristTarget.transform.up * 0.05f ; //centered on the display rather than the corner
 
             Vector3 wristDir = wristTarget.transform.TransformDirection(Vector3.forward);
             Vector3 toCam = (wristPos - camPos).normalized;
 
             float wristCamDot = Vector3.Dot(wristDir, toCam);
             bool isFacingCamera = wristCamDot > 0.1f;
-            // DebugPanel.Show($"dot = {dot} <= {wristDir}, {toCam}");
+            //DebugPanel.Show($"dot = {wristCamDot} <= {wristDir}, {toCam}, {camPos}");
             canvasGroup.alpha = Mathf.Max(wristCamDot, 0.0f);
 
             if (isFacingCamera && GetIndexFingerTip() is Transform indexTip)
             {
+                entry.enabled = true;
                 var uiIndexPos = indexTip.position - worldRigPos;
                 var wristDistance = Vector3.Distance(uiIndexPos, wristPos);
-                // DebugPanel.Show($"wristDistance = {wristDistance} <= uiPos{uiIndexPos}, {wristPos}");
-                const float threshold = 0.1f;
+                //DebugPanel.Show($"wristDistance = {wristDistance} <= uiPos{uiIndexPos}, {wristPos} uiIndexPos = {indexTip.transform.position} {indexTip.localPosition} {worldRigPos}", true);
+                const float threshold = 0.05f;
                 touchingWrist = wristDistance < threshold;
                 if (touchingWrist && !prevTouchingWrist)
                 {
                     isHudOn = !isHudOn;
+                    UpdateWristText();
                     Utils.PlayFMODAsset(isHudOn ? turnOnSound : turnOffSound);
+                    HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.8f, false, true, false);   
                 }
-                prevTouchingWrist = wristDistance < threshold;
+                prevTouchingWrist = touchingWrist;
             }
         }
 
@@ -275,7 +355,11 @@ namespace SubmersedVR
                 Mod.logger.LogDebug("Turning WristHud on");
                 barsPanel.WithParent(canvas.transform).ResetTransform();
                 barsPanel.GetComponent<RectTransform>().pivot = new Vector2(0, 0);
-                ManagedUpdate.Subscribe(ManagedUpdate.Queue.LateUpdateLast, new ManagedUpdate.OnUpdate(OnUpdate));
+                //Switched this from LateUpdateLast to CanvasFirst because the VRHands calculations occur in LateUpdate
+                //and were happening after the WristHud OnUpdate so finger position was being read as the default animated finger
+                //position, not the user overridden VRHands finger position. CanvasFirst would generally be too late for rendering updates,
+                //but since it's just a toggle, it should be fine
+                ManagedUpdate.Subscribe(ManagedUpdate.Queue.CanvasFirst, new ManagedUpdate.OnUpdate(OnUpdate));
             }
             else
             {
@@ -284,8 +368,10 @@ namespace SubmersedVR
                 barsPanel.transform.SetParent(hudContent.transform, false);
                 barsPanel.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
                 barsPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.0f, 0.0f);
-                ManagedUpdate.Unsubscribe(ManagedUpdate.Queue.LateUpdateLast, new ManagedUpdate.OnUpdate(OnUpdate));
+                ManagedUpdate.Unsubscribe(ManagedUpdate.Queue.CanvasFirst, new ManagedUpdate.OnUpdate(OnUpdate));
                 isHudOn = true;
+                UpdateWristText();
+                entry.enabled = false;
             }
 
         }
@@ -314,12 +400,11 @@ namespace SubmersedVR
     {
         public static void Postfix(Vehicle __instance)
         {
-            // TODO: How to check for SeaTruck?
             Mod.logger.LogInfo("Vehicle.OnPilotModeEnd {__instance is Exosuit}");
             if (__instance is Exosuit)
             {
                 VRHud.OnExitVehicle();
-                //This moves player off of the top of the suit
+                //This moves player off of the top of the suit after exiting
                 Player.main.transform.position = Player.main.transform.position + SNCameraRoot.main.transform.forward * -2.5f;
                 Player.main.transform.localPosition += new Vector3(0.0f, 0.5f, 0.0f);
             }
@@ -369,10 +454,15 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(SeaTruckMotor), nameof(SeaTruckMotor.StopPiloting))]
     static class ResetHudStaticInSeaTrucker
     {
-        public static void Postfix()
+        public static void Prefix(SeaTruckMotor __instance, bool waitForDocking = false, bool forceStop = false, bool skipUnsubscribe = false, bool immediate = false, bool forceGetupAnimation = false)
         {
-            Mod.logger.LogInfo("SeaTruckMotor.StopPiloting");
-            VRHud.OnExitVehicle();
+            //Mod.logger.LogInfo($"SeaTruckMotor.StopPiloting waitForDocking = {waitForDocking} forceStop = {forceStop} skipUnsubscribe = {skipUnsubscribe} immediate = {immediate} forceGetupAnimation = {forceGetupAnimation}");
+            //Doing this check because SeaTruckMotor.StopPiloting gets called many times at startup for an unknown reason
+            if (__instance.piloting) 
+            {
+                Mod.logger.LogInfo($"SeaTruckMotor.StopPiloting");
+                VRHud.OnExitVehicle();
+            }
         }
     }
 
@@ -440,6 +530,18 @@ namespace SubmersedVR
             if (!WristHud.isHudOn)
             {
                 __result = uGUI_DepthCompass.DepthMode.None;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(uGUI_DepthCompass), nameof(uGUI_DepthCompass.IsCompassEnabled))]
+    public static class HideDepthCompassCompassWhenHudOff
+    {
+        public static void Postfix(ref bool __result)
+        {
+            if (!WristHud.isHudOn)
+            {
+                __result = false;
             }
         }
     }

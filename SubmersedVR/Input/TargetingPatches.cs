@@ -8,7 +8,6 @@ using UnityEngine.XR;
 
 namespace SubmersedVR
 {
-
     // This replaces the main camera transform in `Targeting` with the event camera from `VRCameraRig`
     // TODO: Rewrite with CodeMatcher
     [HarmonyPatch(typeof(Targeting), nameof(Targeting.GetTarget))]
@@ -71,6 +70,22 @@ namespace SubmersedVR
                 new CodeMatch(opc => opc.StoresField(desiredIconField)),
             }).SetOpcodeAndAdvance(OpCodes.Ldc_I4_0).InstructionEnumeration(); // Replace by 0
         }
+        
     }
+
+    //Catch the cases the above code doesnt handle like when in the Exosuit
+    [HarmonyPatch(typeof(HandReticle), nameof(HandReticle.SetIcon))]
+    public static class DisableDefaultHandReticleVR
+    {
+        public static void Postfix(HandReticle __instance)
+        {
+           if(__instance.desiredIconType == HandReticle.IconType.Default)
+           {
+                __instance.desiredIconType = HandReticle.IconType.None;
+           }
+        }
+    }
+
+    //
 
 }

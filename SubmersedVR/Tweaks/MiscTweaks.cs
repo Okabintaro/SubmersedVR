@@ -4,6 +4,7 @@ using UnityEngine.XR;
 using System;
 using System.Linq;
 using Story;
+using BepInEx.Logging;
 
 namespace SubmersedVR
 {
@@ -14,8 +15,8 @@ namespace SubmersedVR
             QualitySettings.anisotropicFiltering = AnisotropicFiltering.ForceEnable;
             QualitySettings.masterTextureLimit = 0;
         }
-    }
 
+    }
 
     [HarmonyPatch(typeof(Bench), nameof(Bench.CanSit))]
     public static class CanAlwaysSit
@@ -57,39 +58,5 @@ namespace SubmersedVR
         }
     }
 
-    
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateKeyInputs))]
-    public  class GameInputKeyTracker : MonoBehaviour
-    {
-        public static void Postfix(GameInput __instance, bool useKeyboard, bool useController)
-        {
-            if(GameInput.lastInputPressed[(int)GameInput.lastDevice] == 107) //F6 key
-            {
-            }
-            if(GameInput.lastInputPressed[(int)GameInput.lastDevice] == 106) //F5 key
-            {
-                /*
-                foreach (HideForScreenshots hideForScreenshots in UnityEngine.Object.FindObjectsOfType<HideForScreenshots>())
-                {
-                    Mod.logger.LogInfo($"HideForScreenshots {hideForScreenshots.type} {hideForScreenshots.name} {hideForScreenshots.tag} {hideForScreenshots.enabled}");
-                }   
-                */        
-            }
-        }
-    }
-
-
-/*
-    //Make building with the fabricator much quicker
-    [HarmonyPatch(typeof(Constructable), nameof(Constructable.GetConstructInterval))]
-    public static class AutoBuildFix
-    {
-        public static bool Prefix(Base __instance, ref float __result)
-        {           
-           __result = 0.05f;
-           return false;
-        }
-    }
-*/
 
 }

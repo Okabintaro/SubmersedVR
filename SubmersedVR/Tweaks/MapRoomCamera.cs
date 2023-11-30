@@ -22,6 +22,10 @@ namespace SubmersedVR
             {
                 Player.main.armsController.gameObject.SetActive(false);
             }
+            else
+            {
+                VRHands.instance?.SetHandRendering(false);
+            }
         }
     }
 
@@ -33,6 +37,10 @@ namespace SubmersedVR
             if(Player.main.armsController.ik.enabled)
             {
                 Player.main.armsController.gameObject.SetActive(true);
+            }
+            else
+            {
+                VRHands.instance?.SetHandRendering(true);
             }
         }
     }

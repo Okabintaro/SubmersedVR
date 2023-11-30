@@ -50,6 +50,7 @@ namespace SubmersedVR
         {
             var qs = FindObjectsOfType<uGUI_QuickSlots>().First(obj => obj.name == "QuickSlots");
             Mod.logger.LogDebug($"[nameof{this.GetType()}] Start, stealing stuff from on {qs.name}");
+            
             materialBackground = qs.materialBackground;
             spriteLeft = qs.spriteLeft;
             spriteCenter = qs.spriteCenter;
@@ -58,6 +59,7 @@ namespace SubmersedVR
             spriteHighlighted = qs.spriteHighlighted;
             spriteExosuitArm = qs.spriteExosuitArm;
             spriteSelected = qs.spriteSelected;
+            
         }
 
         new void Init(IQuickSlots newTarget)
@@ -66,10 +68,12 @@ namespace SubmersedVR
             {
                 return;
             }
-            Mod.logger.LogDebug($"[nameof{this.GetType()}] Init on {newTarget}");
             base.Init(newTarget);
             ArangeIconsInCircle(wheelRadius);
             OnSelect(this.target.GetActiveSlotID());
+            
+            //TechType techType = base.target.GetSlotBinding()[0];
+            //Mod.logger.LogInfo($"[nameof{this.GetType()}] Init on {newTarget} {newTarget is SeaTruckUpgrades} {techType}");
         }
 
         new void OnSelect(int slotID)
@@ -109,8 +113,43 @@ namespace SubmersedVR
                 this.target = quickSlots;
                 this.Init(this.target);
             }
+            var targetSlots = GetTarget();
+            if (targetSlots == null)
+            {
+                return;
+            }
             if (active)
             {
+                //Update the icon progress
+                //This affects the UI a little but doesnt perform the expected progress UI. Why?
+                int i = 0;
+                int num = this.icons.Length;
+                while (i < num)
+                {
+                    uGUI_ItemIcon uGUI_ItemIcon = this.icons[i];
+                    if (!(uGUI_ItemIcon == null))
+                    {
+                        float slotProgress = this.target.GetSlotProgress(i);
+                        float slotCharge = this.target.GetSlotCharge(i);
+                        InventoryItem slotItem = this.target.GetSlotItem(i);
+                        uGUI_ItemIcon.SetBarValue(TooltipFactory.GetBarValue(slotItem));
+                        if (slotProgress < 1f)
+                        {
+                            uGUI_ItemIcon.SetProgress(slotProgress, FillMethod.Radial);
+                        }
+                        else if (slotCharge > 0f)
+                        {
+                            uGUI_ItemIcon.SetProgress(slotCharge, FillMethod.Vertical);
+                        }
+                        else
+                        {
+                            uGUI_ItemIcon.SetProgress(1f, FillMethod.None);
+                        }
+                    }
+                    i++;
+                }
+                //End Update
+
                 var from = controllerTarget.position;
                 var origin = transform.position;
                 var pX = Vector3.Dot(from - origin, transform.right);
@@ -132,24 +171,29 @@ namespace SubmersedVR
                 {
                     lastSlot = currentSlot;
                     currentSlot = DetermineSlot(angle);
+
+                    TechType techType = currentSlot >=0 ? base.target.GetSlotBinding()[currentSlot] : TechType.None;
                     if (currentSlot != lastSlot)
                     {
-                        var targetSlots = GetTarget();
-                        if (targetSlots == null)
-                        {
-                            return;
-                        }
                         targetSlots.SlotKeyDown(currentSlot);
+                        //Mod.logger.LogInfo($"SlotKeyDown called {targetSlots} {targetSlots is SeaTruckUpgrades} {currentSlot} {techType}");
                         SteamVR_Actions.subnautica_HapticsRight.Execute(0.0f, 0.1f, 10f, 0.5f, SteamVR_Input_Sources.Any);
                     }
+
+                    if(techType == TechType.SeaTruckUpgradePerimeterDefense)
+                    {
+                        targetSlots.SlotLeftHeld();
+                        //Mod.logger.LogInfo($"SlotLeftHeld called {targetSlots} {targetSlots is SeaTruckUpgrades} {currentSlot} {techType} {targetSlots.GetSlotCharge(currentSlot)}");
+                        float charge = targetSlots.GetSlotCharge(currentSlot);
+                        if(charge > 0 && charge < 1.0f)
+                        {
+                            SteamVR_Actions.subnautica_HapticsRight.Execute(0.0f, 0.1f, 10f, 0.5f, SteamVR_Input_Sources.Any);
+                        }
+                    }               
+
                 }
                 else
-                {
-                    var targetSlots = GetTarget();
-                    if (targetSlots == null)
-                    {
-                        return;
-                    }
+                {    
                     // NOTE: you can't deselect in vehicles
                     if (targetSlots is QuickSlots)
                     {
@@ -164,7 +208,15 @@ namespace SubmersedVR
         }
 
         public void Activate(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
-        {
+        {            
+            bool isInExosuit = Player.main?.inExosuit == true;
+            bool isOnSnowBike = Player.main?.inHovercraft == true;
+            bool isPilotingSeatruck = Player.main?.inSeatruckPilotingChair == true;
+            if(isOnSnowBike || isInExosuit)
+            {
+                return;
+            }
+
             canvas.enabled = true;
             transform.position = controllerTarget.transform.position;
             bool isVehicleSlot = GetTarget() is Vehicle;
@@ -189,6 +241,22 @@ namespace SubmersedVR
         }
         public void Deactivate(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
         {
+            var targetSlots = GetTarget();
+            if(targetSlots != null && currentSlot >= 0 )
+            {
+                TechType techType = base.target.GetSlotBinding()[currentSlot];
+                if(techType == TechType.SeaTruckUpgradePerimeterDefense)
+                {
+                    targetSlots.SlotLeftUp();
+                    //Mod.logger.LogInfo($"SlotLeftUp called {targetSlots} {targetSlots is SeaTruckUpgrades} {currentSlot} {techType}");
+                }
+                else if(techType == TechType.SeaTruckUpgradeAfterburner)
+                {
+                    targetSlots.SlotLeftDown();
+                    //Mod.logger.LogInfo($"SlotLeftDown called {targetSlots} {targetSlots is SeaTruckUpgrades} {currentSlot} {techType}");
+                }
+            }
+
             canvas.enabled = false;
             active = false;
             FPSInputModule.current.lockRotation = false;
@@ -237,15 +305,34 @@ namespace SubmersedVR
         [HarmonyPatch(typeof(Vehicle), nameof(Vehicle.OnPilotModeBegin))]
         public static void Postfix(Vehicle __instance)
         {
-            VRCameraRig.instance?.VrQuickSlots?.SetTarget(__instance);
+            VRCameraRig.instance?.SetQuickSlotsTarget(__instance);
         }
 
         [HarmonyPatch(typeof(Vehicle), nameof(Vehicle.OnPilotModeEnd))]
         public static void Postfix()
         {
-            VRCameraRig.instance?.VrQuickSlots?.SetTarget(null);
+            VRCameraRig.instance?.SetQuickSlotsTarget(null);
         }
     }
+
+    [HarmonyPatch(typeof(SeaTruckUpgrades), nameof(SeaTruckUpgrades.OnPilotBegin))]
+    public static class SeatruckQuickslotsBegin
+    {
+        public static void Postfix(SeaTruckUpgrades __instance)
+        {
+            VRCameraRig.instance?.SetQuickSlotsTarget(__instance);
+        }
+    }
+    [HarmonyPatch(typeof(SeaTruckUpgrades), nameof(SeaTruckUpgrades.OnPilotEnd))]
+    public static class SeatruckQuickslotsEnd
+    {
+        public static void Postfix(SeaTruckUpgrades __instance)
+        {
+            VRCameraRig.instance?.SetQuickSlotsTarget(null);
+        }
+    }
+
+
     #endregion
 
 }
