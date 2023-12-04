@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SubmersedVR
 {
-
+/* Moved to VRCameraRig LateUpdate
     // Moves the camera/attach point of the seamoth 10 cm in front
     [HarmonyPatch(typeof(SeaMoth), nameof(SeaMoth.Start))]
     static class MoveSeamothCameraPivot
@@ -23,5 +23,5 @@ namespace SubmersedVR
             __instance.playerPosition.transform.localPosition = new Vector3(0.0f, 0.2f, 0.2f);
         }
     }
-
+*/
 }

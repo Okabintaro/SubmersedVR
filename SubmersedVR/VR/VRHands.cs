@@ -72,6 +72,7 @@ namespace SubmersedVR
                 case AirBladder _: return new TransformOffset(new Vector3(-0.032f, 0.090f, -0.133f), new Vector3(7.689f, 145.798f, 224.260f));
                 case DiveReel _: return new TransformOffset(new Vector3(-0.019f, 0.096f, -0.119f), new Vector3(14.196f, 148.834f, 238.635f));
                 case Welder _: return new TransformOffset(new Vector3(0.002f, 0.110f, -0.140f), new Vector3(23.999f, 153.807f, 241.427f));
+                //case ScannerTool _: return new TransformOffset(new Vector3(0.000f, 0.022f, -0.202f), new Vector3(52.459f, 153.129f, 231.355f));
                 case ScannerTool _: return new TransformOffset(new Vector3(0.006f, 0.109f, -0.149f), new Vector3(25.775f, 145.925f, 236.092f));
                 case LaserCutter _: return new TransformOffset(new Vector3(-0.017f, 0.123f, -0.133f), new Vector3(17.726f, 151.261f, 233.612f));
                 case Flare _: return new TransformOffset(new Vector3(0.019f, 0.088f, -0.134f), new Vector3(31.170f, 153.374f, 244.228f));
@@ -165,7 +166,9 @@ namespace SubmersedVR
 
         public void Setup(FullBodyBipedIK ik)
         {
+            instance = this;
             this.ik = ik;
+            
             leftHand = ik.solver.leftHandEffector.bone;
             rightHand = ik.solver.rightHandEffector.bone;
             leftElbow = leftHand.parent;
@@ -181,20 +184,21 @@ namespace SubmersedVR
             rightElbowOffset = rightElbow.transform.position - rightHand.transform.position;
 
             ResetHandTargets();
-            StartCoroutine(DisableBodyRendering());
 
-            var laserPointer = VRCameraRig.instance.laserPointerUI.transform;
+            UpdateBody();
+            //StartCoroutine(DisableBodyRendering());
+
+            //var laserPointer = VRCameraRig.instance.laserPointerUI.transform;
 
             SetupFingers();
-
-            // var calibrationTool = new OffsetCalibrationTool(rightTarget, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
-            // calibrationTool.enabled = Settings.IsDebugEnabled;
-            // Settings.IsDebugChanged += (enabled) =>
-            // {
-            //     calibrationTool.enabled = enabled;
-            // };
-
-            instance = this;
+/*
+            var calibrationTool = new OffsetCalibrationTool(rightTarget, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
+            calibrationTool.enabled = Settings.IsDebugEnabled;
+            Settings.IsDebugChanged += (enabled) =>
+            {
+                calibrationTool.enabled = enabled;
+            };
+*/
         }
 
         public void ResetHandTargets()
@@ -379,6 +383,54 @@ namespace SubmersedVR
             fingers[fingerID+2].transform.localRotation = Quaternion.Euler(minRotation[fingerID+2].x + ((maxRotation[fingerID+2].x - minRotation[fingerID+2].x) * percent), minRotation[fingerID+2].y + ((maxRotation[fingerID+2].y - minRotation[fingerID+2].y) * percent), minRotation[fingerID+2].z + ((maxRotation[fingerID+2].z - minRotation[fingerID+2].z) * percent));
         }
 
+        public void UpdateBody()
+        {    
+            /*        
+            var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true);
+            foreach (var bodyRenderer in bodyRenderers)
+            {
+                Mod.logger.LogInfo($"bodyRenderer {bodyRenderer.name}");
+            }
+            */
+
+            StartCoroutine(UpdateBodyRendering());
+        }
+
+        public void SetHandRendering(bool val)
+        {
+            var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("hand") || r.name.Contains("glove"));
+            bodyRenderers.ForEach(r => r.enabled = val);
+        }
+
+        public void SetBodyRendering(bool val)
+        {
+            var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("body") || r.name.Contains("vest"));
+            bodyRenderers.ForEach(r => r.enabled = val);
+        }
+
+        // Retries until changes have actually been made
+        IEnumerator UpdateBodyRendering()
+        {
+            bool retry = true;
+            while (retry)
+            {
+                //Mod.logger.LogInfo($"UpdateBodyRendering {Settings.FullBody}");
+
+                var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("body") || r.name.Contains("vest"));
+                foreach (var bodyRenderer in bodyRenderers)
+                {
+                    if(bodyRenderer.enabled == Settings.FullBody)
+                    {
+                        retry = false;
+                    }
+                    bodyRenderer.enabled = Settings.FullBody;
+                }
+
+                yield return new WaitForSeconds(0.5f);
+            }
+
+        }
+/*
         // TODO: Proper patch/fix, this doesnt need to run each 2 seconds
         IEnumerator DisableBodyRendering()
         {
@@ -400,7 +452,7 @@ namespace SubmersedVR
                 yield return new WaitForSeconds(2.0f);
             }
         }
-
+*/
         internal void OnToolEquipped(PlayerTool tool)
         {
             var aimOffset = tool.GetAimOffset();

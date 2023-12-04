@@ -128,7 +128,7 @@ namespace SubmersedVR
     {
         public static void Postfix(GUIHand __instance)
         {
-            Mod.logger.LogInfo($"GUIHand.BashHit called");
+            //Mod.logger.LogInfo($"GUIHand.BashHit called");
             HapticsVR.PlayHaptics(0.5f, 0.2f, 5f, 1.0f);
         }
     }
@@ -293,7 +293,7 @@ namespace SubmersedVR
         {      
             if (__instance.GetCanTakeCrushDamage() && __instance.GetDepth() > __instance.crushDepth)
             {
-                Mod.logger.LogInfo($"DamageFX.CrushDamageUpdate called");
+                //Mod.logger.LogInfo($"DamageFX.CrushDamageUpdate called");
                 HapticsVR.PlayHaptics(0.0f, 0.5f, 10f, 1.0f, false, true, true);
             }
         }
@@ -305,7 +305,7 @@ namespace SubmersedVR
     {
         public static void Postfix(SoundOnDamage __instance, DamageInfo damageInfo)
         {      
-            Mod.logger.LogInfo($"DamageFX.SoundOnDamage called {damageInfo.damage} {damageInfo.type}");
+            //Mod.logger.LogInfo($"DamageFX.SoundOnDamage called {damageInfo.damage} {damageInfo.type}");
             if(damageInfo.damage > 0 && !(damageInfo.type == DamageType.Cold && (damageInfo.damage == 0.5)) && !(damageInfo.type == DamageType.Normal && (damageInfo.damage == 7 || damageInfo.damage == 30 || damageInfo.damage == 80)))
             {
                 HapticsVR.PlayHaptics(0.0f, 0.4f, 10f, 1.0f, false, true, true);
@@ -319,7 +319,7 @@ namespace SubmersedVR
     {
         public static void Postfix(DamageOverTime __instance)
         {      
-            Mod.logger.LogInfo($"(DamageOverTime.DoDamage called ");
+            //Mod.logger.LogInfo($"(DamageOverTime.DoDamage called ");
             float dur = __instance.interval - 0.1f;
             if (dur < 0)
             {
@@ -336,7 +336,7 @@ namespace SubmersedVR
     {
         public static void Postfix(SubRoot __instance, DamageInfo damageInfo)
         {      
-            Mod.logger.LogInfo($"SubRoot.OnTakeDamage called {damageInfo.damage}");
+            //Mod.logger.LogInfo($"SubRoot.OnTakeDamage called {damageInfo.damage}");
             if(damageInfo.damage > 0)
             {
                 HapticsVR.PlayHaptics(0.0f, 0.4f, 10f, 1.0f, false, true, true);
@@ -464,7 +464,7 @@ namespace SubmersedVR
         {    
             float intensity = damageInfo.damage * 3f / 100f;
             float shakeAmount = Mathf.Clamp(intensity, 0f, 5f);
-            Mod.logger.LogInfo($"Player.OnTakeDamage called damage = {damageInfo.damage} intensity = {intensity} duration = {shakeAmount * 2f}");
+            //Mod.logger.LogInfo($"Player.OnTakeDamage called damage = {damageInfo.damage} intensity = {intensity} duration = {shakeAmount * 2f}");
             HapticsVR.PlayHaptics(0.0f, shakeAmount * 2f, 10f, Mathf.Clamp(intensity, 0f, 1f), false, true, true);
             
         }
@@ -500,7 +500,7 @@ namespace SubmersedVR
     {
         public static void Postfix(Knife __instance)
         {
-            Mod.logger.LogInfo($"Knife.OnToolUseAnim");
+            //Mod.logger.LogInfo($"Knife.OnToolUseAnim");
             HapticsVR.PlayHaptics(0.0f, 0.2f, 5f, 1.0f);
         }
     }  
@@ -533,7 +533,7 @@ namespace SubmersedVR
             bool rightArm = true;
             bool leftArm = false;
             Exosuit exosuit = VehiclesVR.PilotedExosuit();
-            Mod.logger.LogInfo($"PropulsionCannon.OnShoot in vehicle exosuit = {exosuit != null}");              
+            //Mod.logger.LogInfo($"PropulsionCannon.OnShoot in vehicle exosuit = {exosuit != null}");              
             if(exosuit != null)
             {
                 rightArm = (exosuit.rightArm as ExosuitPropulsionArm)?.propulsionCannon == __instance;
@@ -603,7 +603,7 @@ namespace SubmersedVR
                 HapticsVR.effectsTimer += Time.deltaTime;
                 if(HapticsVR.effectsTimer > HapticsVR.effectsTimeout)
                 {
-                    Mod.logger.LogInfo($"LaserCutter.Update {Time.deltaTime}"); 
+                    //Mod.logger.LogInfo($"LaserCutter.Update {Time.deltaTime}"); 
                     float dur = UnityEngine.Random.Range(0.01f, 0.20f);           
                     HapticsVR.PlayHaptics(0.0f, dur, 10f, UnityEngine.Random.Range(0f, 1.0f), false);
                     HapticsVR.effectsTimer = 0.0f;
@@ -625,7 +625,7 @@ namespace SubmersedVR
                 HapticsVR.effectsTimer += Time.deltaTime;
                 if(HapticsVR.effectsTimer > 0.10)
                 {
-                    Mod.logger.LogInfo($"Welder.Update {Time.deltaTime}"); 
+                    //Mod.logger.LogInfo($"Welder.Update {Time.deltaTime}"); 
                     HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, HapticsVR.effectsScale, false);
                     HapticsVR.effectsTimer = 0.0f;
                     HapticsVR.effectsScale += 0.10f;
@@ -675,7 +675,7 @@ namespace SubmersedVR
                 HapticsVR.effectsTimer += Time.deltaTime;
                 if(HapticsVR.effectsTimer > 0.10)
                 {
-                    Mod.logger.LogInfo($"BuilderTool.Update {Time.deltaTime}"); 
+                    //Mod.logger.LogInfo($"BuilderTool.Update {Time.deltaTime}"); 
                     HapticsVR.PlayHaptics(0.0f, 0.10f, 10f, HapticsVR.effectsScale, false);
                     HapticsVR.effectsTimer = 0.0f;
                     HapticsVR.effectsScale -= 0.20f;

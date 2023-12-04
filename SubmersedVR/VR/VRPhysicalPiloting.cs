@@ -1,5 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
+
 using System.Collections.Generic; 
 
 namespace SubmersedVR
@@ -79,80 +80,80 @@ namespace SubmersedVR
                 new float[3]{340f, 15f, 1.0f}, //exosuit - center angle, deadzone, sensitivity
                 new float[3]{20f, 8f, 1.0f}, //seamoth
                 new float[3]{15f, 8f, 1.0f}, //cyclops
-                new float[3]{33f, 15f, 0.01f}, //seatruck
-                new float[3]{0f, 0f, 0.0f}, //snowbike
+                new float[3]{33f, 15f, 1.0f}, //seatruck
+                new float[3]{355f, 20f, 0.001f}, //snowbike
             },
             new float[5][]  //backward
             {
                 new float[3]{340f, 15f, 1.0f}, //exosuit
                 new float[3]{20f, 8f, 1.0f}, //seamoth
                 new float[3]{15f, 8f, 1.0f}, //cyclops
-                new float[3]{33f, 15f, 0.01f}, //seatruck
-                new float[3]{0f, 0f, 0.0f}, //snowbike
+                new float[3]{33f, 15f, 1.0f}, //seatruck
+                new float[3]{355f, 20f, 0.001f}, //snowbike
             },
             new float[5][]  //move left
             {
-                new float[3]{20f, 15f, 1f}, //exosuit
+                new float[3]{15f, 15f, 1f}, //exosuit
                 new float[3]{345f, 10f, 1f}, //seamoth
                 new float[3]{335f, 15f, 0.1f}, //cyclops
-                new float[3]{33f, 15f, 0.01f}, //seatruck
-                new float[3]{0f, 0f, 0.0f}, //snowbike
+                new float[3]{305f, 15f, 1.0f}, //seatruck
+                new float[3]{0f, 0.008f, 0.2f}, //snowbike
             },
             new float[5][]  //move right
             {
-                new float[3]{20f, 15f, 1f}, //exosuit
+                new float[3]{15f, 15f, 1f}, //exosuit
                 new float[3]{345f, 10f, 1f}, //seamoth
                 new float[3]{335f, 15f, 0.1f}, //cyclops
-                new float[3]{33f, 15f, 0.01f}, //seatruck
-                new float[3]{0f, 0f, 0.0f}, //snowbike
+                new float[3]{305f, 15f, 1.0f}, //seatruck
+                new float[3]{0f, 0.008f, 0.2f}, //snowbike
             },
             new float[5][]  //move up
             {
                 new float[3]{341f, 15f, 0.03f}, //exosuit
                 new float[3]{20f, 10f, 0.03f}, //seamoth
                 new float[3]{355f, 15f, 0.03f}, //cyclops
-                new float[3]{33f, 15f, 0.01f}, //seatruck
-                new float[3]{0f, 0f, 0.0f}, //snowbike
+                new float[3]{340f, 15f, 0.03f}, //seatruck
+                new float[3]{0f, 0f, 0.0f}, //snowbike not used
             },
             new float[5][]  //move down
             {
                 new float[3]{341f, 15f, 0.03f}, //exosuit
                 new float[3]{20f, 10f, 0.03f}, //seamoth
                 new float[3]{355f, 15f, 0.03f}, //cyclops
-                new float[3]{33f, 15f, 0.01f}, //seatruck
-                new float[3]{0f, 0f, 0.0f}, //snowbike
+                new float[3]{340f, 15f, 0.03f}, //seatruck
+                new float[3]{0f, 0f, 0.0f}, //snowbike not used
             },
             new float[5][]  //lookup up
             {
                 new float[3]{341f, 15f, 0.03f}, //exosuit
                 new float[3]{20f, 10f, 0.03f}, //seamoth
                 new float[3]{355f, 15f, 0.03f}, //cyclops
-                new float[3]{33f, 15f, 0.01f}, //seatruck
-                new float[3]{0f, 0f, 0.0f}, //snowbike
+                new float[3]{340f, 15f, 0.03f}, //seatruck
+                new float[3]{0f, 0f, 0.0f}, //snowbike not used
             },
             new float[5][]  //look down
             {
                 new float[3]{341f, 15f, 0.03f}, //exosuit
                 new float[3]{20f, 10f, 0.03f}, //seamoth
                 new float[3]{355f, 15f, 0.03f}, //cyclops
-                new float[3]{33f, 15f, 0.01f}, //seatruck
-                new float[3]{0f, 0f, 0.0f}, //snowbike
+                new float[3]{340f, 15f, 0.03f}, //seatruck
+                new float[3]{0f, 0f, 0.0f}, //snowbike not used
             },
             new float[5][]  //lookup left
             {
                 new float[3]{355f, 15f, 0.03f}, //exosuit
                 new float[3]{345f, 15f, 0.07f}, //seamoth
                 new float[3]{340f, 8f, 0.07f}, //cyclops
-                new float[3]{33f, 15f, 0.01f}, //seatruck
-                new float[3]{0f, 0f, 0.0f}, //snowbike
+                new float[3]{335f, 15f, 0.03f}, //seatruck
+                new float[3]{0f, 0.004f, 10.0f}, //snowbike
             },
             new float[5][]  //look right
             {
                 new float[3]{355f, 15f, 0.03f}, //exosuit
                 new float[3]{345f, 15f, 0.07f}, //seamoth
                 new float[3]{340f, 8f, 0.07f}, //cyclops
-                new float[3]{33f, 15f, 0.01f}, //seatruck
-                new float[3]{0f, 0f, 0.0f}, //snowbike
+                new float[3]{335f, 15f, 0.03f}, //seatruck
+                new float[3]{0f, 0.004f, 10.0f}, //snowbike
             },
 
         };
@@ -226,6 +227,36 @@ namespace SubmersedVR
                     offset = 20f * (hand == PhysicalPilotingHand.Right ? Settings.CyclopsRightHorizontalCenterAngle : Settings.CyclopsLeftHorizontalCenterAngle) / 10.0f;
                 }
             }
+            else if(vehicleType == (int)PhysicalVehicle.SeaTruck)
+            {
+                gripArray[(int)PhysicalPilotingDirection.MoveLeft][vehicleType][0] = Settings.SeatruckAltLeftGrip ? 220f : 305f;
+                gripArray[(int)PhysicalPilotingDirection.MoveRight][vehicleType][0] = Settings.SeatruckAltLeftGrip ? 220f : 305f;
+                gripArray[(int)PhysicalPilotingDirection.MoveForward][vehicleType][0] = Settings.SeatruckAltLeftGrip ? 315f : 15f;
+                gripArray[(int)PhysicalPilotingDirection.MoveBackward][vehicleType][0] = Settings.SeatruckAltLeftGrip ? 315f: 15f;
+                if(direction == PhysicalPilotingDirection.MoveForward || direction == PhysicalPilotingDirection.MoveBackward)
+                {
+                    offset = 15f * Settings.SeatruckLeftVerticleCenterAngle / 10.0f;
+                }
+                else if(direction == PhysicalPilotingDirection.LookUp || direction == PhysicalPilotingDirection.LookDown || direction == PhysicalPilotingDirection.MoveUp || direction == PhysicalPilotingDirection.MoveDown)
+                {
+                    offset = 10f * Settings.SeatruckRightVerticleCenterAngle / 10.0f;
+                }
+                else if(direction == PhysicalPilotingDirection.MoveLeft || direction == PhysicalPilotingDirection.MoveRight)
+                {
+                    offset = 10f * Settings.SeatruckLeftHorizontalCenterAngle / 10.0f;
+                }
+                else if(direction == PhysicalPilotingDirection.LookLeft || direction == PhysicalPilotingDirection.LookRight)
+                {
+                    offset = 20f * Settings.SeatruckRightHorizontalCenterAngle / 10.0f;
+                }
+            }
+            else if(vehicleType == (int)PhysicalVehicle.SnowBike)
+            {
+                if(direction == PhysicalPilotingDirection.MoveForward || direction == PhysicalPilotingDirection.MoveBackward)
+                {
+                    offset = 20f * Settings.SnowbikeRightVerticleCenterAngle / 10.0f;
+                }
+            }
             return gripArray[(int)direction][vehicleType][0] + offset;
         }
 
@@ -244,12 +275,24 @@ namespace SubmersedVR
             {
                 offset = gripArray[(int)direction][vehicleType][1] * (10f - ((hand == PhysicalPilotingHand.Right ? Settings.CyclopsRightDeadZone : Settings.CyclopsLeftDeadZone) * 2f)) / 10.0f;               
             }
+            else if(vehicleType == (int)PhysicalVehicle.SeaTruck)
+            {
+                offset = gripArray[(int)direction][vehicleType][1] * (10f - ((hand == PhysicalPilotingHand.Right ? Settings.SeatruckRightDeadZone : Settings.SeatruckLeftDeadZone) * 2f)) / 10.0f;               
+            }
+            else if(vehicleType == (int)PhysicalVehicle.SnowBike)
+            {
+                //Not using deadzone for snowbike since adjusting the "Comfort" setting for the snowbike is the same as adjsting the deadzone
+            }
             return gripArray[(int)direction][vehicleType][1] + offset;
         }
 
         public static float GetSensitivity(PhysicalPilotingDirection direction, int vehicleType, PhysicalPilotingHand? hand = null)
         {
             float offset = 0.0f;
+            if(vehicleType == (int)PhysicalVehicle.SnowBike && (direction == PhysicalPilotingDirection.LookLeft || direction == PhysicalPilotingDirection.LookRight))
+            {
+                offset = gripArray[(int)direction][vehicleType][2] * -(10f - ((hand == PhysicalPilotingHand.Right ? Settings.SnowbikeRightDeadZone : Settings.SnowbikeLeftDeadZone) * 2f)) / 10.0f;       //8/10 - -8/10        
+            }
             return gripArray[(int)direction][vehicleType][2] + offset;
         }
 
@@ -266,6 +309,18 @@ namespace SubmersedVR
             } 
             return value;               
         }
+        public static float? GetPositionValue(PhysicalPilotingDirection direction, Vector3? position, int vehicleType, MovementAxis axis, MovementMagnitude magnitude, PhysicalPilotingHand? hand = null)
+        {
+            float? value = null;
+            if(position != null)
+            {    
+                float pos = axis == MovementAxis.X ? position?.x ?? 0f : (axis == MovementAxis.Y ? position?.y ?? 0f : position?.z ?? 0f);
+                float delta = (magnitude == MovementMagnitude.LessThan ? -1 : 1) * pos;
+                float deadzone = GetDeadZone(direction,  vehicleType, hand);
+                value = delta > deadzone ? ((delta - deadzone) * GetSensitivity(direction, vehicleType, hand)) : 0.0f;
+            } 
+            return value;               
+        }
 
         public static float? GetValue(PhysicalPilotingDirection direction)
         {
@@ -275,117 +330,118 @@ namespace SubmersedVR
             Vector3? rightEulers = GetPilotingHandLocalRotation(PhysicalPilotingHand.Right)?.eulerAngles;
             Vector3? leftPosition = GetPilotingHandLocalPosition(PhysicalPilotingHand.Left);
             Vector3? rightPosition = GetPilotingHandLocalPosition(PhysicalPilotingHand.Right);
-            //DebugPanel.Show($"left: {leftEulers}\nright: {rightEulers}\nleftPos: {leftPosition}\nrightPos: {rightPosition}\nrightHandGrip:{IsGrippingPilotingControl(PhysicalPilotingHand.Right)}");
+            //DebugPanel.Show($"inHovercraft: {inHovercraft}\nleft: {leftEulers}\nright: {rightEulers}\nleftPos: {leftPosition?.ToString("F3")}\nrightPos: {rightPosition?.ToString("F3")}\nrightHandGrip:{IsGrippingPilotingControl(PhysicalPilotingHand.Right)}");
             int vehicleType = (int)(inExosuit ? PhysicalVehicle.Exosuit : (inSeamoth ? PhysicalVehicle.Seamoth : (inCyclops ? PhysicalVehicle.Cyclops : (inSeaTruck ? PhysicalVehicle.SeaTruck : (inHovercraft ? PhysicalVehicle.SnowBike : PhysicalVehicle.None)))));
 
             if(direction == PhysicalPilotingDirection.MoveForward)
             {   
-                value = GetValue(direction, leftEulers, vehicleType, MovementAxis.Y, MovementMagnitude.Greater);
-                /*
-                if(leftEulers != null)
-                {     
-                    float delta = Mathf.DeltaAngle(leftEulers?.y ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                    value = delta > gripArray[(int)direction][vehicleType][1] ? 1.0f : 0.0f;
-                } 
-                */               
+                if(inHovercraft)
+                {
+                    value = GetValue(direction, rightEulers, vehicleType, MovementAxis.Z, Settings.SnowbikeAltAccelerator ? MovementMagnitude.LessThan : MovementMagnitude.Greater);
+                }
+                else if(inSeaTruck)
+                {
+                    value = GetValue(direction, leftEulers, vehicleType, Settings.SeatruckAltLeftGrip ? MovementAxis.X : MovementAxis.Z, MovementMagnitude.LessThan);
+                }
+                else
+                {
+                    value = GetValue(direction, leftEulers, vehicleType, MovementAxis.Y, MovementMagnitude.Greater);
+                }
             }
             else if(direction == PhysicalPilotingDirection.MoveBackward)
             {   
-                value = GetValue(direction, leftEulers, vehicleType, MovementAxis.Y, MovementMagnitude.LessThan);
-                /*
-                if(leftEulers != null)
-                {                       
-                    float delta = -Mathf.DeltaAngle(leftEulers?.y ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                    value = delta > gripArray[(int)direction][vehicleType][1] ? 1.0f : 0.0f;
+                if(inHovercraft)
+                {
+                    value = GetValue(direction, rightEulers, vehicleType, MovementAxis.Z, Settings.SnowbikeAltAccelerator ? MovementMagnitude.Greater : MovementMagnitude.LessThan);
                 }
-                */
+                else if(inSeaTruck)
+                {
+                    value = GetValue(direction, leftEulers, vehicleType, Settings.SeatruckAltLeftGrip ? MovementAxis.X : MovementAxis.Z, MovementMagnitude.Greater);
+                }
+                else
+                {
+                    value = GetValue(direction, leftEulers, vehicleType, MovementAxis.Y, MovementMagnitude.LessThan);
+                }
             }
             else if(direction == PhysicalPilotingDirection.MoveLeft)
             {
-                if(inExosuit) 
+                if(inHovercraft)
+                {
+                    if(SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))
+                    {  
+                        value = GetPositionValue(direction, rightPosition, vehicleType, MovementAxis.X, MovementMagnitude.LessThan, PhysicalPilotingHand.Right);
+                        float? lvalue = GetPositionValue(direction, leftPosition, vehicleType, MovementAxis.X, MovementMagnitude.LessThan);
+                        value = (value != null && lvalue != null) ? (value + lvalue) /2 : value ?? lvalue;                   
+                    }
+                    else
+                    {
+                        value = 0f;
+                    }                       
+                }
+                else if(inExosuit) 
                 {
                     value = GetValue(direction, leftEulers, vehicleType, MovementAxis.X, MovementMagnitude.Greater);
-                    /*
-                    if(leftEulers != null)
-                    {
-                        float delta = Mathf.DeltaAngle(leftEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        value = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;
-                    }
-                    */
                 }
                 else if(inCyclops) 
                 {
                     value = GetValue(direction, rightEulers, vehicleType, MovementAxis.X, MovementMagnitude.LessThan, PhysicalPilotingHand.Right);
-                    /*
-                    if(rightEulers != null)
-                    {
-                        float delta = -Mathf.DeltaAngle(rightEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        value = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;
-                    }
-                    */
                     if(leftEulers != null)
                     {
                         //we already checked for null so we can cast to non-null
                         float lvalue = (float)GetValue(direction, leftEulers, vehicleType, MovementAxis.X, MovementMagnitude.Greater);
-                        /*
-                        float delta = Mathf.DeltaAngle(leftEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        float lvalue = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;
-                        */
                         value = value != null ? (value + lvalue) /2 : lvalue;
                     }
+                }
+                else if(inSeaTruck) 
+                {
+                    value = GetValue(direction, leftEulers, vehicleType, MovementAxis.Y, MovementMagnitude.Greater);
                 }
                 else
                 {   
                     if(rightEulers!= null && SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))
                     {    
                         value = GetValue(direction, rightEulers, vehicleType, MovementAxis.X, MovementMagnitude.LessThan, PhysicalPilotingHand.Right);
-                        /*  
-                        float delta = -Mathf.DeltaAngle(rightEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        value = delta > gripArray[(int)direction][vehicleType][1] ? 1.0f : 0.0f;
-                        */
                     }
                 }
             }
             else if(direction == PhysicalPilotingDirection.MoveRight)
             {
-                if(inExosuit) 
+                if(inHovercraft)
+                {
+                    if(SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))
+                    {  
+                        value = GetPositionValue(direction, rightPosition, vehicleType, MovementAxis.X, MovementMagnitude.Greater, PhysicalPilotingHand.Right);
+                        float? lvalue = GetPositionValue(direction, leftPosition, vehicleType, MovementAxis.X, MovementMagnitude.Greater);
+                        value = (value != null && lvalue != null) ? (value + lvalue) /2 : value ?? lvalue;                                          
+                    }
+                    else
+                    {
+                        value = 0f;
+                    }                       
+                }
+                else if(inExosuit) 
                 {
                     value = GetValue(direction, leftEulers, vehicleType, MovementAxis.X, MovementMagnitude.LessThan);
-                    /*
-                    if(leftEulers != null)
-                    {
-                        float delta = -Mathf.DeltaAngle(leftEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        value = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;
-                    }
-                    */
                 }                  
                 else if(inCyclops) 
                 {
                     value = GetValue(direction, rightEulers, vehicleType, MovementAxis.X, MovementMagnitude.Greater, PhysicalPilotingHand.Right);
-                    /*
-                    if(rightEulers!= null)
-                    {      
-                        float delta = Mathf.DeltaAngle(rightEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        value = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;             
-                        DebugPanel.Show($"left: {leftEulers}\nright: {rightEulers}\ndelta: {delta}\nspeed: {((float)value).ToString("0.00")}");
-                    }
-                    */
                     if(leftEulers!= null)
                     {      
                         //we already checked for null so we can cast to non-null
                         float lvalue = (float)GetValue(direction, leftEulers, vehicleType, MovementAxis.X, MovementMagnitude.LessThan);
-                        //float delta = -Mathf.DeltaAngle(leftEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        //float lvalue = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;             
                         value = value != null ? (value + lvalue) /2 : lvalue;
                     }
+                }
+                else if(inSeaTruck) 
+                {
+                    value = GetValue(direction, leftEulers, vehicleType, MovementAxis.Y, MovementMagnitude.LessThan);
                 }
                 else
                 {    
                     if(rightEulers!= null && SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))
                     {      
                         value = GetValue(direction, rightEulers, vehicleType, MovementAxis.X, MovementMagnitude.Greater, PhysicalPilotingHand.Right);
-                        //float delta = Mathf.DeltaAngle(rightEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        //value = delta > gripArray[(int)direction][vehicleType][1] ? 1.0f : 0.0f;
                     }
                 }
             }
@@ -397,11 +453,9 @@ namespace SubmersedVR
                     if(inCyclops || SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))
                     {     
                         //if we want jump to be both A button press and up motion for exosuit then remove the if statement  
-                        if(inCyclops || inSeamoth)
+                        if(inCyclops || inSeamoth || inSeaTruck)
                         {      
                             value = GetValue(direction, rightEulers, vehicleType, MovementAxis.Y, MovementMagnitude.LessThan, PhysicalPilotingHand.Right);                       
-                            //float delta = -Mathf.DeltaAngle(rightEulers?.y ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                            //value = delta > gripArray[(int)direction][vehicleType][1] ? 1.0f : 0.0f;
                         }
                         else 
                         {
@@ -418,8 +472,6 @@ namespace SubmersedVR
                     if(inCyclops || SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))
                     {                  
                         value = GetValue(direction, rightEulers, vehicleType, MovementAxis.Y, MovementMagnitude.Greater, PhysicalPilotingHand.Right);                       
-                        //float delta = Mathf.DeltaAngle(rightEulers?.y ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        //value = delta > gripArray[(int)direction][vehicleType][1] ? 1.0f : 0.0f;
                         //DebugPanel.Show($"left: {leftEulers}\nright: {rightEulers}\ndelta: {delta}\nspeed: {value}");
                     }
                 }
@@ -432,8 +484,6 @@ namespace SubmersedVR
                     if(!SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))
                     {                  
                         value = GetValue(direction, rightEulers, vehicleType, MovementAxis.Y, MovementMagnitude.LessThan, PhysicalPilotingHand.Right);                       
-                        //float delta = -Mathf.DeltaAngle(rightEulers?.y ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        //value = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;
                     }
                 }
             }
@@ -445,44 +495,58 @@ namespace SubmersedVR
                     if(!SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))
                     {                  
                         value = GetValue(direction, rightEulers, vehicleType, MovementAxis.Y, MovementMagnitude.Greater, PhysicalPilotingHand.Right);                       
-                        //float delta = Mathf.DeltaAngle(rightEulers?.y ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                        //value = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;
                     }
                 }
             }
             else if(direction == PhysicalPilotingDirection.LookLeft)
             {
-                if(rightEulers != null && (!(inCyclops || inSeamoth) || ((inCyclops || inSeamoth) && !SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))))
-                {    
-                    value = GetValue(direction, rightEulers, vehicleType, MovementAxis.X, MovementMagnitude.LessThan, PhysicalPilotingHand.Right);                       
-                    //float delta = -Mathf.DeltaAngle(rightEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                    //value = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;
-                }   
-                if(leftEulers != null && (inCyclops || inSeamoth))
-                {    
-                    float lvalue = (float)GetValue(direction, leftEulers, vehicleType, MovementAxis.X, MovementMagnitude.Greater);                       
-                    //float delta = Mathf.DeltaAngle(leftEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                    //float lvalue = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;
-                    value = value != null && !SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand) ? (value + lvalue) /2 : lvalue;
-                }                  
+                if(inHovercraft)
+                {
+                    //Only turn if A button not pressed
+                    if(!SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))
+                    {
+                        value = GetPositionValue(direction, rightPosition, vehicleType, MovementAxis.X, MovementMagnitude.LessThan, PhysicalPilotingHand.Right);
+                        float? lvalue = GetPositionValue(direction, leftPosition, vehicleType, MovementAxis.X, MovementMagnitude.LessThan);
+                        value = (value != null && lvalue != null) ? (value + lvalue) /2 : value ?? lvalue;                   
+                    }
+                }
+                else
+                {
+                    if(rightEulers != null && (!(inCyclops || inSeamoth) || ((inCyclops || inSeamoth) && !SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))))
+                    {    
+                        value = GetValue(direction, rightEulers, vehicleType, MovementAxis.X, MovementMagnitude.LessThan, PhysicalPilotingHand.Right);                       
+                    }   
+                    if(leftEulers != null && (inCyclops || inSeamoth))
+                    {    
+                        float lvalue = (float)GetValue(direction, leftEulers, vehicleType, MovementAxis.X, MovementMagnitude.Greater);                       
+                        value = value != null && !SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand) ? (value + lvalue) /2 : lvalue;
+                    }                  
+                }
             }
             else if(direction == PhysicalPilotingDirection.LookRight)
             {
-                if(rightEulers != null && (!(inCyclops || inSeamoth) || ((inCyclops || inSeamoth) && !SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))))
-                {      
-                    value = GetValue(direction, rightEulers, vehicleType, MovementAxis.X, MovementMagnitude.Greater, PhysicalPilotingHand.Right);                       
-                    //float delta = Mathf.DeltaAngle(rightEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                    //value = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;
-                }   
-                if(leftEulers != null && (inCyclops || inSeamoth))
-                {    
-                    float lvalue = (float)GetValue(direction, leftEulers, vehicleType, MovementAxis.X, MovementMagnitude.LessThan);                       
-                    //float delta = -Mathf.DeltaAngle(leftEulers?.x ?? 0f, gripArray[(int)direction][vehicleType][0]);
-                    //float lvalue = delta > gripArray[(int)direction][vehicleType][1] ? (delta - gripArray[(int)direction][vehicleType][1]) * gripArray[(int)direction][vehicleType][2] : 0.0f;
-                    value = value != null && !SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand) ? (value + lvalue) /2 : lvalue;
-                    //DebugPanel.Show($"left: {leftEulers}\nright: {rightEulers}\ndelta: {delta}\nlvalue = {lvalue}\nspeed: {value}\nmode = {Player.main?.currentSub.GetComponent<SubControl>().controlMode}");
-                }   
-                
+                if(inHovercraft)
+                {
+                    if(!SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))
+                    {
+                        value = GetPositionValue(direction, rightPosition, vehicleType, MovementAxis.X, MovementMagnitude.Greater, PhysicalPilotingHand.Right);
+                        float? lvalue = GetPositionValue(direction, leftPosition, vehicleType, MovementAxis.X, MovementMagnitude.Greater);
+                        value = (value != null && lvalue != null) ? (value + lvalue) /2 : value ?? lvalue;   
+                    }                                       
+                }
+                else
+                {
+                    if(rightEulers != null && (!(inCyclops || inSeamoth) || ((inCyclops || inSeamoth) && !SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand))))
+                    {      
+                        value = GetValue(direction, rightEulers, vehicleType, MovementAxis.X, MovementMagnitude.Greater, PhysicalPilotingHand.Right);                       
+                    }   
+                    if(leftEulers != null && (inCyclops || inSeamoth))
+                    {    
+                        float lvalue = (float)GetValue(direction, leftEulers, vehicleType, MovementAxis.X, MovementMagnitude.LessThan);                       
+                        value = value != null && !SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.RightHand) ? (value + lvalue) /2 : lvalue;
+                        //DebugPanel.Show($"left: {leftEulers}\nright: {rightEulers}\ndelta: {delta}\nlvalue = {lvalue}\nspeed: {value}\nmode = {Player.main?.currentSub.GetComponent<SubControl>().controlMode}");
+                    }   
+                }
             }
            return value;
         }
@@ -540,6 +604,7 @@ namespace SubmersedVR
                     if(isPilotingSeatruck)
                     {
                         leftPilotingTarget = GameObject.Find("ControllerLeft_ikTarg").transform;
+                        //leftPilotingTarget.eulerAngles += new Vector3(-90f, 0f, 0f);
                     }
                     else if(isInExosuit || isInSeamoth)
                     {
@@ -551,7 +616,11 @@ namespace SubmersedVR
                     }
                     else if(isOnSnowBike)
                     {
-                        leftPilotingTarget = null;//Player.main?.GetComponentInParent<Hoverbike>().leftHandIKTarget;
+#if BZ
+                        leftPilotingTarget = Player.main?.GetComponentInParent<Hoverbike>().leftHandIKTarget;
+#else
+                        leftPilotingTarget = null; 
+#endif
                     }
                     target = leftPilotingTarget;
                 }
@@ -571,7 +640,11 @@ namespace SubmersedVR
                     }
                     else if(isOnSnowBike)
                     {
-                        rightPilotingTarget = null; //Player.main?.GetComponentInParent<Hoverbike>().rightHandIKTarget;
+#if BZ
+                        rightPilotingTarget = Player.main?.GetComponentInParent<Hoverbike>().rightHandIKTarget;
+#else
+                        rightPilotingTarget = null; 
+#endif
                     }
                     target = rightPilotingTarget;
                 }
@@ -762,19 +835,25 @@ namespace SubmersedVR
 
         public static GameObject CreateGrip(Transform target)
         {
+            //Mod.logger.LogInfo($"Creating Grip");
             GameObject grip = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             GameObject.Destroy(grip.GetComponent<SphereCollider>());
             grip.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             grip.transform.position = target.position;
             grip.transform.rotation = target.rotation;
             Transform parent = target.parent;
-            if(Player.main?.inExosuit == true || inSeamoth || inCyclops)
+            if(inExosuit || inSeamoth || inCyclops)
             {
                 parent = parent.parent;
             }
+            else if(inHovercraft)
+            {
+#if BZ
+                parent = Player.main?.GetComponentInParent<Hoverbike>().transform;
+#endif
+            }
             grip.transform.SetParent(parent, true);
             
-            //Mod.logger.LogInfo($"CreateGrip localPosition x={grip.transform.localPosition.ToString("F5")}");
             Material newMaterial = new(ShaderManager.preloadedShaders.DebugDisplaySolid);
             newMaterial.SetColor(ShaderPropertyID._Color, Color.cyan);
             grip.GetComponent<Renderer>().material = newMaterial;
@@ -786,7 +865,7 @@ namespace SubmersedVR
 
     #region Patches
  
-    // Moves the camera/attach point of the seamoth 10 cm in front
+    //Make the Cyclops steering move less so that physical driving feels better
     [HarmonyPatch(typeof(SubControl), nameof(SubControl.UpdateAnimation))]
     static class SubControlUpdateAnimation
     {
@@ -842,3 +921,6 @@ namespace SubmersedVR
     #endregion
 
 }
+
+
+

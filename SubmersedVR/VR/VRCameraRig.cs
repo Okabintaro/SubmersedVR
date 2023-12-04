@@ -7,6 +7,7 @@ using UWE;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.EventSystems;
+using System.IO;
 
 /*
 The VRCamera Rig handles the controllers together with their laser pointers to control the UI.
@@ -18,7 +19,7 @@ namespace SubmersedVR
     extern alias SteamVRRef;
     using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
-
+    
     class VRCameraRig : MonoBehaviour
     {
         // Setup and created in Start()
@@ -90,12 +91,17 @@ namespace SubmersedVR
                 _targetTransform = value;
                 value.Apply(laserPointerUI.transform);
                 value.Apply(laserPointer.transform);
+                value.Apply(laserPointerLeft.transform);
             }
         }
 
         public static Transform GetTargetTansform()
         {
             return VRCameraRig.instance.laserPointer.transform;
+        }
+        public static Transform GetLeftTargetTansform()
+        {
+            return VRCameraRig.instance.laserPointerLeft.transform;
         }
 
         public void SetCameraTrackTarget(Transform target)
@@ -174,6 +180,9 @@ namespace SubmersedVR
 
         public void Start()
         {
+            Settings.AmbientOcclusionSettingsChanged -= OnAmbientOcclusionSettingsChanged;
+            Settings.AmbientOcclusionSettingsChanged += OnAmbientOcclusionSettingsChanged;
+
             SetupControllers();
             StartCoroutine(DelayedRecenter(1.0f));
         }
@@ -203,8 +212,13 @@ namespace SubmersedVR
         {
             var inMainMenu = !uGUI.isMainLevel;
             bool alwaysShow = Settings.AlwaysShowControllers;
-            modelL.SetActive(alwaysShow || inMainMenu);
-            modelR.SetActive(alwaysShow || inMainMenu);
+            modelL?.SetActive(alwaysShow || inMainMenu);
+            modelR?.SetActive(alwaysShow || inMainMenu);
+        }
+
+        public static void OnAmbientOcclusionSettingsChanged()
+        {
+            AmbientOcclusionVR.OnAmbientOcclusionSettingsChanged(VRCameraRig.instance.vrCamera);
         }
 
         // This is used to get the camera from the main menu
@@ -225,6 +239,8 @@ namespace SubmersedVR
             Vector3 oldPos = camera.transform.position;
             transform.position = oldPos;
             vrCamera.transform.parent = this.transform;
+
+            AmbientOcclusionVR.AddOcclusionEffect(vrCamera);
         }
 
         public void StealUICamera(Camera camera, bool fromGame = false)
@@ -329,6 +345,17 @@ namespace SubmersedVR
             {
                 this.transform.SetPositionAndRotation(rigParentTarget.position, rigParentTarget.rotation);
                 uiRig.transform.rotation = transform.rotation;
+/*TODO
+                RecenterBodyOnCameraOrientation(35f, 0.3f, 3.0f, 1.5f);  
+
+                float zOffset = Player.main?.inSeatruckPilotingChair == true || Player.main?.inExosuit == true ? -0.2f : -0.08f;                 
+                float yOffset = Player.main?.inSeatruckPilotingChair == true || Player.main?.inExosuit == true ? -0.2f : -0.1f;    
+                if(Player.main._cinematicModeActive == false)  
+                {
+                    Player.main.armsController.transform.position = SNCameraRoot.main.mainCamera.transform.position + (SNCameraRoot.main.mainCamera.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
+                    //Player.main.armsController.transform.position = MainCameraControl.main.transform.position + (MainCameraControl.main.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
+                }  
+*/ 
             }
         }
 
@@ -351,6 +378,66 @@ namespace SubmersedVR
     }
 
     #region Patches
+
+    //Head based vs Hand based movement
+    [HarmonyPatch(typeof(PlayerController), nameof(PlayerController.forwardReference), MethodType.Getter)]
+    public static class MoveDirectionOverride
+    {
+        public static Transform controllerTransform;
+        static bool Prefix(PlayerController __instance, ref Transform __result)
+        {
+            if(Settings.HandBasedTurning)
+            {
+                //Use the Camera's position and the laser pointer's rotation
+                //Use a dummy object to hold the transform
+                if(controllerTransform == null)
+                {
+                    controllerTransform = new GameObject().transform;
+                }
+                controllerTransform.position = MainCamera.camera.transform.position;
+                controllerTransform.rotation = Settings.LeftHandBasedTurning ? VRCameraRig.GetLeftTargetTansform().rotation : VRCameraRig.GetTargetTansform().rotation; //the laser pointer transform
+                __result = controllerTransform;
+            }
+            else
+            {
+                __result = MainCamera.camera.transform;
+            }
+            return false;
+        }
+    }
+    
+        //Adjust the player position while piloting vehicles with vr offset positions and user overrides
+    [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnUpdate))]
+    public static class PlayerPositionFixer
+    {
+        static void Postfix(MainCameraControl __instance)
+        {
+            bool inSeamoth =  Player.main?.inSeamoth == true;
+            bool inExosuit = Player.main?.inExosuit == true;
+            bool inCyclops = Player.main?.currentSub?.isCyclops == true && Player.main?.isPiloting == true;
+
+            float zOffset = 0.0f;
+            float yOffset = 0.0f;
+            if(inSeamoth)
+            {
+                zOffset += 0.0f + Settings.SeamothZOffset;
+                yOffset += 0.07f + Settings.SeamothYOffset;
+            }
+            else if(inCyclops)
+            {
+                zOffset += 0.03f + Settings.CyclopsZOffset;
+                yOffset += 0.08f + Settings.CyclopsYOffset;
+            }
+            else if(inExosuit)
+            {
+                zOffset += 0.03f + Settings.ExosuitZOffset;
+                yOffset += 0.2f + Settings.ExosuitYOffset;
+            }
+
+            __instance.cameraUPTransform.localPosition = new Vector3(__instance.cameraUPTransform.localPosition.x, yOffset, zOffset);
+            //__instance.cameraUPTransform.localRotation = Quaternion.Euler( new Vector3(0.0f, 0.0f, 0.0f));
+        }
+    }
 
     // Create the Rig together with the uGUI Prefab
     [HarmonyPatch(typeof(uGUI), nameof(uGUI.Awake))]

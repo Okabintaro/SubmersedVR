@@ -27,7 +27,8 @@ namespace SubmersedVR
                 || button == GameInput.Button.Slot3
                 || button == GameInput.Button.Slot4
                 || button == GameInput.Button.Slot5
-                || button == GameInput.Button.AutoMove;
+                || button == GameInput.Button.AutoMove
+                || button.ToString() == "45" || button.ToString() == "46";
         }
 
         public static Vector2 GetScrollDelta()
@@ -53,6 +54,7 @@ namespace SubmersedVR
             }
 
             String actionName = button.ToString();
+            //Mod.logger.LogInfo($"Action name: {actionName}");
             //When using physical driving we use the right A button as Up/Down and Jump but the A button is mapped to the LeftHand action. 
             //Therefore, only return true if the real LeftHand action is occuring (default is Left Trigger)
             if(actionName == "LeftHand" && Settings.PhysicalDriving && (Player.main?.inExosuit == true || Player.main?.inSeamoth == true))
@@ -126,7 +128,7 @@ namespace SubmersedVR
             return false;
         }
     }
-
+/*  Moved to SnapTurning.cs
     // Implement Snap turning for the player
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetLookDelta))]
     public static class SnapTurning
@@ -150,7 +152,7 @@ namespace SubmersedVR
             }
         }
     }
-
+*/
     // Pretend the controlers are always available to make Subnautica not switch to Keyboard/Mouse and mess VR controls up
     // TODO: This should/could probably be changed though, asking SteamVR if controllers are available?
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateControllerAvailable))]
@@ -369,7 +371,42 @@ namespace SubmersedVR
             }
         }
     }
-
+/*
+    [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.Open))]
+    public static class OpenCatcher
+    {
+        static void Postfix()
+        {
+            Mod.logger.LogInfo($"uGUI_CraftingMenu open called");
+        }
+    }
+    [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.OnDeselect))]
+    public static class CloseCatcher
+    {
+        static void Postfix()
+        {
+            Mod.logger.LogInfo($"uGUI_CraftingMenu close called");
+        }
+    }
+    [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.ChangeGroup))]
+    public static class ChangeGroupFixer
+    {
+        static void Prefix(uGUI_InputGroup newGroup, bool lockMovement)
+        {
+            Mod.logger.LogInfo($"FPSInputModule ChangeGroup called {newGroup == null} {lockMovement}");
+        }
+    }
+    
+    [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.Out))]
+    public static class DeactivateModuleFixer
+    {
+        static void Prefix()
+        {
+            Mod.logger.LogInfo($"uGUI_CraftingMenu Out called ");
+        }
+    }
+*/
+    
     // This makes it so the crafting menu from the fabricators actually use the controller buttons
     // [HarmonyPatch(typeof(uGUI_CraftingMenu), "OnPointerClick")]
     [HarmonyPatch(typeof(uGUI_CraftingMenu))]
@@ -383,6 +420,7 @@ namespace SubmersedVR
 
         static bool Prefix(ref bool __result, uGUI_CraftingMenu __instance, uGUI_ItemIcon icon, int button)
         {
+            Mod.logger.LogInfo($"uGUI_CraftingMenu OnPointerClick called {button} ");
             if (__instance.interactable)
             {
                 uGUI_CraftingMenu.Node node = __instance.GetNode(icon);
