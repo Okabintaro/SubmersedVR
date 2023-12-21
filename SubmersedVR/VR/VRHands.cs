@@ -408,51 +408,30 @@ namespace SubmersedVR
             bodyRenderers.ForEach(r => r.enabled = val);
         }
 
-        // Retries until changes have actually been made
         IEnumerator UpdateBodyRendering()
-        {
-            bool retry = true;
-            while (retry)
-            {
-                //Mod.logger.LogInfo($"UpdateBodyRendering {Settings.FullBody}");
-
-                var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("body") || r.name.Contains("vest"));
-                foreach (var bodyRenderer in bodyRenderers)
-                {
-                    if(bodyRenderer.enabled == Settings.FullBody)
-                    {
-                        retry = false;
-                    }
-                    bodyRenderer.enabled = Settings.FullBody;
-                }
-
-                yield return new WaitForSeconds(0.5f);
-            }
-
-        }
-/*
-        // TODO: Proper patch/fix, this doesnt need to run each 2 seconds
-        IEnumerator DisableBodyRendering()
         {
             while (true)
             {
-                // Extend globes BoundingBox to fight culling
-                transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true).Where(m => m.name.Contains("glove") || m.name.Contains("hands")).ForEach(
-                mr =>
+                //Mod.logger.LogInfo($"UpdateBodyRendering {Settings.FullBody}");
+                var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("body") || r.name.Contains("vest"));
+                foreach (var bodyRenderer in bodyRenderers)
                 {
-                    var newBounds = new Bounds(Vector3.zero, new Vector3(3.0f, 3.0f, 3.0f));
-                    mr.localBounds = newBounds;
-                    mr.allowOcclusionWhenDynamic = false;
-                    // TODO: This actually fixes the culling, but still not sure why the bbox doesn't work
+                    bodyRenderer.enabled = Settings.FullBody;
+                }
+
+                // Fix culling of hands when full body is off
+                var handRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true).Where(m => m.name.Contains("glove") || m.name.Contains("hands"));
+                handRenderers.ForEach(mr =>
+                {
+                    // NOTE: This actually fixes the culling, but still not sure why the bbox doesn't work
                     mr.updateWhenOffscreen = true;
                 });
-                // Disable body rendering
-                var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>().Where(r => r.name.Contains("body") || r.name.Contains("vest"));
-                bodyRenderers.ForEach(r => r.enabled = false);
+
                 yield return new WaitForSeconds(2.0f);
             }
+
         }
-*/
+
         internal void OnToolEquipped(PlayerTool tool)
         {
             var aimOffset = tool.GetAimOffset();
