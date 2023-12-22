@@ -25,7 +25,16 @@
                "path" : "/user/hand/right/pose/raw"
             }
          ],
-         "skeleton" : [],
+         "skeleton" : [
+            {
+               "output" : "/actions/subnautica/in/lefthandskeleton",
+               "path" : "/user/hand/left/input/skeleton/left"
+            },
+            {
+               "output" : "/actions/subnautica/in/righthandskeleton",
+               "path" : "/user/hand/right/input/skeleton/right"
+            }
+         ],
          "sources" : [
             {
                "inputs" : {
@@ -241,7 +250,7 @@
    "controller_type" : "oculus_touch",
    "description" : "",
    "interaction_profile" : "",
-   "name" : "Default SubmersedVR Bindings for Oculus Touch",
+   "name" : "Default SubmersedVR Bindings for Oculus Touch/Quest",
    "options" : {},
    "simulated_actions" : []
 }
