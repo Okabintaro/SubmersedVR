@@ -43,8 +43,8 @@ namespace SubmersedVR
         public static bool PutBarsOnWrist;
         public static event BooleanChanged PutBarsOnWristChanged;
 
-        public static bool EnableGameHaptics = false;
-        public static bool EnableUIHaptics = false;
+        public static bool AreGameHapticsEnabled = false;
+        public static bool AreUIHapticsEnabled = false;
         public static bool ArticulatedHands = false;
         public static bool HandBasedTurning = false;
         public static bool LeftHandBasedTurning = false;
@@ -191,8 +191,8 @@ namespace SubmersedVR
 
             panel.AddHeading(tab, "Immersion");
             panel.AddToggleOption(tab, "Articulated Hands", ArticulatedHands, (value) => { ArticulatedHands = value;  }, "Hands animate based on the movement of your physical hands.");
-            panel.AddToggleOption(tab, "Enable Game Haptics", EnableGameHaptics, (value) => { EnableGameHaptics = value; }, "Enable controller vibration while interacting with world objects.");
-            panel.AddToggleOption(tab, "Enable UI Haptics", EnableUIHaptics, (value) => { EnableUIHaptics = value; }, "Enable controller vibration while interacting with the User Interface.");
+            panel.AddToggleOption(tab, "Enable Game Haptics", AreGameHapticsEnabled, (value) => { AreGameHapticsEnabled = value; }, "Enable controller vibration while interacting with world objects.");
+            panel.AddToggleOption(tab, "Enable UI Haptics", AreUIHapticsEnabled, (value) => { AreUIHapticsEnabled = value; }, "Enable controller vibration while interacting with the User Interface.");
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
             panel.AddChoiceOption<string>(tab, "Show Laser Pointer", new string[] {"Always", "Default", "Never"}, ShowLaserPointer , (value) => {
                 ShowLaserPointer = value;
