@@ -92,10 +92,10 @@ namespace SubmersedVR
 
         public static IEnumerator PlayerHeartbeat()
         {
-            Controller controller = Settings.PutBarsOnWrist ? Controller.Both : Controller.Left;
-            PlayGameHaptics(controller, 0.0f, 0.15f, 10f, 0.8f);
+            Controller controller = Settings.PutBarsOnWrist ? Controller.Left : Controller.Both;
+            PlayGameHaptics(controller, 0.0f, 0.10f, 10f, 0.2f);
             yield return new WaitForSeconds(0.2f);
-            PlayGameHaptics(controller, 0.0f, 0.25f, 10f, 0.3f);
+            PlayGameHaptics(controller, 0.0f, 0.20f, 10f, 0.1f);
         }
 
         public static IEnumerator PlayerFrozen()
@@ -106,6 +106,21 @@ namespace SubmersedVR
             yield return new WaitForSeconds(5.0f);
             PlayGameHaptics(Controller.Both, 0.0f, 5.0f, 10f, 0.1f);
         }
+
+        public static IEnumerator Shot()
+        {
+            Controller controller = Controller.Right;
+            PlayGameHaptics(controller, 0.0f, 0.2f, 10f, 1.0f);
+            yield return new WaitForSeconds(0.1f);
+            PlayGameHaptics(controller, 0.0f, 0.2f, 10f, 1.0f);
+            yield return new WaitForSeconds(0.1f);
+            PlayGameHaptics(controller, 0.0f, 0.2f, 10f, 1.0f);
+            yield return new WaitForSeconds(0.1f);
+            PlayGameHaptics(controller, 0.0f, 0.2f, 10f, 0.5f);
+            yield return new WaitForSeconds(0.1f);
+            PlayGameHaptics(controller, 0.0f, 0.2f, 10f, 0.3f);
+        }
+
 
 
     }
@@ -128,7 +143,7 @@ namespace SubmersedVR
             if (e == HandTargetEventType.Click)
             {
                 // TODO: Should this be UI?
-                HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.2f, 5f, 1.0f);
+                HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.2f, 5f, 0.7f);
             }
             if (e == HandTargetEventType.Hover)
             {
@@ -139,7 +154,7 @@ namespace SubmersedVR
 
                 HapticsVR.lastHoverComponent = target;
                 //Mod.logger.LogInfo($"GUIHand.Send Hover called"); 
-                HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.05f, 10f, 0.7f);
+                HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.05f, 10f, 0.2f);
             }
         }
     }
@@ -675,6 +690,39 @@ namespace SubmersedVR
             }
         }
     }
+
+    // Play charging up and shooting haptics for the stasis rifle
+    [HarmonyPatch(typeof(StasisRifle), nameof(StasisRifle.Charge))]
+    class StasisRifleChargeHaptics
+    {
+        public static void Postfix(StasisRifle __instance)
+        {
+            if (__instance.isCharging) {
+                // chargeAmount goes fro, 0.0 to 5.0
+                float charge = __instance.chargeAmount;
+                float freq = charge * 10.0f;
+                float amp = charge * 1.0f/10.0f; // 0.0 to 0.5
+                if (charge >= 4.9f) {
+                    amp = 0.0f;
+                }
+                Mod.logger.LogInfo($"StasisRifle.Charge freq: {freq}, amp: {amp}");
+                HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.1f, freq, amp);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(StasisRifle), nameof(StasisRifle.Fire))]
+    class StasisRifleShootHaptics
+    {
+        public static void Postfix(StasisRifle __instance)
+        {
+            Mod.logger.LogInfo("StasisRifle.Charge Fire");
+            CoroutineHost.StartCoroutine(HapticsVR.Shot());
+            // HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 1.0f, 100f, 1.0f);
+        }
+    }
+
+
 
     //ScannerTool has a kind of quick sine wave haptic
     [HarmonyPatch(typeof(ScannerTool), nameof(ScannerTool.Update))]
