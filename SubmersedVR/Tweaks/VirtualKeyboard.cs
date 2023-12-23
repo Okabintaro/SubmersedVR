@@ -45,7 +45,8 @@ namespace SubmersedVR
 
         public static void Deactivate()
         {
-            if (VirtualKeyboard.instance == null) {
+            if (VirtualKeyboard.instance == null)
+            {
                 return;
             }
             VirtualKeyboard.instance.callback = null;

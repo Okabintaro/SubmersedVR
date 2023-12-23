@@ -19,7 +19,7 @@ namespace SubmersedVR
     extern alias SteamVRRef;
     using SteamVRRef.Valve.VR;
     using SteamVRActions.Valve.VR;
-    
+
     class VRCameraRig : MonoBehaviour
     {
         // Setup and created in Start()
@@ -345,17 +345,17 @@ namespace SubmersedVR
             {
                 this.transform.SetPositionAndRotation(rigParentTarget.position, rigParentTarget.rotation);
                 uiRig.transform.rotation = transform.rotation;
-/*TODO
-                RecenterBodyOnCameraOrientation(35f, 0.3f, 3.0f, 1.5f);  
+                /*TODO
+                                RecenterBodyOnCameraOrientation(35f, 0.3f, 3.0f, 1.5f);  
 
-                float zOffset = Player.main?.inSeatruckPilotingChair == true || Player.main?.inExosuit == true ? -0.2f : -0.08f;                 
-                float yOffset = Player.main?.inSeatruckPilotingChair == true || Player.main?.inExosuit == true ? -0.2f : -0.1f;    
-                if(Player.main._cinematicModeActive == false)  
-                {
-                    Player.main.armsController.transform.position = SNCameraRoot.main.mainCamera.transform.position + (SNCameraRoot.main.mainCamera.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
-                    //Player.main.armsController.transform.position = MainCameraControl.main.transform.position + (MainCameraControl.main.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
-                }  
-*/ 
+                                float zOffset = Player.main?.inSeatruckPilotingChair == true || Player.main?.inExosuit == true ? -0.2f : -0.08f;                 
+                                float yOffset = Player.main?.inSeatruckPilotingChair == true || Player.main?.inExosuit == true ? -0.2f : -0.1f;    
+                                if(Player.main._cinematicModeActive == false)  
+                                {
+                                    Player.main.armsController.transform.position = SNCameraRoot.main.mainCamera.transform.position + (SNCameraRoot.main.mainCamera.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
+                                    //Player.main.armsController.transform.position = MainCameraControl.main.transform.position + (MainCameraControl.main.transform.forward * zOffset) + new Vector3(0f, yOffset, 0f);
+                                }  
+                */
             }
         }
 
@@ -386,11 +386,11 @@ namespace SubmersedVR
         public static Transform controllerTransform;
         static bool Prefix(PlayerController __instance, ref Transform __result)
         {
-            if(Settings.HandBasedTurning)
+            if (Settings.HandBasedTurning)
             {
                 //Use the Camera's position and the laser pointer's rotation
                 //Use a dummy object to hold the transform
-                if(controllerTransform == null)
+                if (controllerTransform == null)
                 {
                     controllerTransform = new GameObject().transform;
                 }
@@ -405,30 +405,30 @@ namespace SubmersedVR
             return false;
         }
     }
-    
-        //Adjust the player position while piloting vehicles with vr offset positions and user overrides
+
+    //Adjust the player position while piloting vehicles with vr offset positions and user overrides
     [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnUpdate))]
     public static class PlayerPositionFixer
     {
         static void Postfix(MainCameraControl __instance)
         {
-            bool inSeamoth =  Player.main?.inSeamoth == true;
+            bool inSeamoth = Player.main?.inSeamoth == true;
             bool inExosuit = Player.main?.inExosuit == true;
             bool inCyclops = Player.main?.currentSub?.isCyclops == true && Player.main?.isPiloting == true;
 
             float zOffset = 0.0f;
             float yOffset = 0.0f;
-            if(inSeamoth)
+            if (inSeamoth)
             {
                 zOffset += 0.0f + Settings.SeamothZOffset;
                 yOffset += 0.07f + Settings.SeamothYOffset;
             }
-            else if(inCyclops)
+            else if (inCyclops)
             {
                 zOffset += 0.03f + Settings.CyclopsZOffset;
                 yOffset += 0.08f + Settings.CyclopsYOffset;
             }
-            else if(inExosuit)
+            else if (inExosuit)
             {
                 zOffset += 0.03f + Settings.ExosuitZOffset;
                 yOffset += 0.2f + Settings.ExosuitYOffset;

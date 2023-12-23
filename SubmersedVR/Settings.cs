@@ -24,7 +24,7 @@ namespace SubmersedVR
 
         public static bool IsDebugEnabled;
         public static event BooleanChanged IsDebugChanged;
-       
+
         public static bool InvertYAxis;
         public static event BooleanChanged InvertYAxisChanged;
 
@@ -93,7 +93,7 @@ namespace SubmersedVR
         public static float SeatruckRightVerticleCenterAngle = 0.0f;
         public static float SeatruckRightDeadZone = 5.0f;
         public static bool SeatruckAltLeftGrip = false;
-                public static float SnowbikeLeftHorizontalCenterAngle = 0.0f;
+        public static float SnowbikeLeftHorizontalCenterAngle = 0.0f;
         public static float SnowbikeLeftVerticleCenterAngle = 0.0f;
         public static float SnowbikeLeftDeadZone = 5.0f;
 
@@ -114,9 +114,9 @@ namespace SubmersedVR
         public static float AOBias = 0.05f;
         public static float AOThickness = 1.0f;
         public static bool AODownSample = true;
-        public static bool AOCacheAware = true; 
+        public static bool AOCacheAware = true;
         public static bool AOTemporalFilterEnabled = true;
-        public static bool AOTemporalFilterDownsampleEnabled = true; 
+        public static bool AOTemporalFilterDownsampleEnabled = true;
         public static float AOTemporalFilterBlending = 0.8f;
         public static float AOTemporalFilterResponse = 0.5f;
         public static event VoidChanged AmbientOcclusionSettingsChanged;
@@ -162,39 +162,51 @@ namespace SubmersedVR
             int tab = panel.AddTab("Submersed VR");
 
             panel.AddHeading(tab, "Controls");
-            panel.AddChoiceOption<string>(tab, "Movement Mode", new string[] {"Head Based", "Right Hand Based", "Left Hand Based"}, HandBasedTurning ? (LeftHandBasedTurning ? "Left Hand Based" : "Right Hand Based") : "Head Based", (value) => {
+            panel.AddChoiceOption<string>(tab, "Movement Mode", new string[] { "Head Based", "Right Hand Based", "Left Hand Based" }, HandBasedTurning ? (LeftHandBasedTurning ? "Left Hand Based" : "Right Hand Based") : "Head Based", (value) =>
+            {
                 HandBasedTurning = value == "Right Hand Based" || value == "Left Hand Based";
                 LeftHandBasedTurning = value == "Left Hand Based";
             });
-            panel.AddToggleOption(tab, "Enable Snap Turning", IsSnapTurningEnabled, (value) => { IsSnapTurningEnabled = value;
-                if (IsSnapTurningEnabledChanged != null) {
+            panel.AddToggleOption(tab, "Enable Snap Turning", IsSnapTurningEnabled, (value) =>
+            {
+                IsSnapTurningEnabled = value;
+                if (IsSnapTurningEnabledChanged != null)
+                {
                     IsSnapTurningEnabledChanged(value);
                 }
             });
-            panel.AddChoiceOption<float>(tab, "Snap Turning Angle(°)", new float[] {22.5f, 30f, 45f, 90f}, SnapTurningAngle, (value) => {
+            panel.AddChoiceOption<float>(tab, "Snap Turning Angle(°)", new float[] { 22.5f, 30f, 45f, 90f }, SnapTurningAngle, (value) =>
+            {
                 SnapTurningAngle = value;
-                if (SnapTurningAngleChanged != null) {
+                if (SnapTurningAngleChanged != null)
+                {
                     SnapTurningAngleChanged(value);
                 }
             });
-            panel.AddToggleOption(tab, "Enable Prawn Suit Snap Turning", IsExosuitSnapTurningEnabled, (value) => { IsExosuitSnapTurningEnabled = value;
-                if (IsExosuitSnapTurningEnabledChanged != null) {
+            panel.AddToggleOption(tab, "Enable Prawn Suit Snap Turning", IsExosuitSnapTurningEnabled, (value) =>
+            {
+                IsExosuitSnapTurningEnabled = value;
+                if (IsExosuitSnapTurningEnabledChanged != null)
+                {
                     IsExosuitSnapTurningEnabledChanged(value);
                 }
             });
-            panel.AddChoiceOption<float>(tab, "Prawn Suit Snap Turning Angle(°)", new float[] {22.5f, 30f, 45f, 90f}, ExosuitSnapTurningAngle, (value) => {
+            panel.AddChoiceOption<float>(tab, "Prawn Suit Snap Turning Angle(°)", new float[] { 22.5f, 30f, 45f, 90f }, ExosuitSnapTurningAngle, (value) =>
+            {
                 ExosuitSnapTurningAngle = value;
-                if (ExosuitSnapTurningAngleChanged != null) {
+                if (ExosuitSnapTurningAngleChanged != null)
+                {
                     ExosuitSnapTurningAngleChanged(value);
                 }
             });
 
             panel.AddHeading(tab, "Immersion");
-            panel.AddToggleOption(tab, "Articulated Hands", ArticulatedHands, (value) => { ArticulatedHands = value;  }, "Hands animate based on the movement of your physical hands.");
+            panel.AddToggleOption(tab, "Articulated Hands", ArticulatedHands, (value) => { ArticulatedHands = value; }, "Hands animate based on the movement of your physical hands.");
             panel.AddToggleOption(tab, "Enable Game Haptics", AreGameHapticsEnabled, (value) => { AreGameHapticsEnabled = value; }, "Enable controller vibration while interacting with world objects.");
             panel.AddToggleOption(tab, "Enable UI Haptics", AreUIHapticsEnabled, (value) => { AreUIHapticsEnabled = value; }, "Enable controller vibration while interacting with the User Interface.");
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
-            panel.AddChoiceOption<string>(tab, "Show Laser Pointer", new string[] {"Always", "Default", "Never"}, ShowLaserPointer , (value) => {
+            panel.AddChoiceOption<string>(tab, "Show Laser Pointer", new string[] { "Always", "Default", "Never" }, ShowLaserPointer, (value) =>
+            {
                 ShowLaserPointer = value;
             });
 
@@ -223,9 +235,9 @@ namespace SubmersedVR
             panel.AddSliderOption(tab, "Cyclops Pilot Height Offset", CyclopsYOffset, -0.4f, 0.4f, CyclopsYOffset, 0.01f, (value) => { CyclopsYOffset = value; }, SliderLabelMode.Float, "0.00");
 
             panel.AddHeading(tab, "Options");
-            panel.AddToggleOption(tab, "Physical Driving", PhysicalDriving, (value) => { PhysicalDriving = value;  }, "Grip Vehicle controls to steer.");
-            panel.AddToggleOption(tab, "Locked Steering Grips", PhysicalLockedGrips, (value) => { PhysicalLockedGrips = value;  }, "Gripping the steering control locks your hands to the steering so you dont have to constantly grip. Grip again to unlock.");
-            
+            panel.AddToggleOption(tab, "Physical Driving", PhysicalDriving, (value) => { PhysicalDriving = value; }, "Grip Vehicle controls to steer.");
+            panel.AddToggleOption(tab, "Locked Steering Grips", PhysicalLockedGrips, (value) => { PhysicalLockedGrips = value; }, "Gripping the steering control locks your hands to the steering so you dont have to constantly grip. Grip again to unlock.");
+
             panel.AddHeading(tab, "SeaMoth Left Hand");
             panel.AddSliderOption(tab, "Center (Left/Right)", SeamothLeftHorizontalCenterAngle, -10f, 10f, SeamothLeftHorizontalCenterAngle, 1f, (value) => { SeamothLeftHorizontalCenterAngle = value; }, SliderLabelMode.Float, "0");
             panel.AddSliderOption(tab, "Center (Up/Down)", SeamothLeftVerticleCenterAngle, -10f, 10f, SeamothLeftVerticleCenterAngle, 1f, (value) => { SeamothLeftVerticleCenterAngle = value; }, SliderLabelMode.Float, "0");
@@ -279,28 +291,34 @@ namespace SubmersedVR
             */
         }
 
-                internal static void AddToGraphicsOptions(uGUI_OptionsPanel panel)
+        internal static void AddToGraphicsOptions(uGUI_OptionsPanel panel)
         {
             int tab = panel.tabs.Count - 1;
 
             string space = "   ";
             panel.AddHeading(tab, "Ambient Occlusion");
             panel.AddToggleOption(tab, space + "Enable", AOEnabled, (value) => { AOEnabled = AmbientOcclusionVR.enabled = value; AmbientOcclusionSettingsChanged(); }, "Use ambient occlusion. Increases demand on GPU.");
-            panel.AddChoiceOption<string>(tab, space + "Method", new string[] {"Post Effect", "Deferred", "Debug"}, AOMethod, (value) => {
+            panel.AddChoiceOption<string>(tab, space + "Method", new string[] { "Post Effect", "Deferred", "Debug" }, AOMethod, (value) =>
+            {
                 AOMethod = value;
-                if (AmbientOcclusionSettingsChanged != null) {
+                if (AmbientOcclusionSettingsChanged != null)
+                {
                     AmbientOcclusionSettingsChanged();
                 }
             });
-            panel.AddChoiceOption<string>(tab, space + "Sample Count", new string[] {"Low", "Medium", "High", "Very High"}, AOSampleCount, (value) => {
+            panel.AddChoiceOption<string>(tab, space + "Sample Count", new string[] { "Low", "Medium", "High", "Very High" }, AOSampleCount, (value) =>
+            {
                 AOSampleCount = value;
-                if (AmbientOcclusionSettingsChanged != null) {
+                if (AmbientOcclusionSettingsChanged != null)
+                {
                     AmbientOcclusionSettingsChanged();
                 }
             });
-            panel.AddChoiceOption<string>(tab, space + "Per Pixel Normals", new string[] {"None", "Camera", "GBuffer", "Octa"}, AOPerPixelNormals, (value) => {
+            panel.AddChoiceOption<string>(tab, space + "Per Pixel Normals", new string[] { "None", "Camera", "GBuffer", "Octa" }, AOPerPixelNormals, (value) =>
+            {
                 AOPerPixelNormals = value;
-                if (AmbientOcclusionSettingsChanged != null) {
+                if (AmbientOcclusionSettingsChanged != null)
+                {
                     AmbientOcclusionSettingsChanged();
                 }
             });
@@ -364,7 +382,7 @@ namespace SubmersedVR
         public static bool Prefix(uGUI_OptionsPanel __instance)
         {
             int tabIndex = __instance.AddTab("Graphics");
-            __instance.AddSliderOption(tabIndex, "Gamma", GammaCorrection.gamma, 0.1f, 2.8f, 1f, 0.01f, delegate(float value)
+            __instance.AddSliderOption(tabIndex, "Gamma", GammaCorrection.gamma, 0.1f, 2.8f, 1f, 0.01f, delegate (float value)
             {
                 GammaCorrection.gamma = value;
             }, SliderLabelMode.Float, "0.00", null);
@@ -398,14 +416,14 @@ namespace SubmersedVR
             {
                 __instance.ssrQualityOption = __instance.AddChoiceOption(tabIndex, "ScreenSpaceReflections", uGUI_OptionsPanel.postFXQualityNames, UwePostProcessingManager.GetSsrQuality(), new UnityAction<int>(__instance.OnSSRqualityChanged), null);
                 __instance.ditheringOption = __instance.AddToggleOption(tabIndex, "Dithering", UwePostProcessingManager.GetDitheringEnabled(), new UnityAction<bool>(__instance.OnDitheringChanged), null);
-            }        
+            }
             return false;
         }
-        
+
         //Add in our own Ambient Occlusion Option
         public static void Postfix(uGUI_OptionsPanel __instance)
         {
-			Settings.AddToGraphicsOptions(__instance);
+            Settings.AddToGraphicsOptions(__instance);
         }
     }
 
@@ -416,11 +434,12 @@ namespace SubmersedVR
         static bool Prefix(ref bool __result)
         {
             //If The into is playing then do not disable animations
-            if(uGUI.isIntro)
+            if (uGUI.isIntro)
             {
                 __result = false;
             }
-            else{
+            else
+            {
                 __result = !VROptions.enableCinematics;
             }
             return false;
@@ -433,10 +452,10 @@ namespace SubmersedVR
     {
         public static void Postfix(uGUI_OptionsPanel __instance)
         {
-			__instance.AddToggleOption(__instance.tabs.Count - 1, "Fullscreen", Screen.fullScreen, new UnityAction<bool>(__instance.OnFullscreenChanged), null);
-			string[] resolutionOptions = uGUI_OptionsPanel.GetResolutionOptions(out __instance.resolutions);
-			int currentResolutionIndex = uGUI_OptionsPanel.GetCurrentResolutionIndex(__instance.resolutions);
-			__instance.resolutionOption = __instance.AddChoiceOption(__instance.tabs.Count - 1, "Resolution", resolutionOptions, currentResolutionIndex, new UnityAction<int>(__instance.OnResolutionChanged), null);
+            __instance.AddToggleOption(__instance.tabs.Count - 1, "Fullscreen", Screen.fullScreen, new UnityAction<bool>(__instance.OnFullscreenChanged), null);
+            string[] resolutionOptions = uGUI_OptionsPanel.GetResolutionOptions(out __instance.resolutions);
+            int currentResolutionIndex = uGUI_OptionsPanel.GetCurrentResolutionIndex(__instance.resolutions);
+            __instance.resolutionOption = __instance.AddChoiceOption(__instance.tabs.Count - 1, "Resolution", resolutionOptions, currentResolutionIndex, new UnityAction<int>(__instance.OnResolutionChanged), null);
         }
     }
 

@@ -53,14 +53,18 @@ namespace SubmersedVR
 
         }
 
-        public static void PlayGameHaptics(Controller controller, float secondsFromNow, float durationSeconds, float frequency, float amplitude) {
-            if (Settings.AreGameHapticsEnabled) {
+        public static void PlayGameHaptics(Controller controller, float secondsFromNow, float durationSeconds, float frequency, float amplitude)
+        {
+            if (Settings.AreGameHapticsEnabled)
+            {
                 PlayHapticsNew(controller, secondsFromNow, durationSeconds, frequency, amplitude);
             }
         }
 
-        public static void PlayUIHaptics(Controller controller, float secondsFromNow, float durationSeconds, float frequency, float amplitude) {
-            if (Settings.AreUIHapticsEnabled) {
+        public static void PlayUIHaptics(Controller controller, float secondsFromNow, float durationSeconds, float frequency, float amplitude)
+        {
+            if (Settings.AreUIHapticsEnabled)
+            {
                 PlayHapticsNew(controller, secondsFromNow, durationSeconds, frequency, amplitude);
             }
         }
@@ -85,7 +89,7 @@ namespace SubmersedVR
             PlayGameHaptics(Controller.Both, 0.0f, 0.3f, 10f, 0.1f);
         }
 
-    
+
         public static IEnumerator PlayerHeartbeat()
         {
             Controller controller = Settings.PutBarsOnWrist ? Controller.Both : Controller.Left;
@@ -113,7 +117,7 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(GUIHand), nameof(GUIHand.Send))]
     class HapticsUpdate
     {
-        public static void Prefix( GameObject target, HandTargetEventType e, GUIHand hand)
+        public static void Prefix(GameObject target, HandTargetEventType e, GUIHand hand)
         {
             //Mod.logger.LogInfo($"GUIHand.Send called"); 
             if (target == null || !target.activeInHierarchy || e == HandTargetEventType.None || target.GetComponent<IHandTarget>() == null)
@@ -128,7 +132,7 @@ namespace SubmersedVR
             }
             if (e == HandTargetEventType.Hover)
             {
-                if(target == HapticsVR.lastHoverComponent)
+                if (target == HapticsVR.lastHoverComponent)
                 {
                     return;
                 }
@@ -175,26 +179,26 @@ namespace SubmersedVR
         {
             ExosuitDrillArm left = __instance.leftArm as ExosuitDrillArm;
             ExosuitDrillArm right = __instance.rightArm as ExosuitDrillArm;
-            if((left != null && left.drilling) || (right != null && right.drilling))
+            if ((left != null && left.drilling) || (right != null && right.drilling))
             {
                 //Mod.logger.LogInfo($"ExosuitDrillArm.Update {__instance.currentLeftArmType == TechType.ExosuitDrillArmModule} {__instance.currentRightArmType == TechType.ExosuitDrillArmModule}"); 
                 HapticsVR.effectsTimer += Time.deltaTime;
-                if(HapticsVR.effectsTimer > HapticsVR.effectsTimeout)
+                if (HapticsVR.effectsTimer > HapticsVR.effectsTimeout)
                 {
-                    float dur = UnityEngine.Random.Range(0.01f, 0.20f); 
-                    if(right?.drilling == true)  
+                    float dur = UnityEngine.Random.Range(0.01f, 0.20f);
+                    if (right?.drilling == true)
                     {
                         // HapticsVR.PlayHaptics(0.0f, dur, 10f, UnityEngine.Random.Range(0f, 1.0f) * (right?.drillTarget == true ? 1.0f : 0.1f), false, true, false);
                         float amp = UnityEngine.Random.Range(0f, 1.0f) * (right?.drillTarget == true ? 1.0f : 0.1f);
                         HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, dur, 10f, amp);
-                    }        
-                    if(left?.drilling == true)  
+                    }
+                    if (left?.drilling == true)
                     {
                         // HapticsVR.PlayHaptics(0.0f, dur, 10f, UnityEngine.Random.Range(0f, 1.0f) * (left?.drillTarget == true ? 1.0f : 0.1f), false, false, true);
                         float amp = UnityEngine.Random.Range(0f, 1.0f) * (left?.drillTarget == true ? 1.0f : 0.1f);
                         HapticsVR.PlayGameHaptics(HapticsVR.Controller.Left, 0.0f, dur, 10f, amp);
-                    }        
-                    
+                    }
+
                     HapticsVR.effectsTimer = 0.0f;
                     HapticsVR.effectsTimeout = UnityEngine.Random.Range(dur, dur + 0.10f);
                 }
@@ -206,7 +210,7 @@ namespace SubmersedVR
     public static class ExosuitClawArmHaptics
     {
         public static void Postfix(ExosuitClawArm __instance)
-        {       
+        {
             HapticsVR.Controller controller = __instance.exosuit.rightArm as ExosuitClawArm == __instance ? HapticsVR.Controller.Right : HapticsVR.Controller.Left;
             HapticsVR.PlayGameHaptics(controller, 0.0f, 0.2f, 10f, 1.0f);
         }
@@ -216,7 +220,7 @@ namespace SubmersedVR
     public static class ExosuitGrapplingArmHaptics
     {
         public static void Postfix(ExosuitGrapplingArm __instance)
-        {     
+        {
             // HapticsVR.PlayHaptics(0.0f, 0.2f, 10f, 0.5f, false, __instance.exosuit.rightArm as ExosuitGrapplingArm == __instance, __instance.exosuit.leftArm as ExosuitGrapplingArm == __instance);
             HapticsVR.Controller controller = __instance.exosuit.rightArm as ExosuitClawArm == __instance ? HapticsVR.Controller.Right : HapticsVR.Controller.Left;
             HapticsVR.PlayGameHaptics(controller, 0.0f, 0.2f, 10f, 0.5f);
@@ -228,35 +232,35 @@ namespace SubmersedVR
     public static class ExosuitGrapplingActiveArmHaptics
     {
         public static void Postfix(ExosuitGrapplingArm __instance)
-        {       
+        {
             bool isRightarm = __instance.exosuit.rightArm as ExosuitGrapplingArm == __instance;
             bool isLeftArm = __instance.exosuit.leftArm as ExosuitGrapplingArm == __instance;
             if (__instance.hook.attached)
-		    {  
-                if(isLeftArm)
+            {
+                if (isLeftArm)
                 {
                     HapticsVR.leftSecondaryEffectsTimer += Time.deltaTime;
-                    if(HapticsVR.leftSecondaryEffectsTimer > 0.8f)
-                    {                   
-                        HapticsVR.PlayGameHaptics(HapticsVR.Controller.Left, 0.0f, 0.6f, 10f, 1.0f);                  
+                    if (HapticsVR.leftSecondaryEffectsTimer > 0.8f)
+                    {
+                        HapticsVR.PlayGameHaptics(HapticsVR.Controller.Left, 0.0f, 0.6f, 10f, 1.0f);
                         HapticsVR.leftSecondaryEffectsTimer = 0.0f;
                     }
                 }
-                if(isRightarm)
+                if (isRightarm)
                 {
                     HapticsVR.rightSecondaryEffectsTimer += Time.deltaTime;
-                    if(HapticsVR.rightSecondaryEffectsTimer > 0.8f)
-                    {                   
-                        HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.6f, 10f, 1.0f);                  
+                    if (HapticsVR.rightSecondaryEffectsTimer > 0.8f)
+                    {
+                        HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.6f, 10f, 1.0f);
                         HapticsVR.rightSecondaryEffectsTimer = 0.0f;
                     }
                 }
             }
-            else if(__instance.hook.flying)
+            else if (__instance.hook.flying)
             {
                 HapticsVR.effectsTimer += Time.deltaTime;
-                if(HapticsVR.effectsTimer > 0.1)
-                {                    
+                if (HapticsVR.effectsTimer > 0.1)
+                {
                     HapticsVR.PlayGameHaptics(isRightarm ? HapticsVR.Controller.Right : HapticsVR.Controller.Left, 0.0f, 0.1f, 10f, 0.3f);
                     HapticsVR.effectsTimer = 0.0f;
                 }
@@ -268,7 +272,7 @@ namespace SubmersedVR
     public static class ExosuitTorpedoArmHaptics
     {
         public static void Postfix(ExosuitTorpedoArm __instance)
-        {       
+        {
             HapticsVR.Controller controller = __instance.exosuit.rightArm as ExosuitClawArm == __instance ? HapticsVR.Controller.Right : HapticsVR.Controller.Left;
             HapticsVR.PlayGameHaptics(controller, 1.2f, 0.8f, 10f, 1.0f);
         }
@@ -279,7 +283,7 @@ namespace SubmersedVR
     public static class GUIHandEnable
     {
         public static void Postfix(GUIHand __instance)
-        {       
+        {
             //Mod.logger.LogInfo($"GUIHand.OnUpdate called activeTarget is null = {__instance.activeTarget == null}");
             if (__instance.activeTarget == null)
             {
@@ -308,42 +312,42 @@ namespace SubmersedVR
             //Mod.logger.LogInfo($"Pickupable.PlayDropSound called");
             HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.2f, 5f, 1.0f);
         }
-    }  
+    }
 
     //Damage from Vehicles going too deep
     [HarmonyPatch(typeof(CrushDamage), nameof(CrushDamage.CrushDamageUpdate))]
     public static class CrushDamagetHaptics
     {
         public static void Postfix(CrushDamage __instance)
-        {      
+        {
             if (__instance.GetCanTakeCrushDamage() && __instance.GetDepth() > __instance.crushDepth)
             {
                 //Mod.logger.LogInfo($"DamageFX.CrushDamageUpdate called");
                 HapticsVR.PlayGameHaptics(HapticsVR.Controller.Both, 0.0f, 0.5f, 10f, 1.0f);
             }
         }
-    }  
+    }
 
     //Handles several damage types but triggers for some unknown things so filter them out
     [HarmonyPatch(typeof(SoundOnDamage), nameof(SoundOnDamage.OnTakeDamage))]
     public static class SoundOnDamageHaptics
     {
         public static void Postfix(SoundOnDamage __instance, DamageInfo damageInfo)
-        {      
+        {
             //Mod.logger.LogInfo($"DamageFX.SoundOnDamage called {damageInfo.damage} {damageInfo.type}");
-            if(damageInfo.damage > 0 && !(damageInfo.type == DamageType.Cold && (damageInfo.damage == 0.5)) && !(damageInfo.type == DamageType.Normal && (damageInfo.damage == 7 || damageInfo.damage == 30 || damageInfo.damage == 80)))
+            if (damageInfo.damage > 0 && !(damageInfo.type == DamageType.Cold && (damageInfo.damage == 0.5)) && !(damageInfo.type == DamageType.Normal && (damageInfo.damage == 7 || damageInfo.damage == 30 || damageInfo.damage == 80)))
             {
                 HapticsVR.PlayGameHaptics(HapticsVR.Controller.Both, 0.0f, 0.4f, 10f, 1.0f);
             }
         }
-    } 
+    }
 
     //Havent seen any instances of this firing
     [HarmonyPatch(typeof(DamageOverTime), nameof(DamageOverTime.DoDamage))]
     public static class DamageOverTimeHaptics
     {
         public static void Postfix(DamageOverTime __instance)
-        {      
+        {
             //Mod.logger.LogInfo($"(DamageOverTime.DoDamage called ");
             float dur = __instance.interval - 0.1f;
             if (dur < 0)
@@ -352,7 +356,7 @@ namespace SubmersedVR
             }
             HapticsVR.PlayGameHaptics(HapticsVR.Controller.Both, 0.0f, dur, 10f, 1.0f);
         }
-    }  
+    }
 
 
     //Cyclops?
@@ -360,15 +364,15 @@ namespace SubmersedVR
     public static class SubRootHaptics
     {
         public static void Postfix(SubRoot __instance, DamageInfo damageInfo)
-        {      
+        {
             //Mod.logger.LogInfo($"SubRoot.OnTakeDamage called {damageInfo.damage}");
-            if(damageInfo.damage > 0)
+            if (damageInfo.damage > 0)
             {
                 // HapticsVR.PlayHaptics(0.0f, 0.4f, 10f, 1.0f, false, true, true);
                 HapticsVR.PlayGameHaptics(HapticsVR.Controller.Both, 0.0f, 0.4f, 10f, 1.0f);
             }
         }
-    } 
+    }
 
     //Haptics while Seatruck is being attacked
     /* BZ only
@@ -408,7 +412,7 @@ namespace SubmersedVR
         public static void Postfix(uGUI_HealthBar __instance, float scalar)
         {
             //Mod.logger.LogInfo($"uGUI_HealthBar.OnPulse called scaler = {scalar} statePulse = {__instance.statePulse.normalizedTime}");
-            if((__instance.statePulse.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.statePulse.normalizedTime < HapticsVR.effectsTimer && __instance.statePulse.normalizedTime != 0f))
+            if ((__instance.statePulse.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.statePulse.normalizedTime < HapticsVR.effectsTimer && __instance.statePulse.normalizedTime != 0f))
             {
                 CoroutineHost.StartCoroutine(HapticsVR.PlayerHeartbeat());
             }
@@ -422,11 +426,11 @@ namespace SubmersedVR
         public static void Postfix(uGUI_FoodBar __instance, float scalar)
         {
             if (__instance.pulseAnimationState == null)
-		    {
-			    return;
-		    }
+            {
+                return;
+            }
             //Mod.logger.LogInfo($"uGUI_FoodBar.OnPulse called scaler = {scalar} statePulse = {__instance.pulseAnimationState.normalizedTime}");
-            if((__instance.pulseAnimationState.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.pulseAnimationState.normalizedTime < HapticsVR.effectsTimer && __instance.pulseAnimationState.normalizedTime != 0f))
+            if ((__instance.pulseAnimationState.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.pulseAnimationState.normalizedTime < HapticsVR.effectsTimer && __instance.pulseAnimationState.normalizedTime != 0f))
             {
                 //HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.3f, false, !Settings.PutBarsOnWrist, true);
                 CoroutineHost.StartCoroutine(HapticsVR.PlayerHeartbeat());
@@ -441,7 +445,7 @@ namespace SubmersedVR
         public static void Postfix(uGUI_OxygenBar __instance, float scalar)
         {
             //Mod.logger.LogInfo($"uGUI_OxygenBar.OnPulse called scaler = {scalar} statePulse = {__instance.pulseAnimationState.normalizedTime}");
-            if((__instance.statePulse.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.statePulse.normalizedTime < HapticsVR.effectsTimer && __instance.statePulse.normalizedTime != 0f))
+            if ((__instance.statePulse.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.statePulse.normalizedTime < HapticsVR.effectsTimer && __instance.statePulse.normalizedTime != 0f))
             {
                 CoroutineHost.StartCoroutine(HapticsVR.PlayerHeartbeat());
             }
@@ -455,71 +459,71 @@ namespace SubmersedVR
         public static void Postfix(uGUI_WaterBar __instance, float scalar)
         {
             if (__instance.pulseAnimationState == null)
-		    {
-			    return;
-		    }
+            {
+                return;
+            }
             //Mod.logger.LogInfo($"uGUI_WaterBar.OnPulse called scaler = {scalar} statePulse = {__instance.pulseAnimationState.normalizedTime}");
-            if((__instance.pulseAnimationState.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.pulseAnimationState.normalizedTime < HapticsVR.effectsTimer && __instance.pulseAnimationState.normalizedTime != 0f))
+            if ((__instance.pulseAnimationState.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.pulseAnimationState.normalizedTime < HapticsVR.effectsTimer && __instance.pulseAnimationState.normalizedTime != 0f))
             {
                 CoroutineHost.StartCoroutine(HapticsVR.PlayerHeartbeat());
             }
             HapticsVR.effectsTimer = __instance.pulseAnimationState.normalizedTime;
         }
     }
-/* BZ only
-    [HarmonyPatch(typeof(uGUI_BodyHeatMeter), nameof(uGUI_BodyHeatMeter.OnPulse))]
-    public static class BodyHeatMeterHaptics
-    {
-        public static void Postfix(uGUI_BodyHeatMeter __instance, float scalar)
+    /* BZ only
+        [HarmonyPatch(typeof(uGUI_BodyHeatMeter), nameof(uGUI_BodyHeatMeter.OnPulse))]
+        public static class BodyHeatMeterHaptics
         {
-            //Mod.logger.LogInfo($"uGUI_BodyHeatMeter.OnPulse called scaler = {scalar} statePulse = {__instance.pulseAnimationState.normalizedTime}");
-            if((__instance.statePulse.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.statePulse.normalizedTime < HapticsVR.effectsTimer && __instance.statePulse.normalizedTime != 0f))
+            public static void Postfix(uGUI_BodyHeatMeter __instance, float scalar)
             {
-                CoroutineHost.StartCoroutine(HapticsVR.PlayerHeartbeat());
+                //Mod.logger.LogInfo($"uGUI_BodyHeatMeter.OnPulse called scaler = {scalar} statePulse = {__instance.pulseAnimationState.normalizedTime}");
+                if((__instance.statePulse.normalizedTime > 0 && HapticsVR.effectsTimer == 0.0f) || (__instance.statePulse.normalizedTime < HapticsVR.effectsTimer && __instance.statePulse.normalizedTime != 0f))
+                {
+                    CoroutineHost.StartCoroutine(HapticsVR.PlayerHeartbeat());
+                }
+                HapticsVR.effectsTimer = __instance.statePulse.normalizedTime;
             }
-            HapticsVR.effectsTimer = __instance.statePulse.normalizedTime;
         }
-    }
-*/
+    */
     //Player taking direct damage
     //This is not called if the damage is enough to kill the player
     [HarmonyPatch(typeof(Player), nameof(Player.OnTakeDamage))]
     public static class PlayerDamageHaptics
     {
         public static void Postfix(Player __instance, DamageInfo damageInfo)
-        {    
+        {
             float intensity = damageInfo.damage * 3f / 100f;
             float shakeAmount = Mathf.Clamp(intensity, 0f, 5f);
             //Mod.logger.LogInfo($"Player.OnTakeDamage called damage = {damageInfo.damage} intensity = {intensity} duration = {shakeAmount * 2f}");
             HapticsVR.PlayGameHaptics(HapticsVR.Controller.Both, 0.0f, shakeAmount * 2f, 10f, Mathf.Clamp(intensity, 0f, 1f));
-            
+
         }
-    } 
-/* BZ only
-    //Handler that triggers even if player damage is enough to kill the player
-    [HarmonyPatch(typeof(LeviathanAttackTimelineManager), nameof(LeviathanAttackTimelineManager.OnPlayerAttack))]
-    public static class LeviathanPlayerDamageHaptics
-    {
-        public static void Postfix(LeviathanAttackTimelineManager __instance)
-        {    
-            Mod.logger.LogInfo($"LeviathanAttackTimelineManager.OnPlayerAttack called");
-            HapticsVR.PlayHaptics(0.0f, 4.0f, 10f, 1.0f, false, true, true);
-            
-        }
-    } 
-*/
+    }
+    /* BZ only
+        //Handler that triggers even if player damage is enough to kill the player
+        [HarmonyPatch(typeof(LeviathanAttackTimelineManager), nameof(LeviathanAttackTimelineManager.OnPlayerAttack))]
+        public static class LeviathanPlayerDamageHaptics
+        {
+            public static void Postfix(LeviathanAttackTimelineManager __instance)
+            {    
+                Mod.logger.LogInfo($"LeviathanAttackTimelineManager.OnPlayerAttack called");
+                HapticsVR.PlayHaptics(0.0f, 4.0f, 10f, 1.0f, false, true, true);
+
+            }
+        } 
+    */
     //When the player dies
     //Called after death, not during attack
     [HarmonyPatch(typeof(Player), nameof(Player.OnKill))]
     public static class DeathHaptics
     {
         public static void Postfix(Player __instance)
-        {    
+        {
             CoroutineHost.StartCoroutine(HapticsVR.PlayerDeath());
         }
-    } 
+    }
 
-   
+
 
     [HarmonyPatch(typeof(Knife), nameof(Knife.OnToolUseAnim))]
     public static class KnifeHaptics
@@ -529,13 +533,13 @@ namespace SubmersedVR
             //Mod.logger.LogInfo($"Knife.OnToolUseAnim");
             HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.2f, 5f, 1.0f);
         }
-    }  
+    }
 
     [HarmonyPatch(typeof(uGUI_PDA), nameof(uGUI_PDA.OnOpenPDA))]
     class PDAOpenHaptics
     {
         public static void Postfix(uGUI_PDA __instance)
-        {                       
+        {
             HapticsVR.PlayGameHaptics(HapticsVR.Controller.Left, 0.0f, 0.2f, 20f, 0.5f);
         }
     }
@@ -544,7 +548,7 @@ namespace SubmersedVR
     class PDACloseHaptics
     {
         public static void Postfix(uGUI_PDA __instance)
-        {                       
+        {
             HapticsVR.PlayGameHaptics(HapticsVR.Controller.Left, 0.0f, 0.2f, 10f, 0.5f);
         }
     }
@@ -555,7 +559,7 @@ namespace SubmersedVR
     class PropulsionCannonShootHaptics
     {
         public static void Postfix(PropulsionCannon __instance)
-        {         
+        {
             // bool rightArm = true;
             // bool leftArm = false;
             // Exosuit exosuit = VehiclesVR.PilotedExosuit();
@@ -566,7 +570,7 @@ namespace SubmersedVR
             // }
             bool rightArm = true;
             Exosuit exosuit = VehiclesVR.PilotedExosuit();
-            if(exosuit != null)
+            if (exosuit != null)
             {
                 rightArm = (exosuit.rightArm as ExosuitPropulsionArm)?.propulsionCannon == __instance;
             }
@@ -584,41 +588,41 @@ namespace SubmersedVR
     class PropulsionCannonHoldHaptics
     {
         public static void Postfix(PropulsionCannon __instance)
-        {   
+        {
             if ((__instance.grabbedObject != null && __instance.grabbedObject.GetComponent<Rigidbody>() != null) || __instance.firstUseGrabbedObject != null)
-		    {
+            {
                 Exosuit exosuit = VehiclesVR.PilotedExosuit();
-                if(exosuit != null)
+                if (exosuit != null)
                 {
                     bool rightArm = rightArm = (exosuit.rightArm as ExosuitPropulsionArm)?.propulsionCannon == __instance;
                     bool leftArm = leftArm = (exosuit.leftArm as ExosuitPropulsionArm)?.propulsionCannon == __instance;
-                    if(leftArm)
+                    if (leftArm)
                     {
                         HapticsVR.leftSecondaryEffectsTimer += Time.deltaTime;
-                        if(HapticsVR.leftSecondaryEffectsTimer > 0.9f)
-                        {                   
+                        if (HapticsVR.leftSecondaryEffectsTimer > 0.9f)
+                        {
                             HapticsVR.PlayGameHaptics(HapticsVR.Controller.Left, 0.0f, 0.6f, 10f, 0.4f);
                             HapticsVR.leftSecondaryEffectsTimer = 0.0f;
                         }
                     }
-                    if(rightArm)
+                    if (rightArm)
                     {
                         HapticsVR.rightSecondaryEffectsTimer += Time.deltaTime;
-                        if(HapticsVR.rightSecondaryEffectsTimer > 0.9f)
-                        {                   
+                        if (HapticsVR.rightSecondaryEffectsTimer > 0.9f)
+                        {
                             HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.6f, 10f, 0.4f);
                             HapticsVR.rightSecondaryEffectsTimer = 0.0f;
                         }
                     }
-                   
+
                 }
                 else
                 {
                     HapticsVR.effectsTimer += Time.deltaTime;
-                    if(HapticsVR.effectsTimer > 0.9)
+                    if (HapticsVR.effectsTimer > 0.9)
                     {
                         HapticsVR.Controller controller = __instance.firstUseGrabbedObject != null ? HapticsVR.Controller.Both : HapticsVR.Controller.Right;
-                        HapticsVR.PlayGameHaptics(controller, 0.0f, 0.6f, 10f, 0.4f);                   
+                        HapticsVR.PlayGameHaptics(controller, 0.0f, 0.6f, 10f, 0.4f);
                         HapticsVR.effectsTimer = 0.0f;
                     }
                 }
@@ -631,19 +635,19 @@ namespace SubmersedVR
     class LaserCutterHaptics
     {
         public static void Postfix(LaserCutter __instance)
-        {     
+        {
             if (__instance.activeCuttingTarget != null && __instance.activeCuttingTarget.openedAmount < __instance.activeCuttingTarget.maxOpenedAmount && __instance.GetUsedToolThisFrame())
-		    {
+            {
                 HapticsVR.effectsTimer += Time.deltaTime;
-                if(HapticsVR.effectsTimer > HapticsVR.effectsTimeout)
+                if (HapticsVR.effectsTimer > HapticsVR.effectsTimeout)
                 {
                     //Mod.logger.LogInfo($"LaserCutter.Update {Time.deltaTime}"); 
-                    float dur = UnityEngine.Random.Range(0.01f, 0.20f);           
-                    HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.6f, 10f, UnityEngine.Random.Range(0f, 1.0f));                   
+                    float dur = UnityEngine.Random.Range(0.01f, 0.20f);
+                    HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.6f, 10f, UnityEngine.Random.Range(0f, 1.0f));
                     HapticsVR.effectsTimer = 0.0f;
                     HapticsVR.effectsTimeout = UnityEngine.Random.Range(dur, dur + 0.20f);
                 }
-             }
+            }
         }
     }
 
@@ -652,23 +656,23 @@ namespace SubmersedVR
     class WelderHaptics
     {
         public static void Postfix(Welder __instance)
-        {    
-            
+        {
+
             if (__instance.activeWeldTarget != null && __instance.activeWeldTarget.GetHealthFraction() < 1f && __instance.GetUsedToolThisFrame())
-		    {
+            {
                 HapticsVR.effectsTimer += Time.deltaTime;
-                if(HapticsVR.effectsTimer > 0.10)
+                if (HapticsVR.effectsTimer > 0.10)
                 {
                     //Mod.logger.LogInfo($"Welder.Update {Time.deltaTime}"); 
-                    HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.1f, 10f, HapticsVR.effectsScale);                   
+                    HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.1f, 10f, HapticsVR.effectsScale);
                     HapticsVR.effectsTimer = 0.0f;
                     HapticsVR.effectsScale += 0.10f;
-                    if(HapticsVR.effectsScale > 1.0f)
+                    if (HapticsVR.effectsScale > 1.0f)
                     {
                         HapticsVR.effectsScale = 0.0f;
                     }
                 }
-             }
+            }
         }
     }
 
@@ -677,24 +681,24 @@ namespace SubmersedVR
     class ScannerToolHaptics
     {
         public static void Postfix(ScannerTool __instance)
-        {    
-            
+        {
+
             if (PDAScanner.scanTarget.progress > 0 && __instance.GetUsedToolThisFrame())
-		    {
+            {
                 HapticsVR.effectsTimer += Time.deltaTime;
-                if(HapticsVR.effectsTimer > 0.10)
+                if (HapticsVR.effectsTimer > 0.10)
                 {
                     //Mod.logger.LogInfo($"ScannerTool.Update {Time.deltaTime}"); 
                     // HapticsVR.PlayHaptics(0.0f, 0.10f, 10f, HapticsVR.effectsScale, false);
-                    HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.1f, 10f, HapticsVR.effectsScale);                   
+                    HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.1f, 10f, HapticsVR.effectsScale);
                     HapticsVR.effectsTimer = 0.0f;
                     HapticsVR.effectsScale += 0.20f;
-                    if(HapticsVR.effectsScale > 1.0f)
+                    if (HapticsVR.effectsScale > 1.0f)
                     {
                         HapticsVR.effectsScale = 0.0f;
                     }
                 }
-             }
+            }
         }
     }
 
@@ -703,18 +707,18 @@ namespace SubmersedVR
     class BuilderToolHaptics
     {
         public static void Postfix(BuilderTool __instance)
-        {    
-            
+        {
+
             if (__instance.isConstructing && __instance.GetUsedToolThisFrame())
-		    {
+            {
                 HapticsVR.effectsTimer += Time.deltaTime;
-                if(HapticsVR.effectsTimer > 0.10)
+                if (HapticsVR.effectsTimer > 0.10)
                 {
                     //Mod.logger.LogInfo($"BuilderTool.Update {Time.deltaTime}"); 
-                    HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.1f, 10f, HapticsVR.effectsScale);                   
+                    HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.1f, 10f, HapticsVR.effectsScale);
                     HapticsVR.effectsTimer = 0.0f;
                     HapticsVR.effectsScale -= 0.20f;
-                    if(HapticsVR.effectsScale < 0.0f)
+                    if (HapticsVR.effectsScale < 0.0f)
                     {
                         HapticsVR.effectsScale = 1.0f;
                     }
@@ -722,46 +726,46 @@ namespace SubmersedVR
             }
         }
     }
-/* Doesnt handle the "hover out" so only fires once
-    [HarmonyPatch(typeof(BuilderTool), nameof(BuilderTool.OnHover))]
-    [HarmonyPatch(new Type[] { typeof(Constructable) })]
-    public static class ConstructableHoverHaptics
-    {
-        public static void Postfix(BuilderTool __instance, Constructable constructable)
-        {       
-            //Play Haptics
-            if (constructable.constructed && !constructable.deconstructionAllowed)
-            {
-                HapticsVR.lastConstructable = null;
-                return;
-            }
-            if(constructable == HapticsVR.lastConstructable)
-            {
-                return;
-            }
+    /* Doesnt handle the "hover out" so only fires once
+        [HarmonyPatch(typeof(BuilderTool), nameof(BuilderTool.OnHover))]
+        [HarmonyPatch(new Type[] { typeof(Constructable) })]
+        public static class ConstructableHoverHaptics
+        {
+            public static void Postfix(BuilderTool __instance, Constructable constructable)
+            {       
+                //Play Haptics
+                if (constructable.constructed && !constructable.deconstructionAllowed)
+                {
+                    HapticsVR.lastConstructable = null;
+                    return;
+                }
+                if(constructable == HapticsVR.lastConstructable)
+                {
+                    return;
+                }
 
-            HapticsVR.lastConstructable = constructable;
-            HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.5f);
+                HapticsVR.lastConstructable = constructable;
+                HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.5f);
+            }
         }
-    }
 
-    [HarmonyPatch(typeof(BuilderTool), nameof(BuilderTool.OnHover))]
-    [HarmonyPatch(new Type[] { typeof(BaseDeconstructable) })]
-    public static class DeconstructableHoverHaptics
-    {
-        public static void Postfix(BaseDeconstructable __instance, BaseDeconstructable deconstructable)
-        {       
-            //Play Haptics
-            if(deconstructable == HapticsVR.lastDeconstructable)
-            {
-                return;
+        [HarmonyPatch(typeof(BuilderTool), nameof(BuilderTool.OnHover))]
+        [HarmonyPatch(new Type[] { typeof(BaseDeconstructable) })]
+        public static class DeconstructableHoverHaptics
+        {
+            public static void Postfix(BaseDeconstructable __instance, BaseDeconstructable deconstructable)
+            {       
+                //Play Haptics
+                if(deconstructable == HapticsVR.lastDeconstructable)
+                {
+                    return;
+                }
+
+                HapticsVR.lastDeconstructable = deconstructable;
+                HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.5f);
             }
-
-            HapticsVR.lastDeconstructable = deconstructable;
-            HapticsVR.PlayHaptics(0.0f, 0.1f, 10f, 0.5f);
         }
-    }
-*/
+    */
 
 
     //UI haptics
@@ -771,39 +775,39 @@ namespace SubmersedVR
         public static void Postfix(uGUI_ButtonSound __instance)
         {
             //Mod.logger.LogInfo($"uGUI_ButtonSound.OnPointerEnter");
-            HapticsVR.PlayUIHaptics(HapticsVR.Controller.Right, 0.0f, HapticsVR.defaultUIDuration, 10f,HapticsVR.defaultUIAmplitude);
+            HapticsVR.PlayUIHaptics(HapticsVR.Controller.Right, 0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude);
         }
-    }     
+    }
     [HarmonyPatch(typeof(uGUI_OptionSelection), nameof(uGUI_OptionSelection.OnSelect))]
     public static class uGUI_ChoiceSoundHaptics
     {
         public static void Postfix(uGUI_OptionSelection __instance)
         {
             //Mod.logger.LogInfo($"uGUI_ChoiceSound.OnValueChanged");
-            HapticsVR.PlayUIHaptics(HapticsVR.Controller.Right, 1.0f, HapticsVR.defaultUIDuration, 10f,HapticsVR.defaultUIAmplitude);
+            HapticsVR.PlayUIHaptics(HapticsVR.Controller.Right, 1.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude);
         }
-    } 
-/* BZ only
-    [HarmonyPatch(typeof(uGUI_ToggleOptionSound), nameof(uGUI_ToggleOptionSound.OnValueChanged))]
-    public static class uGUI_ToggleOptionSoundHaptics
-    {
-        public static void Postfix(uGUI_ToggleOptionSound __instance)
+    }
+    /* BZ only
+        [HarmonyPatch(typeof(uGUI_ToggleOptionSound), nameof(uGUI_ToggleOptionSound.OnValueChanged))]
+        public static class uGUI_ToggleOptionSoundHaptics
         {
-            //Mod.logger.LogInfo($"uGUI_ToggleOptionSound.OnValueChanged");
-            HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude, true);
-        }
-    } 
+            public static void Postfix(uGUI_ToggleOptionSound __instance)
+            {
+                //Mod.logger.LogInfo($"uGUI_ToggleOptionSound.OnValueChanged");
+                HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude, true);
+            }
+        } 
 
-    [HarmonyPatch(typeof(uGUI_SliderSound), nameof(uGUI_SliderSound.OnValueChanged))]
-    public static class uGUI_SliderSoundHaptics
-    {
-        public static void Postfix(uGUI_SliderSound __instance)
+        [HarmonyPatch(typeof(uGUI_SliderSound), nameof(uGUI_SliderSound.OnValueChanged))]
+        public static class uGUI_SliderSoundHaptics
         {
-            //Mod.logger.LogInfo($"uGUI_ToggleOptionSound.OnValueChanged");
-            HapticsVR.PlayHaptics(0.0f, 0.03f, 20f, 0.2f, true);
-        }
-    } 
-*/
+            public static void Postfix(uGUI_SliderSound __instance)
+            {
+                //Mod.logger.LogInfo($"uGUI_ToggleOptionSound.OnValueChanged");
+                HapticsVR.PlayHaptics(0.0f, 0.03f, 20f, 0.2f, true);
+            }
+        } 
+    */
     //This does most of the standard UI work
     [HarmonyPatch(typeof(Selectable), nameof(Selectable.OnPointerEnter))]
     public static class SelectableHaptics
@@ -813,14 +817,14 @@ namespace SubmersedVR
             //Mod.logger.LogInfo($"Selectable.OnPointerEnter");
             HapticsVR.PlayUIHaptics(HapticsVR.Controller.Right, 0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude);
         }
-    }  
+    }
 
     //PDA Encyclopedia tab items
     [HarmonyPatch(typeof(uGUI_ListEntry), nameof(uGUI_ListEntry.OnPointerEnter))]
     class ListEntryHaptics
     {
         public static void Postfix(uGUI_ListEntry __instance)
-        {          
+        {
             //Mod.logger.LogInfo($"uGUI_ListEntry.OnPointerEnter");
             HapticsVR.PlayUIHaptics(HapticsVR.Controller.Right, 0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude);
         }
@@ -831,7 +835,7 @@ namespace SubmersedVR
     class EquipmentSlotHaptics
     {
         public static void Postfix(uGUI_EquipmentSlot __instance)
-        {          
+        {
             //Mod.logger.LogInfo($"uGUI_EquipmentSlot.OnPointerEnter");
             HapticsVR.PlayUIHaptics(HapticsVR.Controller.Right, 0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude);
         }
@@ -841,18 +845,18 @@ namespace SubmersedVR
     class BlueprintsHaptics
     {
         public static void Postfix(uGUI_BlueprintsTab __instance)
-        {          
+        {
             //Mod.logger.LogInfo($"uGUI_EquipmentSlot.OnPointerEnter");
             HapticsVR.PlayUIHaptics(HapticsVR.Controller.Right, 0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude);
         }
     }
 
-    [HarmonyPatch(typeof(uGUI_ItemIcon), nameof(uGUI_ItemIcon.OnPointerEnter))]    
+    [HarmonyPatch(typeof(uGUI_ItemIcon), nameof(uGUI_ItemIcon.OnPointerEnter))]
     [HarmonyPatch(new Type[] { })]
     class ItemIconHaptics
     {
         public static void Postfix(uGUI_ItemIcon __instance)
-        {          
+        {
             //Mod.logger.LogInfo($"uGUI_ItemIcon.OnPointerEnter");
             HapticsVR.PlayUIHaptics(HapticsVR.Controller.Right, 0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude);
         }

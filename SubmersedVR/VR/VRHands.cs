@@ -105,7 +105,7 @@ namespace SubmersedVR
 
     class VRHands : MonoBehaviour
     {
-        public enum HandSkeletonBone: int
+        public enum HandSkeletonBone : int
         {
             eBone_Root = 0,
             eBone_Wrist,
@@ -139,7 +139,7 @@ namespace SubmersedVR
             eBone_Aux_RingFinger,
             eBone_Aux_PinkyFinger,
             eBone_Count
-        };  
+        };
 
         public FullBodyBipedIK ik = null;
 
@@ -168,7 +168,7 @@ namespace SubmersedVR
         {
             instance = this;
             this.ik = ik;
-            
+
             leftHand = ik.solver.leftHandEffector.bone;
             rightHand = ik.solver.rightHandEffector.bone;
             leftElbow = leftHand.parent;
@@ -191,14 +191,14 @@ namespace SubmersedVR
             //var laserPointer = VRCameraRig.instance.laserPointerUI.transform;
 
             SetupFingers();
-/*
-            var calibrationTool = new OffsetCalibrationTool(rightTarget, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
-            calibrationTool.enabled = Settings.IsDebugEnabled;
-            Settings.IsDebugChanged += (enabled) =>
-            {
-                calibrationTool.enabled = enabled;
-            };
-*/
+            /*
+                        var calibrationTool = new OffsetCalibrationTool(rightTarget, SteamVR_Actions.subnautica_MoveDown, SteamVR_Actions.subnautica_AltTool);
+                        calibrationTool.enabled = Settings.IsDebugEnabled;
+                        Settings.IsDebugChanged += (enabled) =>
+                        {
+                            calibrationTool.enabled = enabled;
+                        };
+            */
         }
 
         public void ResetHandTargets()
@@ -217,7 +217,7 @@ namespace SubmersedVR
         }
 
         public void SetupFingers()
-        {     
+        {
             string[] boneNamesLeft = new string[(int)HandSkeletonBone.eBone_Count];
             boneNamesLeft[(int)HandSkeletonBone.eBone_Thumb1] = "/hand_L_thumb_base";
             boneNamesLeft[(int)HandSkeletonBone.eBone_Thumb2] = "/hand_L_thumb_base/hand_L_thumb_mid";
@@ -253,14 +253,14 @@ namespace SubmersedVR
             boneNamesRight[(int)HandSkeletonBone.eBone_PinkyFinger3] = "/hand_R_pinky_base/hand_R_pinky_mid/hand_R_pinky_tip_rig";
 
             minRotation = new Vector3[(int)HandSkeletonBone.eBone_Count];
-            for(int i = 0; i < minRotation.Length; i++)
+            for (int i = 0; i < minRotation.Length; i++)
             {
                 minRotation[i] = Vector3.zero;
             }
 
             minRotation[(int)HandSkeletonBone.eBone_Thumb1] = new Vector3(50.2f, 65.0f, 23.1f);
             minRotation[(int)HandSkeletonBone.eBone_Thumb2] = new Vector3(2.7f, -8f, 10f);
-            minRotation[(int)HandSkeletonBone.eBone_Thumb3] = new Vector3(0.0f, 0.0f, 2.2f);            
+            minRotation[(int)HandSkeletonBone.eBone_Thumb3] = new Vector3(0.0f, 0.0f, 2.2f);
 
             maxRotation = new Vector3[(int)HandSkeletonBone.eBone_Count];
             maxRotation[(int)HandSkeletonBone.eBone_Thumb1] = new Vector3(20.2f, 50.2f, 31.6f);
@@ -278,31 +278,31 @@ namespace SubmersedVR
             maxRotation[(int)HandSkeletonBone.eBone_PinkyFinger1] = new Vector3(-7f, -15f, 71.1f);
             maxRotation[(int)HandSkeletonBone.eBone_PinkyFinger2] = new Vector3(6.0f, 0.0f, 101.8f);
             maxRotation[(int)HandSkeletonBone.eBone_PinkyFinger3] = new Vector3(-8f, 2.7f, 78.5f);
-            
+
             leftHandFingers = new Transform[(int)HandSkeletonBone.eBone_Count];
             rightHandFingers = new Transform[(int)HandSkeletonBone.eBone_Count];
             var animator = Player.main?.playerAnimator;
             if (animator is Animator anim)
             {
-                for(int i = 0; i < boneNamesLeft.Length; i++)
+                for (int i = 0; i < boneNamesLeft.Length; i++)
                 {
                     String boneName = boneNamesLeft[i];
-                    if(boneName != null)
+                    if (boneName != null)
                     {
                         leftHandFingers[i] = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_L/clav_L_aim/shoulder_L/hand_L" + boneName);
-                        if(leftHandFingers[i] == null)
+                        if (leftHandFingers[i] == null)
                         {
                             leftHandFingers[i] = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_L/clav_L_aim/shoulder_L/elbow_L/hand_L" + boneName);
                         }
                     }
                 }
-                for(int i = 0; i < boneNamesRight.Length; i++)
+                for (int i = 0; i < boneNamesRight.Length; i++)
                 {
                     String boneName = boneNamesRight[i];
-                    if(boneName != null)
+                    if (boneName != null)
                     {
                         rightHandFingers[i] = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_R/clav_R_aim/shoulder_R/hand_R" + boneName);
-                        if(rightHandFingers[i] == null)
+                        if (rightHandFingers[i] == null)
                         {
                             rightHandFingers[i] = anim.transform.Find("export_skeleton/head_rig/neck/chest/clav_R/clav_R_aim/shoulder_R/elbow_R/hand_R" + boneName);
                         }
@@ -349,12 +349,12 @@ namespace SubmersedVR
             leftElbow.localScale = Vector3.zero;
             rightElbow.localScale = Vector3.zero;
 
-            if(Settings.ArticulatedHands)
+            if (Settings.ArticulatedHands)
             {
                 SteamVR_Action_Skeleton rightSkeletonAction = SteamVR_Input.GetSkeletonAction("RightHandSkeleton");
                 SteamVR_Action_Skeleton leftSkeletonAction = SteamVR_Input.GetSkeletonAction("LeftHandSkeleton");
 
-                if(!Player.main.pda.isOpen)
+                if (!Player.main.pda.isOpen)
                 {
                     UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_PinkyFinger1, leftSkeletonAction.pinkyCurl);
                     UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_RingFinger1, leftSkeletonAction.ringCurl);
@@ -362,8 +362,8 @@ namespace SubmersedVR
                     UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_IndexFinger1, leftSkeletonAction.indexCurl);
                     UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_Thumb1, leftSkeletonAction.thumbCurl);
                 }
-               
-                if(Inventory.main.GetHeld() == null)
+
+                if (Inventory.main.GetHeld() == null)
                 {
                     UpdateFinger(rightHandFingers, (int)HandSkeletonBone.eBone_PinkyFinger1, rightSkeletonAction.pinkyCurl);
                     UpdateFinger(rightHandFingers, (int)HandSkeletonBone.eBone_RingFinger1, rightSkeletonAction.ringCurl);
@@ -376,15 +376,15 @@ namespace SubmersedVR
 
         }
 
-        public void UpdateFinger(Transform[] fingers,int fingerID, float percent)
+        public void UpdateFinger(Transform[] fingers, int fingerID, float percent)
         {
             fingers[fingerID].transform.localRotation = Quaternion.Euler(minRotation[fingerID].x + ((maxRotation[fingerID].x - minRotation[fingerID].x) * percent), minRotation[fingerID].y + ((maxRotation[fingerID].y - minRotation[fingerID].y) * percent), minRotation[fingerID].z + ((maxRotation[fingerID].z - minRotation[fingerID].z) * percent));
-            fingers[fingerID+1].transform.localRotation = Quaternion.Euler(minRotation[fingerID+1].x + ((maxRotation[fingerID+1].x - minRotation[fingerID+1].x) * percent), minRotation[fingerID+1].y + ((maxRotation[fingerID+1].y - minRotation[fingerID+1].y) * percent), minRotation[fingerID+1].z + ((maxRotation[fingerID+1].z - minRotation[fingerID+1].z) * percent));
-            fingers[fingerID+2].transform.localRotation = Quaternion.Euler(minRotation[fingerID+2].x + ((maxRotation[fingerID+2].x - minRotation[fingerID+2].x) * percent), minRotation[fingerID+2].y + ((maxRotation[fingerID+2].y - minRotation[fingerID+2].y) * percent), minRotation[fingerID+2].z + ((maxRotation[fingerID+2].z - minRotation[fingerID+2].z) * percent));
+            fingers[fingerID + 1].transform.localRotation = Quaternion.Euler(minRotation[fingerID + 1].x + ((maxRotation[fingerID + 1].x - minRotation[fingerID + 1].x) * percent), minRotation[fingerID + 1].y + ((maxRotation[fingerID + 1].y - minRotation[fingerID + 1].y) * percent), minRotation[fingerID + 1].z + ((maxRotation[fingerID + 1].z - minRotation[fingerID + 1].z) * percent));
+            fingers[fingerID + 2].transform.localRotation = Quaternion.Euler(minRotation[fingerID + 2].x + ((maxRotation[fingerID + 2].x - minRotation[fingerID + 2].x) * percent), minRotation[fingerID + 2].y + ((maxRotation[fingerID + 2].y - minRotation[fingerID + 2].y) * percent), minRotation[fingerID + 2].z + ((maxRotation[fingerID + 2].z - minRotation[fingerID + 2].z) * percent));
         }
 
         public void UpdateBody()
-        {    
+        {
             /*        
             var bodyRenderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive: true);
             foreach (var bodyRenderer in bodyRenderers)

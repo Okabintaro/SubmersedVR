@@ -7,8 +7,8 @@ namespace SubmersedVR
 
     static class IntroFixerVR
     {
-	    public static float animTime = 0.0f;
-	    public static float animTimeTimeout = 15.0f;
+        public static float animTime = 0.0f;
+        public static float animTimeTimeout = 15.0f;
 
 
     }
@@ -19,22 +19,22 @@ namespace SubmersedVR
     public static class IntroSequenceFixer
     {
         public static bool Prefix(PlayerCinematicController __instance)
-        {        
-            if(__instance.gameObject.name == "Life_Pod_damaged_03" && !VROptions.enableCinematics)
+        {
+            if (__instance.gameObject.name == "Life_Pod_damaged_03" && !VROptions.enableCinematics)
             {
                 IntroFixerVR.animTime += Time.deltaTime;
                 Transform component = __instance.player.GetComponent<Transform>();
                 Transform component2 = MainCameraControl.main.GetComponent<Transform>();
                 component.position = __instance.animatedTransform.position;
                 component2.position = __instance.player.camAnchor.position;
-                if(IntroFixerVR.animTime < IntroFixerVR.animTimeTimeout)
+                if (IntroFixerVR.animTime < IntroFixerVR.animTimeTimeout)
                 {
                     component.rotation = __instance.animatedTransform.rotation;
                     component2.rotation = __instance.animatedTransform.rotation;
                 }
                 return false;
             }
-		
+
             return true;
         }
     }
@@ -43,8 +43,8 @@ namespace SubmersedVR
     public static class IntroSequenceFixerCompletion
     {
         public static void Postfix(PlayerCinematicController __instance)
-        {        
-            if(__instance.gameObject.name == "Life_Pod_damaged_03")
+        {
+            if (__instance.gameObject.name == "Life_Pod_damaged_03")
             {
                 IntroFixerVR.animTime = 0f;
             }

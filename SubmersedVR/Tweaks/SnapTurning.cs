@@ -3,7 +3,7 @@ using UnityEngine;
 using FMOD.Studio;
 
 namespace SubmersedVR
-{ 
+{
     using UnityEngine.XR;
 
     //Implementation of Snap Turning
@@ -43,7 +43,7 @@ namespace SubmersedVR
             if ((Settings.IsSnapTurningEnabled && !isPiloting) || (Settings.IsExosuitSnapTurningEnabled && isInExosuit))
             {
                 float angle = Settings.SnapTurningAngle; //player
-                if(Settings.IsExosuitSnapTurningEnabled && isInExosuit)
+                if (Settings.IsExosuitSnapTurningEnabled && isInExosuit)
                 {
                     angle = Settings.ExosuitSnapTurningAngle;
                 }
@@ -51,17 +51,18 @@ namespace SubmersedVR
                 float absX = Mathf.Abs(lookX);
                 float threshold = 0.5f;
 
-                if (absX > threshold && !SnapTurning.disableSnapTurn) 
+                if (absX > threshold && !SnapTurning.disableSnapTurn)
                 {
                     SnapTurning.snapTurnAngle = angle * Mathf.Sign(lookX);
                     SnapTurning.hasSnapTurn = true;
                     SnapTurning.disableSnapTurn = true;
                     //Mod.logger.LogInfo($"Snap Turned");
-                } 
-                else  
+                }
+                else
                 {
                     __result.x = 0;
-                    if (absX <= threshold) {
+                    if (absX <= threshold)
+                    {
                         SnapTurning.disableSnapTurn = false;
                     }
                 }
@@ -103,14 +104,14 @@ namespace SubmersedVR
                 else if (__instance.controlSheme == Vehicle.ControlSheme.Submarine || __instance.controlSheme == Vehicle.ControlSheme.Mech)
                 {
                     //Exosuit
-                    if(Settings.IsExosuitSnapTurningEnabled == true && SnapTurning.hasSnapTurn)
+                    if (Settings.IsExosuitSnapTurningEnabled == true && SnapTurning.hasSnapTurn)
                     {
-                        __instance.useRigidbody.transform.rotation = Quaternion.Euler( new Vector3(  __instance.useRigidbody.transform.rotation.eulerAngles.x, __instance.useRigidbody.transform.rotation.eulerAngles.y + SnapTurning.snapTurnAngle,  __instance.useRigidbody.transform.rotation.eulerAngles.z));
+                        __instance.useRigidbody.transform.rotation = Quaternion.Euler(new Vector3(__instance.useRigidbody.transform.rotation.eulerAngles.x, __instance.useRigidbody.transform.rotation.eulerAngles.y + SnapTurning.snapTurnAngle, __instance.useRigidbody.transform.rotation.eulerAngles.z));
                         SnapTurning.Reset();
                     }
                     else if (Settings.IsExosuitSnapTurningEnabled == false && vector.x != 0f)
                     {
-                        __instance.useRigidbody.AddTorque(__instance.transform.up * vector.x * __instance.sidewaysTorque, ForceMode.VelocityChange);           
+                        __instance.useRigidbody.AddTorque(__instance.transform.up * vector.x * __instance.sidewaysTorque, ForceMode.VelocityChange);
                     }
                 }
             }
@@ -121,7 +122,7 @@ namespace SubmersedVR
                 __instance.OnPoweredChanged(flag);
             }
             __instance.ReplenishOxygen();
-        
+
             return false;
         }
     }
@@ -365,7 +366,7 @@ namespace SubmersedVR
         }
     }
 
-        //Snap turning override
+    //Snap turning override
     [HarmonyPatch(typeof(MapRoomCamera), nameof(MapRoomCamera.HandleInput))]
     static class MapRoomCameraFixer
     {
@@ -479,10 +480,10 @@ namespace SubmersedVR
                     Vector2 lookDelta = GameInput.GetLookDelta();
                     __instance.rigidBody.AddTorque(__instance.transform.up * lookDelta.x * 45f * 0.0015f, ForceMode.VelocityChange);
                     __instance.rigidBody.AddTorque(__instance.transform.right * -lookDelta.y * 45f * 0.0015f, ForceMode.VelocityChange);
-                    if(Settings.IsSnapTurningEnabled == true && SnapTurning.hasSnapTurn)
+                    if (Settings.IsSnapTurningEnabled == true && SnapTurning.hasSnapTurn)
                     {
                         lookDelta.x = SnapTurning.snapTurnAngle;
-                        __instance.rigidBody.transform.rotation = Quaternion.Euler( new Vector3( __instance.rigidBody.transform.rotation.eulerAngles.x, __instance.rigidBody.transform.rotation.eulerAngles.y + lookDelta.x,  __instance.rigidBody.transform.rotation.eulerAngles.z));
+                        __instance.rigidBody.transform.rotation = Quaternion.Euler(new Vector3(__instance.rigidBody.transform.rotation.eulerAngles.x, __instance.rigidBody.transform.rotation.eulerAngles.y + lookDelta.x, __instance.rigidBody.transform.rotation.eulerAngles.z));
                         SnapTurning.Reset();
                     }
                     __instance.wishDir = GameInput.GetMoveDirection();

@@ -9,9 +9,9 @@ namespace SubmersedVR
         private static readonly string AMPLIFY_SHADERS = "amplify_resources";
         private static bool initialized = false;
         public static bool enabled = false;
-	    public static AmplifyOcclusionEffect.ApplicationMethod ApplyMethod = AmplifyOcclusionEffect.ApplicationMethod.PostEffect;
-	    public static bool FilterEnabled = true;
-	    public static bool FilterDownsample = true;
+        public static AmplifyOcclusionEffect.ApplicationMethod ApplyMethod = AmplifyOcclusionEffect.ApplicationMethod.PostEffect;
+        public static bool FilterEnabled = true;
+        public static bool FilterDownsample = true;
 
         public static void Init()
         {
@@ -19,7 +19,7 @@ namespace SubmersedVR
             Valve.VR.ShaderLoader.Initialize(Path.Combine(Application.streamingAssetsPath, AMPLIFY_SHADERS));
             initialized = true;
         }
- 
+
         public static void OnAmbientOcclusionSettingsChanged(Camera camera)
         {
             AmplifyOcclusionEffect effect = camera?.gameObject.GetComponent<AmplifyOcclusionEffect>();
@@ -27,8 +27,8 @@ namespace SubmersedVR
             {
                 effect.enabled = Settings.AOEnabled; //enabled;
                 effect.SampleCount = Settings.AOMethod == "Low" ? AmplifyOcclusion.SampleCountLevel.Low : (Settings.AOMethod == "High" ? AmplifyOcclusion.SampleCountLevel.High : (Settings.AOMethod == "Very High" ? AmplifyOcclusion.SampleCountLevel.VeryHigh : AmplifyOcclusion.SampleCountLevel.Medium));
-                effect.ApplyMethod = Settings.AOMethod == "Deferred" ? AmplifyOcclusionEffect.ApplicationMethod.Deferred : (Settings.AOMethod == "Debug" ? AmplifyOcclusionEffect.ApplicationMethod.Debug : AmplifyOcclusionEffect.ApplicationMethod.PostEffect) ;
-                effect.PerPixelNormals = Settings.AOPerPixelNormals == "None" ? AmplifyOcclusionEffect.PerPixelNormalSource.None : (Settings.AOPerPixelNormals == "GBuffer" ? AmplifyOcclusionEffect.PerPixelNormalSource.GBuffer : (Settings.AOPerPixelNormals == "Octa" ? AmplifyOcclusionEffect.PerPixelNormalSource.GBufferOctaEncoded : AmplifyOcclusionEffect.PerPixelNormalSource.Camera)) ;
+                effect.ApplyMethod = Settings.AOMethod == "Deferred" ? AmplifyOcclusionEffect.ApplicationMethod.Deferred : (Settings.AOMethod == "Debug" ? AmplifyOcclusionEffect.ApplicationMethod.Debug : AmplifyOcclusionEffect.ApplicationMethod.PostEffect);
+                effect.PerPixelNormals = Settings.AOPerPixelNormals == "None" ? AmplifyOcclusionEffect.PerPixelNormalSource.None : (Settings.AOPerPixelNormals == "GBuffer" ? AmplifyOcclusionEffect.PerPixelNormalSource.GBuffer : (Settings.AOPerPixelNormals == "Octa" ? AmplifyOcclusionEffect.PerPixelNormalSource.GBufferOctaEncoded : AmplifyOcclusionEffect.PerPixelNormalSource.Camera));
                 effect.Intensity = Settings.AOIntensity;
                 effect.Radius = Settings.AORadius;
                 effect.PowerExponent = Settings.AOPowerExponent;
@@ -48,7 +48,7 @@ namespace SubmersedVR
 
         public static void AddOcclusionEffect(Camera camera)
         {
-            if(!initialized)
+            if (!initialized)
             {
                 Init();
             }

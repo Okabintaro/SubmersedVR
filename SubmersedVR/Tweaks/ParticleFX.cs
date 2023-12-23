@@ -8,7 +8,7 @@ using FMODUnity;
 namespace SubmersedVR
 {
     class ParticleFX
-    { 
+    {
         /* Tests dont show any obvious benefit 
         [HarmonyPatch(typeof(VFXDestroyAfterSeconds), nameof(VFXDestroyAfterSeconds.OnEnable))]
         class VFXDestroyAfterSeconds_OnEnable_Patch
