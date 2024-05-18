@@ -33,7 +33,7 @@ namespace SubmersedVR
             if (!XRSettings.enabled)
             {
                 Logger.LogWarning($"Game was not started in VR. Don't load and apply {PluginInfo.PLUGIN_NAME} patches.");
-                valid = false;
+                valid = true;
             }
             if (Chainloader.PluginInfos.Any(plugin => plugin.Value.Metadata.GUID == VREnhancements.GUID))
             {
