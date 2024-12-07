@@ -1,80 +1,138 @@
-SubmersedVR
-===========
+# SubmersedVR
 
-**NOTE: This mod is still work in progress. Please don't expect a polished or bug-free experience.**
+> ⚠️ **Note:** This mod is a work in progress. Please do not expect a polished or bug-free experience.
 
-A mod aiming to make [Subnautica] an immersive VR game by modernizing its VR Support.
+SubmersedVR is a mod designed to modernize and enhance the VR support for [Subnautica](https://unknownworlds.com/subnautica/), making it a more immersive VR experience.
 
-If you want to play the game in its original VR Mode with a traditional Xbox or PS4 Controller, I recommend using the [Subnautica VR Enhancements Mod] instead.
+If you prefer the original VR mode and want to play with a traditional Xbox or PS4 controller, we recommend using the [Subnautica VR Enhancements Mod](https://github.com/IWhoI/SubnauticaVREnhancements) instead.
 
-Installation/Setup
--------------------
-
-- Make sure you have [BepInEx for Subnautica](https://github.com/toebeann/BepInEx.Subnautica) installed and setup.
-- Also make sure you don't have [VREnhancements][Subnautica VR Enhancements Mod] or the old [Motion Controls Mod][SN1MC] installed, since they aren't compatible.
-- Download the latest version of the mod from [Github Releases](https://github.com/Okabintaro/SubmersedVR/releases).
-    Make sure to download the zip filed called `SubmersedVR_VERSION.zip` and not the Source Code.
-- Copy the whole contents of the zip file into your Subnautica folder e.g. `C:\SteamLibrary\steamapps\common\Subnautica`
-    - You can find the location of your game in steam by right-clicking it, then -> Properties -> Local Files -> Browse.
-- Start the game within SteamVR. **The Oculus Runtime won't work and is not supported!**
-    - For OculusRift or Oculus Link Users: You can force the SteamVR runtime by adding `-vrmode openvr` [to the advanced launch options of the Subnautica game](https://help.steampowered.com/en/faqs/view/7D01-D2DD-D75E-2955). Please make sure you did that before launching the game.
-
-Development Setup
------------------
-
-- Install the [.net SDK](https://dotnet.microsoft.com/download)
-- Change the `SubnauticaDir` Property in `SubmersedVR/SubmersedVR.csproj` to the Subnautica Installation
-- Run `dotnet restore` to fetch all dependencies and setup the project
-- Run `dotnet build` to build and install the mod
-
-### For VSCode
-
-- Install C# Extension
-- (Tip/Optional) [Enable Decompilation support](https://github.com/OmniSharp/omnisharp-roslyn/pull/1751):
-    Set `RoslynExtensionsOptions:EnableDecompilationSupport` to true in `omnisharp.json`.
-
-### For Visual Studio
-
-- You should be able to simply open up the `SubmersedVR/SubmersedVR.csproj`.
-
-FAQ
 ---
 
-#### I found a bug, where do I report it?
+## Installation/Setup
 
-Please report it on the [Github Issues](https://github.com/Okabintaro/SubmersedVR/issues).
+### Prerequisites
 
-#### What features are planed for the future? I have an idea!
+1. **Subnautica Installation**: Install the latest version of Subnautica from Steam or Epic Games Store.
+   - **Beta Branches (legacy/experimental)**: Not supported. Switch to the default branch.
+   - **Microsoft Store Version**: Outdated and incompatible.
+   - **Epic Games Version with AirLink**: Additional setup is required. Refer to [this issue comment](https://github.com/Okabintaro/SubmersedVR/issues/42#issuecomment-1605399270) for detailed instructions.
+2. **BepInEx**: Download and set up [BepInEx for Subnautica](https://github.com/toebeann/BepInEx.Subnautica).
+3. **Incompatibilities**: Ensure the following mods are NOT installed:
+   - [Subnautica VR Enhancements Mod](https://github.com/IWhoI/SubnauticaVREnhancements)
+   - [Motion Controls Mod](https://github.com/ihatetn931/SN1MC)
 
-We want to keep track of future releases and features/ideas on [Github Issues](https://github.com/Okabintaro/SubmersedVR/issues) aswell.
-For a rough roadmap, take a look at the [Milestones](https://github.com/Okabintaro/SubmersedVR/milestones?direction=asc&sort=title&state=open).
-Feel free to suggest changes if it's not already reported yet.
+### Installation Steps
 
-#### Will this work with Below Zero?
+1. **Download the Mod**:
+   - Get the latest release from [GitHub Releases](https://github.com/Okabintaro/SubmersedVR/releases).
+   - **Important**: Download the file named `SubmersedVR_VERSION.zip`, NOT the source code.
 
-Yes! @jbusfield ported the mod to Below Zero and is working on a lot of other nice features.
+2. **Extract Files**:
+   - Extract the contents of the zip file into your Subnautica installation directory (e.g., `C:\SteamLibrary\steamapps\common\Subnautica`).
+   - To find your game directory:
+     - Steam: Right-click the game > **Properties** > **Local Files** > **Browse**.
 
-Take a look at [the releases of the fork](https://github.com/jbusfield/SubmersedVR/releases) to try that version out.
+3. **Important Notes**:
+   - If files are not copied correctly, the mod might load partially, and your controllers may not function due to missing bindings.
+   - ⚠️ **Mod Managers Warning**: Tools like Vortex may skip important steps and cause a broken installation.
 
-Credits/Thanks
---------------
+4. **Launch the Game**:
+   - Start Subnautica in SteamVR. **The Oculus Runtime is not supported.**
+   - For Oculus Rift or Link users:
+     - Add `-vrmode openvr` to the game's launch options. [Learn how to set launch options](https://help.steampowered.com/en/faqs/view/7D01-D2DD-D75E-2955).
+     - Start SteamVR manually before launching the game.
 
-This mod began as modifications and fixes for the [SN1MC] Mod from [ihatetn931] and later was mostly rewritten and cleaned up for this project.
-Lots of thanks to him opening up the source code for me to get into VR modding.
+---
 
-Furthermore, there are some fixes and improvements cherry-picked from the [Subnautica VR Enhancements Mod] by [IWhoI].
+## Development Setup
 
-Another thank goes to the great VR modding work from [Raicuparta].
-I looked at their mods code quite often when I was stuck and probably will again in the future.
+For developers looking to contribute or customize the mod, follow these steps:
 
-License
--------
+### Prerequisites
 
-The code of the project is licensed under the MIT License. See LICENSE.
+- Install the [.NET SDK](https://dotnet.microsoft.com/download).
 
-[SN1MC]: https://github.com/ihatetn931/SN1MC
-[ihatetn931]: https://github.com/ihatetn931/SN1MC
-[Subnautica]: https://unknownworlds.com/subnautica/
-[Subnautica VR Enhancements Mod]: https://github.com/IWhoI/SubnauticaVREnhancements
-[IWhoI]: https://github.com/IWhoI
-[Raicuparta]: https://github.com/Raicuparta
+### Steps
+
+1. Clone the repository and update the `SubnauticaDir` property in `SubmersedVR/SubmersedVR.csproj` to your Subnautica installation path.
+2. Run the following commands:
+   ```bash
+   dotnet restore
+   dotnet build
+   ```
+3. The mod will build and install automatically into the configured Subnautica directory.
+
+### IDE Setup
+
+#### VSCode
+1. Install the C# Extension.
+2. (Optional) Enable decompilation support for better debugging:
+   - Add this setting to `omnisharp.json`:
+     ```json
+     {
+       "RoslynExtensionsOptions": {
+         "EnableDecompilationSupport": true
+       }
+     }
+     ```
+
+#### Visual Studio
+- Open the solution file `SubmersedVR/SubmersedVR.csproj` and build the project.
+
+---
+
+## FAQ
+
+### The game doesn't work. What could be wrong?
+
+- Verify the following:
+  - You are using the latest Subnautica version from Steam.
+  - Beta branches (`legacy` or `experimental`) are NOT selected.
+  - Mod managers like Vortex are not causing an incomplete installation.
+
+- Known good setup as of 07/12/2024
+  - [BepInEx for Subnautica v5.4.23-payload.2.3.0](https://github.com/toebeann/BepInEx.Subnautica/releases/tag/v5.4.23-payload.2.3.0)
+  - AirLink or SteamVR is running with the `-vrmode openvr` launch option.
+  - Launch the game from the SteamVR dashboard.
+
+### I Found a Bug. Where Can I Report It?
+
+If you encounter a bug, please report it on the [GitHub Issues page](https://github.com/Okabintaro/SubmersedVR/issues). To help us identify and resolve the issue efficiently, please include the following:
+
+1. **Detailed Description**:
+   - Describe the issue clearly. Include what you expected to happen and what actually happened.
+
+2. **Steps to Reproduce**:
+   - Provide a step-by-step guide on how to reproduce the issue.
+
+3. **Logs**:
+   - Attach the logs from your game. You can find the logs at:
+     - **Steam**:  
+       `C:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\LogOutput.log`
+       - (If your Steam library is located elsewhere, navigate to your Subnautica installation folder using **Properties > Local Files > Browse** and find the `LogOutput.log` file in the `BepInEx` folder.)
+     - **Epic Games**:  
+       Locate your Subnautica folder, then find `BepInEx\LogOutput.log`.
+
+### What features are planned for the future?
+
+- Check the [GitHub Milestones](https://github.com/Okabintaro/SubmersedVR/milestones?direction=asc&sort=title&state=open) for a roadmap.
+- If you have a new idea, feel free to suggest it via the [Issues page](https://github.com/Okabintaro/SubmersedVR/issues).
+
+### Will this work with Below Zero?
+
+- Yes! A fork of this mod is available for Below Zero, maintained by @jbusfield.
+  - Check out the [Below Zero fork releases](https://github.com/jbusfield/SubmersedVR/releases).
+
+---
+
+## Credits/Thanks
+
+- **[ihatetn931](https://github.com/ihatetn931/SN1MC)**: Original developer of the SN1MC mod, which served as a foundation for this project.
+- **[IWhoI](https://github.com/IWhoI)**: Creator of Subnautica VR Enhancements Mod, whose fixes and features inspired this mod.
+- **[Raicuparta](https://github.com/Raicuparta)**: Developer of other VR mods whose work guided many improvements in SubmersedVR.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for more details.
