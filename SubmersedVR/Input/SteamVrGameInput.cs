@@ -124,7 +124,7 @@ namespace SubmersedVR
         {
             // Choose XBox, since it has the ABXY from Quest controllers
             GameInput.chosenControllerLayout = GameInput.ControllerLayout.Xbox360;
-            GameInput.lastDevice = GameInput.Device.Controller;
+            GameInput.lastPrimaryDevice = GameInput.Device.Controller;
             return false;
         }
     }

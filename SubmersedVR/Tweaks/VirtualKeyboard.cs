@@ -86,7 +86,7 @@ namespace SubmersedVR
     }
 
     // Open virtual keyboard once the input field was activated
-    [HarmonyPatch(typeof(TMP_InputField), nameof(TMP_InputField.ActivateInputFieldInternal))]
+    [HarmonyPatch(typeof(TMP_InputField), nameof(TMP_InputField.ActivateInputField))]
     static class ShowVirtualKeyboardOnFocus
     {
         public static void Postfix(TMP_InputField __instance)
