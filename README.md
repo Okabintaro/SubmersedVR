@@ -42,6 +42,28 @@ If you prefer the original VR mode and want to play with a traditional Xbox or P
      - Add `-vrmode openvr` to the game's launch options. [Learn how to set launch options](https://help.steampowered.com/en/faqs/view/7D01-D2DD-D75E-2955).
      - Start SteamVR manually before launching the game.
 
+
+#### Linux Setup
+
+This game and mod work well on Linux in VR as well!
+
+You need to follow the above steps, just like you would on Windows, and add an additional launch option so that Wine loads the winhttp DLL from the mod loader.
+You need to prepend `WINEDLLOVERRIDES="winhttp=n,b"` to the command in the SteamVR launch options, e.g. `WINEDLLOVERRIDES="winhttp=n,b" %command%`.
+
+I tested it myself with [WiVRn](https://github.com/WiVRn/WiVRn) on a Quest 3 with [xrizer](https://github.com/Supreeeme/xrizer).
+
+For WiVRn, you need [some additional options too](https://github.com/WiVRn/WiVRn/blob/master/docs/steamvr.md).
+In my case, the full command line is:
+
+```
+WINEDLLOVERRIDES="winhttp=n,b" PRESSURE_VESSEL_FILESYSTEMS_RW=$XDG_RUNTIME_DIR/wivrn/comp_ipc %command% -vrmode openvr
+```
+
+The only issue I noticed is that the trigger doesn't always activate the interact action. But you can press the A button for that instead.
+Maybe I can get around to fixing it.
+
+Feel free to give it a try and report your findings on the [LVRA DB Entry of the game](https://db.vronlinux.org/games/264710.html).
+
 ---
 
 ## Development Setup
