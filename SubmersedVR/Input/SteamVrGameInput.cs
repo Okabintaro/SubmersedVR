@@ -115,22 +115,6 @@ namespace SubmersedVR
         }
     }
 
-
-    // // Make the game believe to be controllerd by controllers only
-    // [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAvailableDevices))]
-    // public static class ControllerOnly
-    // {
-    //     public static bool Prefix()
-    //     {
-    //         // Choose XBox, since it has the ABXY from Quest controllers
-    //         GameInput.controllerAvailable = true;
-    //         GameInput.chosenControllerLayout = GameInput.ControllerLayout.Xbox360;
-    //         GameInput.lastPrimaryDevice = GameInput.Device.Controller;
-    //         return false;
-    //     }
-    // }
-
-
     // Make the game believe to be controllerd by controllers only
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.IsPrimaryDeviceGamepad))]
     public static class ControllerOnly
@@ -151,26 +135,6 @@ namespace SubmersedVR
             return false;
         }
     }
-
-    // Pretend the controlers are always available to make Subnautica not switch to Keyboard/Mouse and mess VR controls up
-    // TODO: This should/could probably be changed though, asking SteamVR if controllers are available?
-    // [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateControllerAvailable))]
-    // public static class ControllerAlwaysAvailable
-    // {
-    //     public static bool Prefix()
-    //     {
-    //         return false;
-    //     }
-    // }
-    // [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateKeyboardAvailable))]
-    // public static class KeyboardNeverAvialable
-    // {
-    //     public static bool Prefix()
-    //     {
-    //         GameInput.keyboardAvailable = false;
-    //         return false;
-    //     }
-    // }
 
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetFloat))]
     public static class SteamVrGetFloat
@@ -504,50 +468,6 @@ namespace SubmersedVR
             return m.InstructionEnumeration();
         }
     }
-
-    // Previous attempt which tried to emulate controllers, not as clean and not needed
-#if false
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAxisValues))]
-    public static class SteamVrUpdateAxisValues
-    {
-        static bool Prefix(GameInput __instance, bool useKeyboard, bool useController)
-        {
-            if (useKeyboard && !useController) {
-                return true;
-            }
-
-            for (int i = 0; i < GameInput.axisValues.Length; i++)
-            {
-                GameInput.axisValues[i] = 0f;
-            }
-
-            Vector2 move = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
-            Vector2 look = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
-            bool move_up = SteamVR_Actions.subnautica.MoveUp.GetState(SteamVR_Input_Sources.Any);
-            bool move_down = SteamVR_Actions.subnautica.MoveDown.GetState(SteamVR_Input_Sources.Any);
-
-            GameInput.axisValues[0] = look.x; // Right Stick X
-            GameInput.axisValues[1] = -look.y; // Right Stick Y
-            GameInput.axisValues[2] = move.x; // Left Stick X
-            GameInput.axisValues[3] = -move.y; // Left Stick Y
-            GameInput.axisValues[4] = move_up ? 1.0f : 0.0f; // LeftTrigger - Unused
-            GameInput.axisValues[5] = move_down ? 1.0f : 0.0f; // RightTrigger - Unused
-
-            GameInput.axisValues[6] = 0; // DPadX - Unused
-            GameInput.axisValues[7] = 0; // DPadY - Unused
-            GameInput.axisValues[8] = 0; // MouseX - Unused
-            GameInput.axisValues[9] = 0; // MouseY - Unused
-
-            GameInput.axisValues[10] = -look.y; // Mouse Wheel - Emulate from right stick y
-
-
-            if (Settings.IsDebugEnabled) {
-                DebugPanel.Show($"{GameInput.axisValues[0]}, {GameInput.axisValues[1]}, {GameInput.axisValues[2]}, {GameInput.axisValues[3]}, {GameInput.axisValues[4]}, {GameInput.axisValues[5]}\nAvailable: {GameInput.controllerAvailable} -> Primary: {GameInput.GetPrimaryDevice()} IsGamePad: {GameInput.IsPrimaryDeviceGamepad()}");
-            }
-            return false;
-        }
-    }
-#endif
 
     #endregion
 
