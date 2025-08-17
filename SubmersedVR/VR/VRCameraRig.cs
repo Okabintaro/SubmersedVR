@@ -406,6 +406,8 @@ namespace SubmersedVR
         }
     }
 
+// NOTE: Not sure if needed, I already apply offsets on entering for vehicles.
+#if false
     //Adjust the player position while piloting vehicles with vr offset positions and user overrides
     [HarmonyPatch(typeof(MainCameraControl), nameof(MainCameraControl.OnUpdate))]
     public static class PlayerPositionFixer
@@ -438,6 +440,7 @@ namespace SubmersedVR
             //__instance.cameraUPTransform.localRotation = Quaternion.Euler( new Vector3(0.0f, 0.0f, 0.0f));
         }
     }
+#endif
 
     // Create the Rig together with the uGUI Prefab
     [HarmonyPatch(typeof(uGUI), nameof(uGUI.Awake))]

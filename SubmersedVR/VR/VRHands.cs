@@ -332,16 +332,17 @@ namespace SubmersedVR
             }
 
             // Move the hands to the targets which are attached to the controllers
+#if false
             Transform t = PhysicalPilotingVR.GetCurrentPilotingTarget(PhysicalPilotingVR.PhysicalPilotingHand.Left);
             leftHand.transform.SetPositionAndRotation((t ?? leftTarget).position, (t ?? leftTarget).rotation);
             leftElbow.transform.SetPositionAndRotation(leftHand.position, leftHand.rotation); // Reset Elbows
-
             t = PhysicalPilotingVR.GetCurrentPilotingTarget(PhysicalPilotingVR.PhysicalPilotingHand.Right);
             rightHand.transform.SetPositionAndRotation((t ?? rightTarget).position, (t ?? rightTarget).rotation);
             rightElbow.transform.SetPositionAndRotation(rightHand.position, rightHand.rotation); // Reset Elbows
+#endif
 
-            //leftHand.transform.SetPositionAndRotation(leftTarget.position, leftTarget.rotation);
-            //rightHand.transform.SetPositionAndRotation(rightTarget.position, rightTarget.rotation);
+            leftHand.transform.SetPositionAndRotation(leftTarget.position, leftTarget.rotation);
+            rightHand.transform.SetPositionAndRotation(rightTarget.position, rightTarget.rotation);
 
             // Reset Elbows
             leftElbow.transform.SetPositionAndRotation(leftHand.position, leftHand.rotation);

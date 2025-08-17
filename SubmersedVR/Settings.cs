@@ -17,11 +17,6 @@ namespace SubmersedVR
         public static float SnapTurningAngle = 45.0f;
         public static event FloatChanged SnapTurningAngleChanged;
 
-        public static bool IsExosuitSnapTurningEnabled;
-        public static event BooleanChanged IsExosuitSnapTurningEnabledChanged;
-        public static float ExosuitSnapTurningAngle = 45.0f;
-        public static event FloatChanged ExosuitSnapTurningAngleChanged;
-
         public static bool IsDebugEnabled;
         public static event BooleanChanged IsDebugChanged;
 
@@ -49,60 +44,6 @@ namespace SubmersedVR
         public static bool HandBasedTurning = false;
         public static bool LeftHandBasedTurning = false;
 
-        public static float SeamothZOffset = 0.0f;
-        public static float SeamothYOffset = 0.0f;
-        public static float CyclopsZOffset = 0.0f;
-        public static float CyclopsYOffset = 0.0f;
-        public static float ExosuitZOffset = 0.0f;
-        public static float ExosuitYOffset = 0.0f;
-
-        public static bool PhysicalDriving = false;
-        public static bool PhysicalLockedGrips = false;
-
-        public static float SeamothLeftHorizontalCenterAngle = 0.0f;
-        public static float SeamothLeftVerticleCenterAngle = 0.0f;
-        public static float SeamothLeftDeadZone = 5.0f;
-        public static float SeamothLeftSensitivity = 0.0f;
-
-        public static float SeamothRightHorizontalCenterAngle = 0.0f;
-        public static float SeamothRightVerticleCenterAngle = 0.0f;
-        public static float SeamothRightDeadZone = 5.0f;
-
-        public static float ExosuitLeftHorizontalCenterAngle = 0.0f;
-        public static float ExosuitLeftVerticleCenterAngle = 0.0f;
-        public static float ExosuitLeftDeadZone = 5.0f;
-
-        public static float ExosuitRightHorizontalCenterAngle = 0.0f;
-        public static float ExosuitRightVerticleCenterAngle = 0.0f;
-        public static float ExosuitRightDeadZone = 5.0f;
-
-        public static float CyclopsLeftHorizontalCenterAngle = 0.0f;
-        public static float CyclopsLeftVerticleCenterAngle = 0.0f;
-        public static float CyclopsLeftDeadZone = 5.0f;
-
-        public static float CyclopsRightHorizontalCenterAngle = 0.0f;
-        public static float CyclopsRightVerticleCenterAngle = 0.0f;
-        public static float CyclopsRightDeadZone = 5.0f;
-
-        public static float SeatruckLeftHorizontalCenterAngle = 0.0f;
-        public static float SeatruckLeftVerticleCenterAngle = 0.0f;
-        public static float SeatruckLeftDeadZone = 5.0f;
-        public static float SeatruckLeftSensitivity = 0.0f;
-
-        public static float SeatruckRightHorizontalCenterAngle = 0.0f;
-        public static float SeatruckRightVerticleCenterAngle = 0.0f;
-        public static float SeatruckRightDeadZone = 5.0f;
-        public static bool SeatruckAltLeftGrip = false;
-        public static float SnowbikeLeftHorizontalCenterAngle = 0.0f;
-        public static float SnowbikeLeftVerticleCenterAngle = 0.0f;
-        public static float SnowbikeLeftDeadZone = 5.0f;
-
-        public static float SnowbikeRightHorizontalCenterAngle = 0.0f;
-        public static float SnowbikeRightVerticleCenterAngle = 0.0f;
-        public static float SnowbikeRightDeadZone = 5.0f;
-        public static bool SnowbikeAltAccelerator = false;
-        public static bool EnableParticleFix = false;
-
         //Ambient Occlusion Settings
         public static bool AOEnabled = true;
         public static string AOMethod = "Post Effect";
@@ -120,7 +61,6 @@ namespace SubmersedVR
         public static float AOTemporalFilterBlending = 0.8f;
         public static float AOTemporalFilterResponse = 0.5f;
         public static event VoidChanged AmbientOcclusionSettingsChanged;
-
 
         // public static float HudDistance = 1.0f;
         // public static event FloatChanged HudDistanceChanged;
@@ -183,28 +123,12 @@ namespace SubmersedVR
                     SnapTurningAngleChanged(value);
                 }
             });
-            panel.AddToggleOption(tab, "Enable Prawn Suit Snap Turning", IsExosuitSnapTurningEnabled, (value) =>
-            {
-                IsExosuitSnapTurningEnabled = value;
-                if (IsExosuitSnapTurningEnabledChanged != null)
-                {
-                    IsExosuitSnapTurningEnabledChanged(value);
-                }
-            });
-            panel.AddChoiceOption<float>(tab, "Prawn Suit Snap Turning Angle(°)", new float[] { 22.5f, 30f, 45f, 90f }, ExosuitSnapTurningAngle, (value) =>
-            {
-                ExosuitSnapTurningAngle = value;
-                if (ExosuitSnapTurningAngleChanged != null)
-                {
-                    ExosuitSnapTurningAngleChanged(value);
-                }
-            });
 
             panel.AddHeading(tab, "Immersion");
-            panel.AddToggleOption(tab, "Articulated Hands", ArticulatedHands, (value) => { ArticulatedHands = value; }, "Hands animate based on the movement of your physical hands.");
-            panel.AddToggleOption(tab, "Enable Game Haptics", AreGameHapticsEnabled, (value) => { AreGameHapticsEnabled = value; }, "Enable controller vibration while interacting with world objects.");
-            panel.AddToggleOption(tab, "Enable UI Haptics", AreUIHapticsEnabled, (value) => { AreUIHapticsEnabled = value; }, "Enable controller vibration while interacting with the User Interface.");
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
+            panel.AddToggleOption(tab, "Articulated Hands", ArticulatedHands, (value) => { ArticulatedHands = value; }, "Hands animate based on the movement of your physical hands.");
+            panel.AddToggleOption(tab, "Enable Game Haptics(WIP)", AreGameHapticsEnabled, (value) => { AreGameHapticsEnabled = value; }, "Enable controller vibration while interacting with world objects.");
+            panel.AddToggleOption(tab, "Enable UI Haptics(WIP)", AreUIHapticsEnabled, (value) => { AreUIHapticsEnabled = value; }, "Enable controller vibration while interacting with the User Interface.");
             panel.AddChoiceOption<string>(tab, "Show Laser Pointer", new string[] { "Always", "Default", "Never" }, ShowLaserPointer, (value) =>
             {
                 ShowLaserPointer = value;
@@ -225,6 +149,7 @@ namespace SubmersedVR
             panel.AddToggleOption(tab, "Always show controllers", AlwaysShowControllers, (value) => { AlwaysShowControllers = value; AlwaysShowControllersChanged(value); }, "Shows the controllers at all times.");
             //panel.AddToggleOption(tab, "Always show laserpointer", AlwaysShowLaserPointer, (value) => { AlwaysShowLaserPointer = value; AlwaysShowLaserPointerChanged(value); }, "Show the laserpointer at all times.");
 
+#if false
             tab = panel.AddTab("Vehicles VR");
             panel.AddHeading(tab, "Comfort");
             panel.AddSliderOption(tab, "Seamoth Pilot Position Offset", SeamothZOffset, -0.4f, 0.4f, SeamothZOffset, 0.01f, (value) => { SeamothZOffset = value; }, SliderLabelMode.Float, "0.00");
@@ -279,16 +204,7 @@ namespace SubmersedVR
             //Call dead zone "Sensitivity" for users
             panel.AddSliderOption(tab, "Sensitivity", CyclopsRightDeadZone, 1f, 10f, CyclopsRightDeadZone, 1f, (value) => { CyclopsRightDeadZone = value; }, SliderLabelMode.Float, "0", "Higher value means turns more quickly");
             //panel.AddSliderOption(tab, "Sensitivity", SeamothRightSensitivity, 0f, 100f, SeamothRightSensitivity, 1f, (value) => { SeamothRightSensitivity = value; }, SliderLabelMode.Float, "0");
-
-            /*
-            panel.AddHeading(tab, "Comfort");
-            panel.AddSliderOption(tab, "SeaTruck Pilot Position Offset", SeaTruckZOffset, -0.4f, 0.4f, SeaTruckZOffset, 0.01f, (value) => { SeaTruckZOffset = value; }, SliderLabelMode.Float, "0.00");
-            panel.AddSliderOption(tab, "SeaTruck Pilot Height Offset", SeaTruckYOffset, -0.4f, 0.4f, SeaTruckYOffset, 0.01f, (value) => { SeaTruckYOffset = value; }, SliderLabelMode.Float, "0.00");
-            panel.AddSliderOption(tab, "Prawn Suit Position Offset", ExosuitZOffset, -0.4f, 0.4f, ExosuitZOffset, 0.01f, (value) => { ExosuitZOffset = value; }, SliderLabelMode.Float, "0.00");
-            panel.AddSliderOption(tab, "Prawn Suit Height Offset", ExosuitYOffset, -0.4f, 0.4f, ExosuitYOffset, 0.01f, (value) => { ExosuitYOffset = value; }, SliderLabelMode.Float, "0.00");
-            panel.AddSliderOption(tab, "Snowbike Position Offset", SnowBikeZOffset, -0.4f, 0.4f, SnowBikeZOffset, 0.01f, (value) => { SnowBikeZOffset = value; }, SliderLabelMode.Float, "0.00");
-            panel.AddSliderOption(tab, "Snowbike Height Offset", SnowBikeYOffset, -0.2f, 0.4f, SnowBikeYOffset, 0.01f, (value) => { SnowBikeYOffset = value; }, SliderLabelMode.Float, "0.00");
-            */
+#endif
         }
 
         internal static void AddToGraphicsOptions(uGUI_OptionsPanel panel)
@@ -333,10 +249,6 @@ namespace SubmersedVR
             panel.AddToggleOption(tab, space + "Temporal Filter Downsample", AOTemporalFilterDownsampleEnabled, (value) => { AOTemporalFilterDownsampleEnabled = value; AmbientOcclusionSettingsChanged(); }, "Effect at half of the resolution.");
             panel.AddSliderOption(tab, space + "Temporal Filter Blending", AOTemporalFilterBlending, 0f, 1.0f, AOTemporalFilterBlending, 0.02f, (value) => { AOTemporalFilterBlending = value; AmbientOcclusionSettingsChanged(); }, SliderLabelMode.Float, "0.00");
             panel.AddSliderOption(tab, space + "Temporal Filter Response", AOTemporalFilterResponse, 0f, 1.0f, AOTemporalFilterResponse, 0.02f, (value) => { AOTemporalFilterResponse = value; AmbientOcclusionSettingsChanged(); }, SliderLabelMode.Float, "0.00");
-            //TooltipAttribute[] attributes = VRCameraRig.instance.vrCamera.gameObject.GetComponent<AmplifyOcclusionEffect>().GetType().GetField("ApplyMethod").GetCustomAttributes(typeof(TooltipAttribute), true) as TooltipAttribute[];
-            //Mod.logger.LogInfo($"Tooltip: {attributes[0].tooltip}");
-
-
         }
 
     }

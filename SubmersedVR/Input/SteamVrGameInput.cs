@@ -19,16 +19,16 @@ namespace SubmersedVR
         public static bool IsSteamVrReady = false;
         public static bool SnapTurned = false;
 
-        public static bool ShouldIgnore(GameInput.Button button)
+        public static bool ShouldIgnore(GameInput.Button action)
         {
             return !IsSteamVrReady || InputLocked
-                || button == GameInput.Button.Slot1
-                || button == GameInput.Button.Slot2
-                || button == GameInput.Button.Slot3
-                || button == GameInput.Button.Slot4
-                || button == GameInput.Button.Slot5
-                || button == GameInput.Button.AutoMove
-                || button.ToString() == "45" || button.ToString() == "46";
+                || action == GameInput.Button.Slot1
+                || action == GameInput.Button.Slot2
+                || action == GameInput.Button.Slot3
+                || action == GameInput.Button.Slot4
+                || action == GameInput.Button.Slot5
+                || action == GameInput.Button.AutoMove
+                || action.ToString() == "45" || action.ToString() == "46";
         }
 
         public static Vector2 GetScrollDelta()
@@ -41,28 +41,43 @@ namespace SubmersedVR
         }
     }
 
+    // Implement Snap turning for the player
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetLookDelta))]
+    public static class SnapTurning
+    {
+        public static void Postfix(ref Vector2 __result)
+        {
+            bool isInVehicle = Player.main?.currentMountedVehicle != null;
+            if (Settings.IsSnapTurningEnabled && !isInVehicle) {
+                float lookX = __result.x;
+                float absX = Mathf.Abs(lookX);
+                float threshold = 0.5f;
+                if (absX > threshold && !SteamVrGameInput.SnapTurned) {
+                    __result.x = Settings.SnapTurningAngle * Mathf.Sign(lookX);
+                    SteamVrGameInput.SnapTurned = true;
+                } else  {
+                    __result.x = 0;
+                    if (absX <= threshold) {
+                        SteamVrGameInput.SnapTurned = false;
+                    }
+                }
+            }
+        }
+    }
+
     // The following three patches map the steamvr actions to the button states
     // TODO: They could be optimized by using a switch instead of the GetStateDown(string) lookup
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonDown))]
     public static class SteamVrGetButtonDown
     {
-        static bool Prefix(GameInput.Button button, ref bool __result)
+        static bool Prefix(GameInput.Button action, ref bool __result)
         {
-            if (SteamVrGameInput.ShouldIgnore(button))
+            if (SteamVrGameInput.ShouldIgnore(action))
             {
                 return false;
             }
 
-            String actionName = button.ToString();
-            //Mod.logger.LogInfo($"Action name: {actionName}");
-            //When using physical driving we use the right A button as Up/Down and Jump but the A button is mapped to the LeftHand action. 
-            //Therefore, only return true if the real LeftHand action is occuring (default is Left Trigger)
-            if (actionName == "LeftHand" && Settings.PhysicalDriving && (Player.main?.inExosuit == true || Player.main?.inSeamoth == true))
-            {
-                __result = SteamVR_Actions.subnautica.LeftHand.GetStateDown(SteamVR_Input_Sources.LeftHand);
-                return false;
-            }
-
+            String actionName = action.ToString();
             __result = SteamVR_Input.GetStateDown(actionName, SteamVR_Input_Sources.Any);
             return false;
         }
@@ -71,22 +86,14 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonUp))]
     public static class SteamVrGetButtonUp
     {
-        static bool Prefix(GameInput.Button button, ref bool __result)
+        static bool Prefix(GameInput.Button action, ref bool __result)
         {
-            if (SteamVrGameInput.ShouldIgnore(button))
+            if (SteamVrGameInput.ShouldIgnore(action))
             {
                 return false;
             }
 
-            String actionName = button.ToString();
-
-            //When using physical driving we use the right A button as Up/Down and Jump but the A button is mapped to the LeftHand action. 
-            //Therefore, only return true if the real LeftHand action is occuring (default is Left Trigger)
-            if (actionName == "LeftHand" && Settings.PhysicalDriving && (Player.main?.inExosuit == true || Player.main?.inSeamoth == true))
-            {
-                __result = SteamVR_Actions.subnautica.LeftHand.GetStateUp(SteamVR_Input_Sources.LeftHand);
-                return false;
-            }
+            String actionName = action.ToString();
             __result = SteamVR_Input.GetStateUp(actionName, SteamVR_Input_Sources.Any);
             return false;
         }
@@ -95,89 +102,80 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetButtonHeld))]
     public static class SteamVrGetButtonHeld
     {
-        static bool Prefix(GameInput.Button button, ref bool __result)
+        static bool Prefix(GameInput.Button action, ref bool __result)
         {
-            if (SteamVrGameInput.ShouldIgnore(button))
+            if (SteamVrGameInput.ShouldIgnore(action))
             {
                 return false;
             }
 
-            String actionName = button.ToString();
-
-            //When using physical driving we use the right A button as Up/Down and Jump but the A button is mapped to the LeftHand action. 
-            //Therefore, only return true if the real LeftHand action is occuring (default is Left Trigger)
-            if (actionName == "LeftHand" && Settings.PhysicalDriving && (Player.main?.inExosuit == true || Player.main?.inSeamoth == true))
-            {
-                __result = SteamVR_Actions.subnautica.LeftHand.GetState(SteamVR_Input_Sources.LeftHand);
-                return false;
-            }
+            String actionName = action.ToString();
             __result = SteamVR_Input.GetState(actionName, SteamVR_Input_Sources.Any);
             return false;
         }
     }
 
+
+    // // Make the game believe to be controllerd by controllers only
+    // [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAvailableDevices))]
+    // public static class ControllerOnly
+    // {
+    //     public static bool Prefix()
+    //     {
+    //         // Choose XBox, since it has the ABXY from Quest controllers
+    //         GameInput.controllerAvailable = true;
+    //         GameInput.chosenControllerLayout = GameInput.ControllerLayout.Xbox360;
+    //         GameInput.lastPrimaryDevice = GameInput.Device.Controller;
+    //         return false;
+    //     }
+    // }
+
+
     // Make the game believe to be controllerd by controllers only
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAvailableDevices))]
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.IsPrimaryDeviceGamepad))]
     public static class ControllerOnly
     {
-        public static bool Prefix()
+        public static bool Prefix(ref bool __result)
         {
-            // Choose XBox, since it has the ABXY from Quest controllers
-            GameInput.chosenControllerLayout = GameInput.ControllerLayout.Xbox360;
-            GameInput.lastPrimaryDevice = GameInput.Device.Controller;
-            return false;
-        }
-    }
-    /*  Moved to SnapTurning.cs
-        // Implement Snap turning for the player
-        [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetLookDelta))]
-        public static class SnapTurning
-        {
-            public static void Postfix(ref Vector2 __result)
-            {
-                bool isInVehicle = Player.main?.currentMountedVehicle != null;
-                if (Settings.IsSnapTurningEnabled && !isInVehicle) {
-                    float lookX = __result.x;
-                    float absX = Mathf.Abs(lookX);
-                    float threshold = 0.5f;
-                    if (absX > threshold && !SteamVrGameInput.SnapTurned) {
-                        __result.x = Settings.SnapTurningAngle * Mathf.Sign(lookX);
-                        SteamVrGameInput.SnapTurned = true;
-                    } else  {
-                        __result.x = 0;
-                        if (absX <= threshold) {
-                            SteamVrGameInput.SnapTurned = false;
-                        }
-                    }
-                }
-            }
-        }
-    */
-    // Pretend the controlers are always available to make Subnautica not switch to Keyboard/Mouse and mess VR controls up
-    // TODO: This should/could probably be changed though, asking SteamVR if controllers are available?
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateControllerAvailable))]
-    public static class ControllerAlwaysAvailable
-    {
-        public static bool Prefix()
-        {
-            GameInput.controllerAvailable = true;
-            return false;
-        }
-    }
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateKeyboardAvailable))]
-    public static class KeyboardNeverAvialable
-    {
-        public static bool Prefix()
-        {
-            GameInput.keyboardAvailable = false;
+            __result = true;
             return false;
         }
     }
 
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetAnalogValueForButton))]
-    public static class SteamVrGetAnalogValue
+    [HarmonyPatch(typeof(GameInputSystem), nameof(GameInput.PrimaryDevice), MethodType.Getter)]
+    public static class GameInputSystemControllerOnly
     {
-        public static bool Prefix(GameInput.Button button, ref float __result)
+        public static bool Prefix(ref GameInput.Device __result)
+        {
+            __result = GameInput.Device.Controller;
+            return false;
+        }
+    }
+
+    // Pretend the controlers are always available to make Subnautica not switch to Keyboard/Mouse and mess VR controls up
+    // TODO: This should/could probably be changed though, asking SteamVR if controllers are available?
+    // [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateControllerAvailable))]
+    // public static class ControllerAlwaysAvailable
+    // {
+    //     public static bool Prefix()
+    //     {
+    //         return false;
+    //     }
+    // }
+    // [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateKeyboardAvailable))]
+    // public static class KeyboardNeverAvialable
+    // {
+    //     public static bool Prefix()
+    //     {
+    //         GameInput.keyboardAvailable = false;
+    //         return false;
+    //     }
+    // }
+
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetFloat))]
+    public static class SteamVrGetFloat
+    {
+        public static bool Prefix(GameInput.Button action, ref float __result)
         {
             if (SteamVrGameInput.InputLocked || !SteamVrGameInput.IsSteamVrReady || VRHands.instance == null)
             {
@@ -187,143 +185,61 @@ namespace SubmersedVR
             Vector2 vec;
             bool isPressed = false;
             float value = 0.0f;
-            bool disableUpDown = Settings.PhysicalDriving && (Player.main?.inExosuit == true || Player.main?.inSeamoth == true || (Player.main?.currentSub?.isCyclops == true && Player.main?.isPiloting == true && uGUI_CameraCyclops.main?.content.activeSelf != true));
-            float? result;
-            switch (button)
+            switch (action)
             {
                 case GameInput.Button.MoveForward:
-                    result = PhysicalPilotingVR.GetValue(PhysicalPilotingVR.PhysicalPilotingDirection.MoveForward);
-                    if (result != null)
+                    vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
+                    value = vec.y > 0.0f ? vec.y : 0.0f;
+                    break;
+                case GameInput.Button.MoveBackward:
+                    vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
+                    value = vec.y < 0.0f ? -vec.y : 0.0f;
+                    break;
+                case GameInput.Button.MoveRight:
+                    vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
+                    value = vec.x > 0.0f ? vec.x : 0.0f;
+                    break;
+                case GameInput.Button.MoveLeft:
+                    vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
+                    value = vec.x < 0.0f ? -vec.x : 0.0f;
+                    break;
+                case GameInput.Button.MoveUp:
+                    isPressed = SteamVR_Actions.subnautica.MoveUp.GetState(SteamVR_Input_Sources.Any);
+                    value = isPressed ? 1.0f : 0.0f;
+                    break;
+                case GameInput.Button.MoveDown:
+                    isPressed = SteamVR_Actions.subnautica.MoveDown.GetState(SteamVR_Input_Sources.Any);
+                    value = isPressed ? 1.0f : 0.0f;
+                    break;
+                case GameInput.Button.LookUp:
+                    vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
+                    if (Settings.InvertYAxis)
                     {
-                        value = (float)result;
+                        value = vec.y < 0.0f ? -vec.y : 0.0f;
                     }
                     else
                     {
-                        vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
                         value = vec.y > 0.0f ? vec.y : 0.0f;
                     }
                     break;
-                case GameInput.Button.MoveBackward:
-                    result = PhysicalPilotingVR.GetValue(PhysicalPilotingVR.PhysicalPilotingDirection.MoveBackward);
-                    if (result != null)
+                case GameInput.Button.LookDown:
+                    vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
+                    if (Settings.InvertYAxis)
                     {
-                        value = (float)result;
+                        value = vec.y > 0.0f ? vec.y : 0.0f;
                     }
                     else
                     {
-                        vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
                         value = vec.y < 0.0f ? -vec.y : 0.0f;
                     }
                     break;
-                case GameInput.Button.MoveRight:
-                    result = PhysicalPilotingVR.GetValue(PhysicalPilotingVR.PhysicalPilotingDirection.MoveRight);
-                    if (result != null)
-                    {
-                        value = (float)result;
-                    }
-                    else
-                    {
-                        vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
-                        value = vec.x > 0.0f ? vec.x : 0.0f;
-                    }
-                    break;
-                case GameInput.Button.MoveLeft:
-                    result = PhysicalPilotingVR.GetValue(PhysicalPilotingVR.PhysicalPilotingDirection.MoveLeft);
-                    if (result != null)
-                    {
-                        value = (float)result;
-                    }
-                    else
-                    {
-                        vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
-                        value = vec.x < 0.0f ? -vec.x : 0.0f;
-                    }
-                    break;
-                case GameInput.Button.MoveUp:
-                    result = PhysicalPilotingVR.GetValue(PhysicalPilotingVR.PhysicalPilotingDirection.MoveUp);
-                    if (result != null)
-                    {
-                        value = (float)result;
-                    }
-                    else
-                    {
-                        isPressed = SteamVR_Actions.subnautica.MoveUp.GetState(SteamVR_Input_Sources.Any);
-                        value = isPressed && !disableUpDown ? 1.0f : 0.0f;
-                    }
-                    break;
-                case GameInput.Button.MoveDown:
-                    result = PhysicalPilotingVR.GetValue(PhysicalPilotingVR.PhysicalPilotingDirection.MoveDown);
-                    if (result != null)
-                    {
-                        value = (float)result;
-                    }
-                    else
-                    {
-                        isPressed = SteamVR_Actions.subnautica.MoveDown.GetState(SteamVR_Input_Sources.Any);
-                        value = isPressed && !disableUpDown ? 1.0f : 0.0f;
-                    }
-                    break;
-                case GameInput.Button.LookUp:
-                    result = PhysicalPilotingVR.GetValue(PhysicalPilotingVR.PhysicalPilotingDirection.LookUp);
-                    if (result != null)
-                    {
-                        value = (float)result;
-                    }
-                    else
-                    {
-                        vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
-                        if (Settings.InvertYAxis)
-                        {
-                            value = vec.y < 0.0f ? -vec.y : 0.0f;
-                        }
-                        else
-                        {
-                            value = vec.y > 0.0f ? vec.y : 0.0f;
-                        }
-                    }
-                    break;
-                case GameInput.Button.LookDown:
-                    result = PhysicalPilotingVR.GetValue(PhysicalPilotingVR.PhysicalPilotingDirection.LookDown);
-                    if (result != null)
-                    {
-                        value = (float)result;
-                    }
-                    else
-                    {
-                        vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
-                        if (Settings.InvertYAxis)
-                        {
-                            value = vec.y > 0.0f ? vec.y : 0.0f;
-                        }
-                        else
-                        {
-                            value = vec.y < 0.0f ? -vec.y : 0.0f;
-                        }
-                    }
-                    break;
                 case GameInput.Button.LookRight:
-                    result = PhysicalPilotingVR.GetValue(PhysicalPilotingVR.PhysicalPilotingDirection.LookRight);
-                    if (result != null)
-                    {
-                        value = (float)result;
-                    }
-                    else
-                    {
-                        vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
-                        value = vec.x > 0.0f ? vec.x : 0.0f;
-                    }
+                    vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
+                    value = vec.x > 0.0f ? vec.x : 0.0f;
                     break;
                 case GameInput.Button.LookLeft:
-                    result = PhysicalPilotingVR.GetValue(PhysicalPilotingVR.PhysicalPilotingDirection.LookLeft);
-                    if (result != null)
-                    {
-                        value = (float)result;
-                    }
-                    else
-                    {
-                        vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
-                        value = vec.x < 0.0f ? -vec.x : 0.0f;
-                    }
+                    vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
+                    value = vec.x < 0.0f ? -vec.x : 0.0f;
                     break;
             }
 
@@ -333,26 +249,51 @@ namespace SubmersedVR
         }
     }
 
-
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAxisValues))]
-    public static class SteamVrDontUpdateAxisValues
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.GetVector2))]
+    public static class SteamVrGetVector2
     {
-        static bool Prefix(bool useKeyboard, bool useController)
+        public static bool Prefix(GameInput.Button action, ref Vector2 __result)
         {
-            if (Settings.IsDebugEnabled)
+            Vector2 vec = Vector2.zero;
+            if (SteamVrGameInput.InputLocked || !SteamVrGameInput.IsSteamVrReady || VRHands.instance == null)
             {
-                // DebugPanel.Show($"{GameInput.axisValues[0]}, {GameInput.axisValues[1]}, {GameInput.axisValues[2]}, {GameInput.axisValues[3]}, {GameInput.axisValues[4]}, {GameInput.axisValues[5]}\nAvailable: {GameInput.controllerAvailable} -> Primary: {GameInput.GetPrimaryDevice()} IsGamePad: {GameInput.IsPrimaryDeviceGamepad()}");
-                // DebugPanel.Show($"{GameInput.GetMoveDirection()}");
-                // var sd = SteamVrGameInput.GetScrollDelta();
-                // DebugPanel.Show($"Scroll: {s}, ScrollDelta: {sd}");
+                return false;
             }
+
+            switch (action)
+            {
+                case GameInput.Button.Look:
+                    vec = SteamVR_Actions.subnautica.Look.GetAxis(SteamVR_Input_Sources.Any);
+
+                    // TODO: Add new setting
+                    Vector2 sensitivity = new Vector2(0.405f, 0.405f);
+
+                    float mag = vec.magnitude;
+                    Vector2 normVec = ((mag > 0f) ? (vec / mag) : Vector2.zero);
+                    mag = Mathf.Pow(mag, 2f) * 500f;
+                    vec = normVec * mag;
+                    vec *= sensitivity * Time.deltaTime;
+
+                    if (Settings.InvertYAxis)
+                    {
+                        vec.y = -vec.y;
+                    }
+                    break;
+                case GameInput.Button.Move:
+                    vec = SteamVR_Actions.subnautica.Move.GetAxis(SteamVR_Input_Sources.Any);
+                    break;
+            }
+
+            __result = vec;
+
             return false;
         }
     }
 
+
     // This makes GameInput.AnyKeyDown() return true incase any boolean action is pressed. Is needed for the intro skip and credits.
     // But hmm, where is the any key on the controllers? (https://www.youtube.com/watch?v=st6-DgWeuos)
-    [HarmonyPatch(typeof(GameInput), nameof(GameInput.AnyKeyDown))]
+    [HarmonyPatch(typeof(GameInput), nameof(GameInput.AnyKeyDown), MethodType.Getter)]
     public static class SteamVRPressAnyKey
     {
         static void Postfix(ref bool __result)
@@ -372,41 +313,6 @@ namespace SubmersedVR
             }
         }
     }
-    /*
-        [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.Open))]
-        public static class OpenCatcher
-        {
-            static void Postfix()
-            {
-                Mod.logger.LogInfo($"uGUI_CraftingMenu open called");
-            }
-        }
-        [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.OnDeselect))]
-        public static class CloseCatcher
-        {
-            static void Postfix()
-            {
-                Mod.logger.LogInfo($"uGUI_CraftingMenu close called");
-            }
-        }
-        [HarmonyPatch(typeof(FPSInputModule), nameof(FPSInputModule.ChangeGroup))]
-        public static class ChangeGroupFixer
-        {
-            static void Prefix(uGUI_InputGroup newGroup, bool lockMovement)
-            {
-                Mod.logger.LogInfo($"FPSInputModule ChangeGroup called {newGroup == null} {lockMovement}");
-            }
-        }
-
-        [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.Out))]
-        public static class DeactivateModuleFixer
-        {
-            static void Prefix()
-            {
-                Mod.logger.LogInfo($"uGUI_CraftingMenu Out called ");
-            }
-        }
-    */
 
     // This makes it so the crafting menu from the fabricators actually use the controller buttons
     // [HarmonyPatch(typeof(uGUI_CraftingMenu), "OnPointerClick")]
@@ -496,7 +402,6 @@ namespace SubmersedVR
             return false;
         }
     }
-
 
     // Force the gaze based cursor, since we use it for the laserpointer
     [HarmonyPatch(typeof(VROptions), nameof(VROptions.GetUseGazeBasedCursor))]
