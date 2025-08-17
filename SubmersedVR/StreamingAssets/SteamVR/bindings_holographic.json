@@ -49,15 +49,6 @@
             },
             {
                "inputs" : {
-                  "click" : {
-                     "output" : "/actions/subnautica/in/movedown"
-                  }
-               },
-               "mode" : "button",
-               "path" : "/user/hand/left/input/grip"
-            },
-            {
-               "inputs" : {
                   "north" : {
                      "output" : "/actions/subnautica/in/pda"
                   },
@@ -172,6 +163,33 @@
                },
                "mode" : "button",
                "path" : "/user/hand/right/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/subnautica/in/movedown"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/subnautica/in/sprint"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/subnautica/in/sprint"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/grip"
             },
             {
                "inputs" : {

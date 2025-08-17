@@ -60,6 +60,33 @@
             {
                "inputs" : {
                   "click" : {
+                     "output" : "/actions/subnautica/in/moveup"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/subnautica/in/sprint"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/subnautica/in/sprint"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
                      "output" : "/actions/subnautica/in/pda"
                   }
                },
@@ -158,15 +185,6 @@
                },
                "mode" : "button",
                "path" : "/user/hand/right/input/a"
-            },
-            {
-               "inputs" : {
-                  "click" : {
-                     "output" : "/actions/subnautica/in/moveup"
-                  }
-               },
-               "mode" : "button",
-               "path" : "/user/hand/right/input/grip"
             },
             {
                "inputs" : {
