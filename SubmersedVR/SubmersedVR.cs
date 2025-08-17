@@ -30,11 +30,6 @@ namespace SubmersedVR
         private bool IsSetupValid()
         {
             bool valid = true;
-            if (!XRSettings.enabled)
-            {
-                Logger.LogWarning($"Game was not started in VR. Don't load and apply {PluginInfo.PLUGIN_NAME} patches.");
-                valid = false;
-            }
             if (Chainloader.PluginInfos.Any(plugin => plugin.Value.Metadata.GUID == VREnhancements.GUID))
             {
                 Logger.LogError($"Found loaded {VREnhancements.NAME} mod. Please remove it if you want to use {PluginInfo.PLUGIN_NAME}. They are not compatible.");
