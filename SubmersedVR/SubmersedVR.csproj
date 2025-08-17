@@ -4,18 +4,16 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>SubmersedVR</AssemblyName>
     <Description>A VR Conversion Mod for Subnautica</Description>
-    <Version>0.1.7</Version>
+    <Version>0.2.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <!-- NOTE: Preprocessor directive SV = SubmersedVR, BZ = Below Zero -->
     <DefineConstants>SV</DefineConstants>
     <!-- NOTE: Change this to your own directoy when building -->
-    <SubnauticaDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\Subnautica</SubnauticaDir>
-    <!-- <SubnauticaDir>c:\Program Files (x86)\Steam\steamapps\common\Subnautica</SubnauticaDir> -->
+    <SubnauticaDir>/home/oka/.local/share/Steam/steamapps/common/Subnautica/</SubnauticaDir>
     <NoWarn>$(NoWarn);CS0436</NoWarn>
-    <!-- <BuildDir>Build</BuildDir>-->
-    <BuildDir>C:\Users\Okabintaro\scoop\apps\steam\current\steamapps\common\Subnautica</BuildDir>
-    <!-- <BuildDir>c:\Program Files (x86)\Steam\steamapps\common\Subnautica</BuildDir> -->
+    <!-- <BuildDir>/home/oka/.local/share/Steam/steamapps/common/Subnautica</BuildDir> -->
+    <BuildDir>build</BuildDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,8 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    
-
     <!-- SteamVR + SteamVR Actions: Currenlty prebuilt, should be built from source later -->
     <Reference Include="SteamVR">
       <HintPath>SteamVR/SteamVR.dll</HintPath>
@@ -49,7 +45,6 @@
   <Target Name="PostBuild" BeforeTargets="PostBuildEvent">
     <ItemGroup>
       <InstallPlugin Include="$(MSBuildProjectDirectory)\bin\Debug\$(TargetFramework)\$(AssemblyName).dll" />
-      <PlguindsFolder Include="$(BuildDir)\BepInEx\plugins" />
       <StreamingFolder Include="$(BuildDir)\Subnautica_Data\StreamingAssets" />
       <BindingsFolder Include="$(BuildDir)\Subnautica_Data\StreamingAssets\SteamVR" />
       <ManagedFolder Include="$(BuildDir)\Subnautica_Data\Managed" />
@@ -67,6 +62,7 @@
     <Copy SourceFiles="StreamingAssets\SteamVR\bindings_holographic.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="SteamVR\SteamVR.dll" DestinationFolder="@(ManagedFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="SteamVR\SteamVR_Actions.dll" DestinationFolder="@(ManagedFolder)" SkipUnchangedFiles="true"/>
-    <!-- <ZipDirectory SourceDirectory="$(BuildDir)" DestinationFile="$(MSBuildProjectDirectory)\$(AssemblyName)_$(Version).zip" /> -->
+    <ZipDirectory SourceDirectory="$(BuildDir)" DestinationFile="$(MSBuildProjectDirectory)\$(AssemblyName)_$(Version).zip" />
   </Target>
+
 </Project>
