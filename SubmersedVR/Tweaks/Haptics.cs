@@ -98,14 +98,6 @@ namespace SubmersedVR
             PlayGameHaptics(controller, 0.0f, 0.20f, 10f, 0.1f);
         }
 
-        public static IEnumerator PlayerFrozen()
-        {
-            PlayGameHaptics(Controller.Both, 0.5f, 5.0f, 10f, 0.3f);
-            yield return new WaitForSeconds(5.0f);
-            PlayGameHaptics(Controller.Both, 0.0f, 5.0f, 10f, 0.2f);
-            yield return new WaitForSeconds(5.0f);
-            PlayGameHaptics(Controller.Both, 0.0f, 5.0f, 10f, 0.1f);
-        }
 
         public static IEnumerator Shot()
         {
@@ -120,9 +112,6 @@ namespace SubmersedVR
             yield return new WaitForSeconds(0.1f);
             PlayGameHaptics(controller, 0.0f, 0.2f, 10f, 0.3f);
         }
-
-
-
     }
 
     #region Patches
@@ -363,7 +352,7 @@ namespace SubmersedVR
     {
         public static void Postfix(DamageOverTime __instance)
         {
-            //Mod.logger.LogInfo($"(DamageOverTime.DoDamage called ");
+            // Mod.logger.LogInfo($"(DamageOverTime.DoDamage called ");
             float dur = __instance.interval - 0.1f;
             if (dur < 0)
             {
@@ -380,7 +369,7 @@ namespace SubmersedVR
     {
         public static void Postfix(SubRoot __instance, DamageInfo damageInfo)
         {
-            //Mod.logger.LogInfo($"SubRoot.OnTakeDamage called {damageInfo.damage}");
+            // Mod.logger.LogInfo($"SubRoot.OnTakeDamage called {damageInfo.damage}");
             if (damageInfo.damage > 0)
             {
                 // HapticsVR.PlayHaptics(0.0f, 0.4f, 10f, 1.0f, false, true, true);
@@ -705,7 +694,7 @@ namespace SubmersedVR
                 if (charge >= 4.9f) {
                     amp = 0.0f;
                 }
-                Mod.logger.LogInfo($"StasisRifle.Charge freq: {freq}, amp: {amp}");
+                // Mod.logger.LogInfo($"StasisRifle.Charge freq: {freq}, amp: {amp}");
                 HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 0.1f, freq, amp);
             }
         }
@@ -721,8 +710,6 @@ namespace SubmersedVR
             // HapticsVR.PlayGameHaptics(HapticsVR.Controller.Right, 0.0f, 1.0f, 100f, 1.0f);
         }
     }
-
-
 
     //ScannerTool has a kind of quick sine wave haptic
     [HarmonyPatch(typeof(ScannerTool), nameof(ScannerTool.Update))]
@@ -835,27 +822,7 @@ namespace SubmersedVR
             HapticsVR.PlayUIHaptics(HapticsVR.Controller.Right, 1.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude);
         }
     }
-    /* BZ only
-        [HarmonyPatch(typeof(uGUI_ToggleOptionSound), nameof(uGUI_ToggleOptionSound.OnValueChanged))]
-        public static class uGUI_ToggleOptionSoundHaptics
-        {
-            public static void Postfix(uGUI_ToggleOptionSound __instance)
-            {
-                //Mod.logger.LogInfo($"uGUI_ToggleOptionSound.OnValueChanged");
-                HapticsVR.PlayHaptics(0.0f, HapticsVR.defaultUIDuration, 10f, HapticsVR.defaultUIAmplitude, true);
-            }
-        } 
 
-        [HarmonyPatch(typeof(uGUI_SliderSound), nameof(uGUI_SliderSound.OnValueChanged))]
-        public static class uGUI_SliderSoundHaptics
-        {
-            public static void Postfix(uGUI_SliderSound __instance)
-            {
-                //Mod.logger.LogInfo($"uGUI_ToggleOptionSound.OnValueChanged");
-                HapticsVR.PlayHaptics(0.0f, 0.03f, 20f, 0.2f, true);
-            }
-        } 
-    */
     //This does most of the standard UI work
     [HarmonyPatch(typeof(Selectable), nameof(Selectable.OnPointerEnter))]
     public static class SelectableHaptics
