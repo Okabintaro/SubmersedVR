@@ -467,7 +467,7 @@ namespace SubmersedVR
             {
                 if (GameInput.GetButtonDown(GameInput.Button.AutoMove))
                 {
-                    GameInput.SetAutoMove(!GameInput.GetAutoMove());
+                    GameInput.AutoMove = !GameInput.AutoMove;
                 }
                 if (!__instance.IsReady() && LargeWorldStreamer.main.IsWorldSettled())
                 {

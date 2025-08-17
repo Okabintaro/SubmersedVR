@@ -124,7 +124,7 @@ namespace SubmersedVR
         {
             // Choose XBox, since it has the ABXY from Quest controllers
             GameInput.chosenControllerLayout = GameInput.ControllerLayout.Xbox360;
-            GameInput.lastDevice = GameInput.Device.Controller;
+            GameInput.lastPrimaryDevice = GameInput.Device.Controller;
             return false;
         }
     }
@@ -337,7 +337,7 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.UpdateAxisValues))]
     public static class SteamVrDontUpdateAxisValues
     {
-        static bool Prefix(GameInput __instance, bool useKeyboard, bool useController)
+        static bool Prefix(bool useKeyboard, bool useController)
         {
             if (Settings.IsDebugEnabled)
             {
@@ -355,7 +355,7 @@ namespace SubmersedVR
     [HarmonyPatch(typeof(GameInput), nameof(GameInput.AnyKeyDown))]
     public static class SteamVRPressAnyKey
     {
-        static void Postfix(GameInput __instance, ref bool __result)
+        static void Postfix(ref bool __result)
         {
             if (__result)
             {

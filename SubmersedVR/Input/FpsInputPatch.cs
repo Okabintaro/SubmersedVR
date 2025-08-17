@@ -72,10 +72,10 @@ namespace SubmersedVR
             GetPointerData(__instance, -3, out var data2, create: true);
             __instance.CopyFromTo(leftData, data2);
             data2.button = PointerEventData.InputButton.Middle;
-            if (GameInput.GetPrimaryDevice() == GameInput.Device.Controller)
+            if (GameInput.PrimaryDevice == GameInput.Device.Controller)
             {
-                var buttonDown = GameInput.GetButtonDown(uGUI.button2);
-                var buttonUp = GameInput.GetButtonUp(uGUI.button2);
+                var buttonDown = GameInput.GetButtonDown(GameInput.button2);
+                var buttonUp = GameInput.GetButtonUp(GameInput.button2);
                 if (__instance.m_MouseState.GetButtonState(PointerEventData.InputButton.Middle).eventData.buttonState == PointerEventData.FramePressState.NotChanged)
                 {
                     __instance.m_MouseState.SetButtonState(PointerEventData.InputButton.Middle, FPSInputModule.ConstructPressState(buttonDown, buttonUp), data2);

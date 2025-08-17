@@ -19,35 +19,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.0" />
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-    <PackageReference Include="BepInEx.Core" Version="5.*" />
-    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
+    <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.1.0" />
     <PackageReference Include="UnityEngine.Modules" Version="2019.4.36" IncludeAssets="compile" />
+    <PackageReference Include="Unity.InputSystem" Version="1.4.1" IncludeAssets="compile" />
+    <PackageReference Include="Subnautica.GameLibs" Version="82304.0.0-r.0" />
+    <PackageReference Include="Subnautica.Nautilus" Version="1.*-*"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>$(SubnauticaDir)\BepInEx\core\0Harmony.dll</HintPath>
-    </Reference>
-    <!-- Main Game Assemblies -->
-    <Reference Include="Assembly-CSharp" Publicize="true">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp-firstpass" Publicize="true">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
-    </Reference>
-
-    <!-- UnityEngine: UI and TextMeshPro. Missing from the BepInEx/Nuget Package. -->
-    <Reference Include="Unity.TextMeshPro" Publicize="true">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="FMODUnity">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\FMODUnity.dll</HintPath>
-    </Reference>
+    
 
     <!-- SteamVR + SteamVR Actions: Currenlty prebuilt, should be built from source later -->
     <Reference Include="SteamVR">
