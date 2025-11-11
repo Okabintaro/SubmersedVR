@@ -77,6 +77,9 @@ namespace SubmersedVR
                 Mod.logger?.LogWarning("SnapBuilder detected but AimTransform.OffsetAimTransform getter was not found; VR snapping may jitter.");
             }
 
+            Type snapBuilderType = aimTransformType.Assembly.GetType("Tobey.SnapBuilder.SnapBuilder");
+            SnapBuilderControls.TryAugmentFineControls(harmonyInstance, snapBuilderType);
+
             isPatched = true;
 
             if (assemblyLoadHooked)
