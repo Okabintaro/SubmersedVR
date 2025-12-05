@@ -62,6 +62,10 @@ namespace SubmersedVR
             Logger.LogInfo($"{PluginInfo.PLUGIN_NAME} loaded and patches applied!");
             VROptions.gazeBasedCursor = true;
 
+            // Apply occlusion mesh setting (skips rendering pixels outside the lens view)
+            XRSettings.useOcclusionMesh = Settings.UseOcclusionMesh;
+            Logger.LogInfo($"VR occlusion mesh: {XRSettings.useOcclusionMesh}");
+
             instance = this;
         }
     }
