@@ -29,11 +29,32 @@ namespace SubmersedVR
             if (action == null || !action.activeBinding)
                 return null;
 
-            // GetLocalizedOriginPart returns the human-readable button name
-            var localizedName = action.GetLocalizedOriginPart(
-                SteamVR_Input_Sources.Any,
+            // Try right hand first (most common for interactions), then left, then any
+            string localizedName = null;
+            
+            // For most actions, prefer right hand binding
+            localizedName = action.GetLocalizedOriginPart(
+                SteamVR_Input_Sources.RightHand,
                 EVRInputStringBits.VRInputString_InputSource
             );
+
+            // If no right hand binding, try left hand
+            if (string.IsNullOrEmpty(localizedName))
+            {
+                localizedName = action.GetLocalizedOriginPart(
+                    SteamVR_Input_Sources.LeftHand,
+                    EVRInputStringBits.VRInputString_InputSource
+                );
+            }
+
+            // Last resort: any source
+            if (string.IsNullOrEmpty(localizedName))
+            {
+                localizedName = action.GetLocalizedOriginPart(
+                    SteamVR_Input_Sources.Any,
+                    EVRInputStringBits.VRInputString_InputSource
+                );
+            }
 
             if (!string.IsNullOrEmpty(localizedName))
             {
