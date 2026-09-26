@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
@@ -536,7 +536,25 @@ namespace SubmersedVR
             // DebugPanel.Show($"PDA Pos/Rot: {worldPos}/{worldRot.eulerAngles}\n -> {uiSpacePos}/{uiSpaceRotation.eulerAngles}\nrigPos/rot: {rigWorldPos.position}, {rigWorldPos.eulerAngles}");
             __instance.rectTransform.position = uiSpacePos;
             __instance.rectTransform.rotation = uiSpaceRotation;
+
+            // Scale the PDA canvas (issue #32). The game writes the base scale in
+            // UpdateTransform; this Postfix runs afterwards and applies our factor.
+            //
+            // NOTE: this cannot be a plain `localScale *= factor`. UpdateTransform runs every
+            // frame, so compounding would blow the PDA up within seconds. We keep the base
+            // scale and always derive from it. Comparing against `lastApplied` makes it
+            // self-correcting: if the game writes a new value, that becomes the new base.
+            var rt = __instance.rectTransform;
+            if (rt.localScale != lastApplied)
+            {
+                baseScale = rt.localScale;
+            }
+            rt.localScale = baseScale * Settings.PdaScale;
+            lastApplied = rt.localScale;
         }
+
+        static Vector3 baseScale = Vector3.one;
+        static Vector3 lastApplied = Vector3.zero;
     }
 
     // Makes the ingame menu spawn infront of you in vr

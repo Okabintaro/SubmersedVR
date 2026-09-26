@@ -28,6 +28,10 @@ namespace SubmersedVR
 
         public static bool FullBody = false;
 
+        // PDA scale. uGUI_CanvasScalerPDA_Attach already repositions and rotates the PDA
+        // canvas, but nothing ever touched its size. See issue #32.
+        public static float PdaScale = 1.0f;
+
         public static string ShowLaserPointer = "Default";
         //public static bool AlwaysShowLaserPointer;
         //public static event BooleanChanged AlwaysShowLaserPointerChanged;
@@ -123,6 +127,10 @@ namespace SubmersedVR
                     SnapTurningAngleChanged(value);
                 }
             });
+
+            panel.AddSliderOption(tab, "PDA Scale", PdaScale, 0.5f, 3.0f, PdaScale, 0.05f,
+                (value) => { PdaScale = value; }, SliderLabelMode.Float, "0.00",
+                "Size of the PDA. Values above 1.0 make it bigger.");
 
             panel.AddHeading(tab, "Immersion");
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
