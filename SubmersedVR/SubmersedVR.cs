@@ -40,10 +40,12 @@ namespace SubmersedVR
                 Logger.LogError($"Found old {SN1MC.NAME} mod. Please remove it if you want to use {PluginInfo.PLUGIN_NAME}. They are not compatible.");
                 valid = false;
             }
+            // Don't block loading on the VR device check: Awake() can run before OpenVR is initialized,
+            // so loadedDeviceName may still be empty here even when the game is started with SteamVR (#247).
+            // Keep the hint as a warning for people who really run on the Oculus runtime.
             if (XRSettings.loadedDeviceName != "OpenVR")
             {
-                Logger.LogError($"{PluginInfo.PLUGIN_NAME} only supports SteamVR! Make sure to add `-vrmode openvr` to your games advanded launch options when using an oculus headset.");
-                valid = false;
+                Logger.LogWarning($"VR device is '{XRSettings.loadedDeviceName}' at load time, expected 'OpenVR'. If controllers don't work, make sure the game runs through SteamVR and add `-vrmode openvr` to the launch options when using an Oculus/Meta headset.");
             }
 
             return valid;
