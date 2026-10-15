@@ -44,6 +44,39 @@ namespace SubmersedVR
         public static bool HandBasedTurning = false;
         public static bool LeftHandBasedTurning = false;
 
+        // VR sonar (kept in the code, always on - the old app toggle was
+        // removed; the "legacy" selection = 100% original game behavior)
+        public static bool SonarModEnabled = true;
+        // Which screen effect the sonar draws: legacy / legacy (3D fixed) /
+        // blue wave / hologram map (3D)
+        public static string SonarScreenEffect = SonarEffectOptions.FixPerEyeMatrices;
+        // --- Sonar Ping (SHARED: drives BOTH the screen blue wave and the
+        // holo floor, so the front stays synced by construction). The sweep
+        // (2.5 s), the front curves (Linear) and all the look parameters
+        // (wave trail/relief/attenuation, floor relief/scan/wireframe) are
+        // FROZEN in the code (SonarScreenWave / SonarHoloMap) ---
+        public static float SonarPingRange = 450f;   // m, max range
+        // The shared sonar glow color (preset, see SonarPresetColor) -
+        // drives BOTH the floor hologram and the screen wave
+        public static string SonarColor = "Lagoon";
+
+        // Preset sonar glow colors (no color picker in the options panel - a
+        // fixed set of tuned sonar hues). One shared preset drives both the
+        // floor hologram and the screen wave
+        public static Color32 SonarPresetColor(string name)
+        {
+            switch (name)
+            {
+                case "Lagoon": return new Color32(0, 229, 255, 255);
+                case "Cyan":   return new Color32(0, 255, 255, 255);
+                case "Teal":   return new Color32(0, 204, 153, 255);
+                case "Green":  return new Color32(51, 255, 102, 255);
+                case "White":  return new Color32(255, 255, 255, 255);
+                case "Blue":
+                default:       return new Color32(58, 145, 218, 255);  // the game holo material's blue
+            }
+        }
+
         //Ambient Occlusion Settings
         public static bool AOEnabled = true;
         public static string AOMethod = "Post Effect";
@@ -99,6 +132,10 @@ namespace SubmersedVR
 
         internal static void AddMenu(uGUI_OptionsPanel panel)
         {
+            // Migrate a persisted sonar selection that is no longer offered,
+            // BEFORE the choice rows are built (the panel is created at menu
+            // load, before the VR startup hook)
+            SonarEffectOptions.Sanitize();
             int tab = panel.AddTab("Submersed VR");
 
             panel.AddHeading(tab, "Controls");
@@ -133,6 +170,11 @@ namespace SubmersedVR
             {
                 ShowLaserPointer = value;
             });
+
+            panel.AddHeading(tab, "Sonar");
+            panel.AddChoiceOption<string>(tab, "Sonar screen effect", SonarEffectOptions.Visible, SonarScreenEffect, (value) => { SonarScreenEffect = value; SonarEffectOptions.ApplySelection(); }, "What the sonar draws. legacy = the game's own effect, shown only during a ping (both eyes) - the 100% original look. legacy (3D fixed) = the game's grid, stereo-corrected per eye (no more double grid in VR). blue wave = a bright lagoon-blue sonar wave (additive glow) that sweeps the terrain and leaves a fading trail, revealing relief. hologram map (3D) = the blue wave on the whole view (objects/monsters glow) PLUS the game's own sonar hologram (the Seaglide / map room map look) rendered on the REAL terrain, revealed by the ping front, then fading out, synced to the screen wave. The fixed/wave/hologram options need the sonar_resources bundle in StreamingAssets for their screen layer; without it the screen layer does nothing (the hologram floor is a game material and still shows).");
+            panel.AddSliderOption(tab, "Ping Range (m)", SonarPingRange, 200f, 450f, SonarPingRange, 10f, (value) => { SonarPingRange = value; }, SliderLabelMode.Float, "0", "Max scan radius around the ping (m). Drives both the screen blue wave and the holo floor so the fronts reach the same radius. Terrain streaming limits the effective range (~350 m).");
+            panel.AddChoiceOption<string>(tab, "Sonar Color", new string[] { "Lagoon", "Blue", "Cyan", "Teal", "Green", "White" }, SonarColor, (value) => { SonarColor = value; }, "Glow color of the sonar (the on-screen blue wave and, in hologram map mode, the floor).");
 
             panel.AddHeading(tab, "Experimental");
             panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
@@ -262,6 +304,9 @@ namespace SubmersedVR
         public static void Postfix(GameSettings.ISerializer serializer)
         {
             Settings.Serialize(serializer);
+            // Migrate a persisted sonar selection that is no longer offered,
+            // right after the values are loaded
+            SonarEffectOptions.Sanitize();
         }
     }
 

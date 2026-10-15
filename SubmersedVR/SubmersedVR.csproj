@@ -56,6 +56,8 @@
     <Copy SourceFiles="@(InstallPlugin)" DestinationFolder="$(BuildDir)\BepInEx\plugins" />
     <Copy SourceFiles="StreamingAssets\Amplify\amplify_resources" DestinationFolder="@(StreamingFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="StreamingAssets\Amplify\amplify_resources.manifest" DestinationFolder="@(StreamingFolder)" SkipUnchangedFiles="true"/>
+    <Copy SourceFiles="StreamingAssets\Sonar\sonar_resources" DestinationFolder="@(StreamingFolder)" SkipUnchangedFiles="true"/>
+    <Copy SourceFiles="StreamingAssets\Sonar\sonar_resources.manifest" DestinationFolder="@(StreamingFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="StreamingAssets\SteamVR\actions.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="StreamingAssets\SteamVR\bindings_oculus_touch.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>
     <Copy SourceFiles="StreamingAssets\SteamVR\bindings_knuckles.json" DestinationFolder="@(BindingsFolder)" SkipUnchangedFiles="true"/>

@@ -26,6 +26,9 @@ namespace SubmersedVR
 
         public static ManualLogSource logger;
         public static Mod instance;
+        // Set on application quit (the Application.quitting stub is an
+        // event, not the runtime property)
+        public static volatile bool quitting;
 
         private bool IsSetupValid()
         {
@@ -57,6 +60,16 @@ namespace SubmersedVR
             VROptions.gazeBasedCursor = true;
 
             instance = this;
+        }
+
+        // Traces the mod's shutdown in the log (diagnose the quit hang)
+        void OnApplicationQuit()
+        {
+            quitting = true;
+            if (logger != null)
+            {
+                logger.LogInfo($"{PluginInfo.PLUGIN_NAME} OnApplicationQuit");
+            }
         }
     }
 }
