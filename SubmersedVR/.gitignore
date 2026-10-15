@@ -3,3 +3,5 @@
 *.sln
 /bin
 /obj
+SteamVR/ActionsSrc/bin
+SteamVR/ActionsSrc/obj

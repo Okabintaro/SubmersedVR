@@ -161,6 +161,24 @@
             },
             {
                "inputs" : {
+                  "touch" : {
+                     "output" : "/actions/subnautica/in/cameracyclenext"
+                  }
+               },
+               "mode" : "touch",
+               "path" : "/user/hand/right/input/thumbrest"
+            },
+            {
+               "inputs" : {
+                  "touch" : {
+                     "output" : "/actions/subnautica/in/cameracycleprev"
+                  }
+               },
+               "mode" : "touch",
+               "path" : "/user/hand/left/input/thumbrest"
+            },
+            {
+               "inputs" : {
                   "click" : {
                      "output" : "/actions/subnautica/in/uisubmit"
                   }

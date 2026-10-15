@@ -98,6 +98,16 @@
       "requirement": "optional"
     },
     {
+      "name": "/actions/subnautica/in/CameraCycleNext",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/CameraCyclePrev",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
       "name": "/actions/subnautica/in/UISubmit",
       "type": "boolean",
       "requirement": "mandatory"
@@ -280,6 +290,8 @@
       "/actions/subnautica/in/LookRight": "Look Right",
       "/actions/subnautica/in/CycleNext": "Cycle Next Tool/Upgrade/Battery",
       "/actions/subnautica/in/CyclePrev": "Cycle Previous Tool/Upgrade/Battery",
+      "/actions/subnautica/in/CameraCycleNext": "Next Camera (camera mode only)",
+      "/actions/subnautica/in/CameraCyclePrev": "Previous Camera (camera mode only)",
       "/actions/subnautica/in/UICancel": "Cancel(UI)",
       "/actions/subnautica/in/UIMenu": "Open Pause Menu (There is a button in PDA too)",
       "/actions/subnautica/in/UIAssign": "Assign to Quick Slot(UI)",
