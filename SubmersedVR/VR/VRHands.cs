@@ -210,10 +210,12 @@ namespace SubmersedVR
         public void OnOpenPDA()
         {
             HandOffsets.PDA.Apply(leftTarget);
+            SwimmingController.Instance.SetLeftHandActive(false);
         }
         public void OnClosePDA()
         {
             ResetHandTargets();
+            SwimmingController.Instance.SetLeftHandActive(true);
         }
 
         public void SetupFingers()
@@ -355,7 +357,7 @@ namespace SubmersedVR
                 SteamVR_Action_Skeleton rightSkeletonAction = SteamVR_Input.GetSkeletonAction("RightHandSkeleton");
                 SteamVR_Action_Skeleton leftSkeletonAction = SteamVR_Input.GetSkeletonAction("LeftHandSkeleton");
 
-                if (!Player.main.pda.isOpen)
+                if (!Player.main.pda.isOpen && !GameInput.GetButtonHeld(GameInput.Button.MoveDown))
                 {
                     UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_PinkyFinger1, leftSkeletonAction.pinkyCurl);
                     UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_RingFinger1, leftSkeletonAction.ringCurl);
@@ -364,7 +366,7 @@ namespace SubmersedVR
                     UpdateFinger(leftHandFingers, (int)HandSkeletonBone.eBone_Thumb1, leftSkeletonAction.thumbCurl);
                 }
 
-                if (Inventory.main.GetHeld() == null)
+                if (Inventory.main.GetHeld() == null && !GameInput.GetButtonHeld(GameInput.Button.MoveUp))
                 {
                     UpdateFinger(rightHandFingers, (int)HandSkeletonBone.eBone_PinkyFinger1, rightSkeletonAction.pinkyCurl);
                     UpdateFinger(rightHandFingers, (int)HandSkeletonBone.eBone_RingFinger1, rightSkeletonAction.ringCurl);
@@ -438,6 +440,8 @@ namespace SubmersedVR
             var aimOffset = tool.GetAimOffset();
             VRCameraRig.instance.TargetTransform = aimOffset;
             tool.GetHandOffset().Apply(rightTarget.transform);
+            
+            SwimmingController.Instance.SetRightHandActive(tool == null);
         }
     }
 

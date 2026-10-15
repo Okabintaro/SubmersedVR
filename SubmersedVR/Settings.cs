@@ -12,6 +12,14 @@ namespace SubmersedVR
         public delegate void FloatChanged(float newValue);
         public delegate void VoidChanged();
 
+        public static bool ImmersiveSwimming = true;
+        
+        public static float SwimmingSpeed = 45.0f;
+        public static event FloatChanged SwimSpeedChanged;
+        
+        public static float SwimmingDragForce = 45.0f;
+        public static event FloatChanged SwimDragForceChanged;
+
         public static bool IsSnapTurningEnabled;
         public static event BooleanChanged IsSnapTurningEnabledChanged;
         public static float SnapTurningAngle = 45.0f;
@@ -125,6 +133,11 @@ namespace SubmersedVR
             });
 
             panel.AddHeading(tab, "Immersion");
+            
+            panel.AddToggleOption(tab, "Immersive swimming(WIP)", PutBarsOnWrist, (value) => { ImmersiveSwimming = value; });
+            panel.AddSliderOption(tab, "Swimming speed", SwimmingSpeed, 8.0f, 32.0f, 26.0f, 1.0f, (value) => { SwimmingSpeed = value; SwimSpeedChanged?.Invoke(value); }, SliderLabelMode.Float, "0.0");
+            panel.AddSliderOption(tab, "Swimming drag force", SwimmingDragForce, 0.1f, 2.0f, 0.7f, 0.1f, (value) => { SwimmingDragForce = value; SwimDragForceChanged?.Invoke(value); }, SliderLabelMode.Float, "0.0");
+            
             panel.AddToggleOption(tab, "Put survival meter on left wrist", PutBarsOnWrist, (value) => { PutBarsOnWrist = value; PutBarsOnWristChanged(value); });
             panel.AddToggleOption(tab, "Articulated Hands", ArticulatedHands, (value) => { ArticulatedHands = value; }, "Hands animate based on the movement of your physical hands.");
             panel.AddToggleOption(tab, "Enable Game Haptics(WIP)", AreGameHapticsEnabled, (value) => { AreGameHapticsEnabled = value; }, "Enable controller vibration while interacting with world objects.");

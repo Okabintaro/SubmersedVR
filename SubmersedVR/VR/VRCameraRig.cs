@@ -49,6 +49,9 @@ namespace SubmersedVR
         public GameObject worldTarget;
         public float worldTargetDistance;
         public Transform rigParentTarget;
+        
+        public SteamVR_Action_Pose RightHandPosition;
+        public SteamVR_Action_Pose LeftHandPosition;
 
         public Camera UIControllerCamera
         {
@@ -119,10 +122,12 @@ namespace SubmersedVR
             rightController.SetActive(false);
             var controller = leftController.AddComponent<SteamVRRef.Valve.VR.SteamVR_Behaviour_Pose>();
             controller.inputSource = SteamVRRef.Valve.VR.SteamVR_Input_Sources.LeftHand;
-            controller.poseAction = SteamVRActions.Valve.VR.SteamVR_Actions.subnautica_LeftHandPose;
+            LeftHandPosition = SteamVRActions.Valve.VR.SteamVR_Actions.subnautica_LeftHandPose;
+            controller.poseAction = LeftHandPosition;
             controller = rightController.AddComponent<SteamVRRef.Valve.VR.SteamVR_Behaviour_Pose>();
             controller.inputSource = SteamVRRef.Valve.VR.SteamVR_Input_Sources.RightHand;
-            controller.poseAction = SteamVRActions.Valve.VR.SteamVR_Actions.subnautica_RightHandPose;
+            RightHandPosition = SteamVRActions.Valve.VR.SteamVR_Actions.subnautica_RightHandPose;
+            controller.poseAction = RightHandPosition;
             leftController.SetActive(true);
             rightController.SetActive(true);
 
