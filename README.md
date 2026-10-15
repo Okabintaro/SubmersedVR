@@ -37,10 +37,8 @@ If you prefer the original VR mode and want to play with a traditional Xbox or P
    - ⚠️ **Mod Managers Warning**: Tools like Vortex may skip important steps and cause a broken installation.
 
 4. **Launch the Game**:
+   - Add `-vrmode openvr` to the game's launch options. [Learn how to set launch options](https://help.steampowered.com/en/faqs/view/7D01-D2DD-D75E-2955).
    - Start Subnautica in SteamVR. **The Oculus Runtime is not supported.**
-   - For Oculus Rift or Link users:
-     - Add `-vrmode openvr` to the game's launch options. [Learn how to set launch options](https://help.steampowered.com/en/faqs/view/7D01-D2DD-D75E-2955).
-     - Start SteamVR manually before launching the game.
 
 
 #### Linux Setup
