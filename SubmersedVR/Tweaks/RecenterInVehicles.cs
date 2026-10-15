@@ -1,4 +1,6 @@
+using System.Collections;
 using HarmonyLib;
+using UnityEngine;
 
 namespace SubmersedVR
 {
@@ -10,13 +12,35 @@ namespace SubmersedVR
         }
     }
 
+    //Recenters the VR view a short delay after entering a vehicle,
+    //so the player can straighten their head before the orientation is locked in
+    static class DelayedVehicleRecenter
+    {
+        static int token;
+
+        public static void Schedule()
+        {
+            var rig = VRCameraRig.instance;
+            if (rig == null) return;
+            rig.StartCoroutine(RecenterAfterDelay(++token));
+        }
+
+        static IEnumerator RecenterAfterDelay(int current)
+        {
+            yield return new WaitForSeconds(Settings.VehicleRecenterDelay);
+            if (current != token) yield break;
+            if (Player.main?.currentMountedVehicle == null) yield break;
+            VRUtil.Recenter();
+        }
+    }
+
     //This gets called when starting to pilot the seamoth and exosuit but not the cyclops
     [HarmonyPatch(typeof(Player), nameof(Player.EnterLockedMode))]
     static class RecenterWhenPilotingLocked
     {
         public static void Postfix()
         {
-            VRUtil.Recenter();
+            DelayedVehicleRecenter.Schedule();
         }
     }
 
@@ -25,7 +49,7 @@ namespace SubmersedVR
     {
         public static void Postfix()
         {
-            VRUtil.Recenter();
+            DelayedVehicleRecenter.Schedule();
         }
     }
 
@@ -38,25 +62,5 @@ namespace SubmersedVR
             VRUtil.Recenter();
         }
     }
-
-    /*
-    [HarmonyPatch(typeof(SeaMoth), nameof(SeaMoth.OnPlayerEntered))]
-    static class RecenterInSeamoth
-    {
-        public static void Postfix()
-        {
-            VRUtil.Recenter();
-        }
-    }
-
-    [HarmonyPatch(typeof(Exosuit), nameof(Exosuit.OnPlayerEntered))]
-    static class RecenterInExosuit
-    {
-        public static void Postfix()
-        {
-            VRUtil.Recenter();
-        }
-    }
-*/
 
 }

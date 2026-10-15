@@ -38,6 +38,8 @@ namespace SubmersedVR
         public static bool PutBarsOnWrist;
         public static event BooleanChanged PutBarsOnWristChanged;
 
+        public static float VehicleRecenterDelay = 1.0f;
+
         public static bool AreGameHapticsEnabled = false;
         public static bool AreUIHapticsEnabled = false;
         public static bool ArticulatedHands = false;
@@ -138,6 +140,9 @@ namespace SubmersedVR
             panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
             panel.AddToggleOption(tab, "Invert Y Axis in Seamoth/Cameras", InvertYAxis, (value) => { InvertYAxis = value; InvertYAxisChanged(value); }, "Enables Y axis inversion for Seamoth and Cameras.");
             //panel.AddToggleOption(tab, "Enable Particle Fix", EnableParticleFix, (value) => { EnableParticleFix = value; }, "Enables Particle Optimizations.");
+
+            panel.AddHeading(tab, "Vehicles");
+            panel.AddSliderOption(tab, "Vehicle Recenter Delay(s)", VehicleRecenterDelay, 0f, 2f, VehicleRecenterDelay, 0.1f, (value) => { VehicleRecenterDelay = value; }, SliderLabelMode.Float, "0.0", "Delay before the VR view is recentered after entering a vehicle, so you can straighten your head first. 1s matches the vehicle entry transition.");
 
             panel.AddHeading(tab, "Hidden/Advanced VR Settings(Those can cause motion sickness!)");
             panel.AddToggleOption(tab, "Enable pitching(Looking Up/Down) while diving", !VROptions.disableInputPitch, (value) => { VROptions.disableInputPitch = !value; }, "This allows you to pitch up and down using the right thumbstick when diving. Can be very disorienting! I recommend to keep this disabled!");
