@@ -34,6 +34,8 @@ namespace SubmersedVR
         // The only thing I need is cameras at different positions for the UI or Worldspace Raycasts
         public LaserPointer laserPointer;
         public LaserPointer laserPointerLeft;
+        public GameObject movementLaser;
+        public GameObject movementLaserLeft;
 
         public GameObject uiRig;
         public GameObject leftControllerUI;
@@ -138,6 +140,14 @@ namespace SubmersedVR
             laserPointerLeft.gameObject.SetActive(false);
             // laserPointer.gameObject.SetActive(false);
             laserPointer.disableAfterCreation = true;
+
+            // Movement laser setup (visual for the hand-based movement axis, see MovementLaser)
+            var rightLaser = new GameObject(nameof(movementLaser)).WithParent(rightController.transform).AddComponent<MovementLaser>();
+            rightLaser.isLeftHand = false;
+            movementLaser = rightLaser.gameObject;
+            var leftLaser = new GameObject(nameof(movementLaserLeft)).WithParent(leftController.transform).AddComponent<MovementLaser>();
+            leftLaser.isLeftHand = true;
+            movementLaserLeft = leftLaser.gameObject;
 
             // NOTE: These laserpointer and controllers is NOT parented to the Rig, since they act in UI space, not world space
             uiRig = new GameObject(nameof(uiRig));
@@ -388,14 +398,22 @@ namespace SubmersedVR
         {
             if (Settings.HandBasedTurning)
             {
-                //Use the Camera's position and the laser pointer's rotation
+                //Use the Camera's position and the controller's rotation with a fixed pitch offset.
+                //The laser pointer transform carries the per-tool aim offset (VRHands.OnToolEquipped),
+                //which would make the movement axis jump whenever the equipped tool changes.
+                var controller = Settings.LeftHandBasedTurning ? VRCameraRig.instance?.leftController : VRCameraRig.instance?.rightController;
+                if (controller == null)
+                {
+                    __result = MainCamera.camera.transform;
+                    return false;
+                }
                 //Use a dummy object to hold the transform
                 if (controllerTransform == null)
                 {
                     controllerTransform = new GameObject().transform;
                 }
                 controllerTransform.position = MainCamera.camera.transform.position;
-                controllerTransform.rotation = Settings.LeftHandBasedTurning ? VRCameraRig.GetLeftTargetTansform().rotation : VRCameraRig.GetTargetTansform().rotation; //the laser pointer transform
+                controllerTransform.rotation = controller.transform.rotation * Quaternion.Euler(Settings.HandMovementPitchOffset, 0f, 0f);
                 __result = controllerTransform;
             }
             else

@@ -43,6 +43,9 @@ namespace SubmersedVR
         public static bool ArticulatedHands = false;
         public static bool HandBasedTurning = false;
         public static bool LeftHandBasedTurning = false;
+        public static float HandMovementPitchOffset = 45.0f;
+        // Session-only visual aid (internal = not picked up by the reflection serializer)
+        internal static bool ShowMovementLaser = false;
 
         //Ambient Occlusion Settings
         public static bool AOEnabled = true;
@@ -107,6 +110,8 @@ namespace SubmersedVR
                 HandBasedTurning = value == "Right Hand Based" || value == "Left Hand Based";
                 LeftHandBasedTurning = value == "Left Hand Based";
             });
+            panel.AddSliderOption(tab, "Hand Movement Pitch Offset", HandMovementPitchOffset, 0f, 90f, HandMovementPitchOffset, 1f, (value) => { HandMovementPitchOffset = value; }, SliderLabelMode.Float, "0", "Pitch of the movement reference relative to the controller (hand based movement modes only). 45 = legacy behavior, 0 = move where the controller points.");
+            panel.AddToggleOption(tab, "Show Movement Laser", ShowMovementLaser, (value) => { ShowMovementLaser = value; }, "Green laser from the active hand showing the movement axis (hand based movement modes only). Use it while adjusting the pitch offset. Not saved between sessions.");
             panel.AddToggleOption(tab, "Enable Snap Turning", IsSnapTurningEnabled, (value) =>
             {
                 IsSnapTurningEnabled = value;
