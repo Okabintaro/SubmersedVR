@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 using System.Collections;
 using System.Linq;
@@ -488,9 +488,48 @@ namespace SubmersedVR
     public static class SetPDAHandOffsets
     {
         [HarmonyPostfix]
-        public static void Postfix()
+        public static void Postfix(PDA __instance)
         {
             VRHands.instance.OnOpenPDA();
+            ApplyPdaScale(__instance);
+        }
+
+        // Scale the PDA's 3D model along with the canvas (issue #32).
+        //
+        // Hierarchy, as observed in game:
+        //     PlayerPDA  (parented to attachL on the left hand, scale 1)
+        //      |- Mesh          <- the tablet model
+        //      |- ScreenAnchor  <- what the canvas anchors to
+        //
+        // Scaling PlayerPDA moves mesh and anchor together. The canvas is NOT a child: it is
+        // instantiated standalone (PDA.ui -> Instantiate(prefabScreen)) and merely FOLLOWS the
+        // anchor via SetAnchor, so it is scaled separately in uGUI_CanvasScalerPDA_Attach using
+        // the same factor. Both end up matching.
+        //
+        // Assigning instead of multiplying: PlayerPDA starts at scale 1, so this is idempotent
+        // and safe to run on every Open.
+        internal static void ApplyPdaScale(PDA pda)
+        {
+            var model = pda?.screenAnchor?.parent;   // PlayerPDA
+            if (model != null)
+            {
+                model.localScale = Vector3.one * Settings.PdaScale;
+            }
+        }
+    }
+
+    // Keeps the 3D model's scale in sync while the PDA is open, so moving the "PDA Scale"
+    // slider takes effect immediately instead of only on the next Open.
+    //
+    // ManagedUpdate is private, but Harmony patches private methods fine -- it is the method
+    // the game itself calls every frame (via PDA.PerformUpdate).
+    [HarmonyPatch(typeof(PDA), "ManagedUpdate")]
+    public static class KeepPDAScaleUpdated
+    {
+        [HarmonyPostfix]
+        public static void Postfix(PDA __instance)
+        {
+            SetPDAHandOffsets.ApplyPdaScale(__instance);
         }
     }
 
