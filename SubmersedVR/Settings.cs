@@ -44,6 +44,12 @@ namespace SubmersedVR
         public static bool HandBasedTurning = false;
         public static bool LeftHandBasedTurning = false;
 
+        // VR fix for the precursor teleport green tunnel (TeleportScreenFX):
+        // the 2D head-locked swirl causes eye strain in VR. true = a
+        // world-locked 3D sphere (the game's door material) replaces the
+        // swirl. false = the original 2D swirl.
+        public static bool FixTeleportEffect = true;
+
         //Ambient Occlusion Settings
         public static bool AOEnabled = true;
         public static string AOMethod = "Post Effect";
@@ -135,6 +141,7 @@ namespace SubmersedVR
             });
 
             panel.AddHeading(tab, "Experimental");
+            panel.AddToggleOption(tab, "Fix teleport effect in VR", FixTeleportEffect, (value) => { FixTeleportEffect = value; }, "Fixes the green teleport tunnel eye strain in VR. Enabled: a world-locked 3D sphere (the game's door effect) replaces the full-screen swirl. Disabled: the original 2D swirl.");
             panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
             panel.AddToggleOption(tab, "Invert Y Axis in Seamoth/Cameras", InvertYAxis, (value) => { InvertYAxis = value; InvertYAxisChanged(value); }, "Enables Y axis inversion for Seamoth and Cameras.");
             //panel.AddToggleOption(tab, "Enable Particle Fix", EnableParticleFix, (value) => { EnableParticleFix = value; }, "Enables Particle Optimizations.");
