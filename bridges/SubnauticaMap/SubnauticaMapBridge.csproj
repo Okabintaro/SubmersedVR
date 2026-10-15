@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>SubnauticaMapBridge</AssemblyName>
+    <Description>VR input bridge for the SubnauticaMap mod (requires SubmersedVR)</Description>
+    <Version>0.3.8</Version>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.0.8" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+    <PackageReference Include="UnityEngine.Modules" Version="2019.4.36" IncludeAssets="compile" />
+    <PackageReference Include="Subnautica.GameLibs" Version="82304.0.0-r.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SteamVR">
+      <HintPath>..\..\SubmersedVR\SteamVR\SteamVR.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" BeforeTargets="PostBuildEvent">
+    <ItemGroup>
+      <InstallPlugin Include="$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).dll" />
+    </ItemGroup>
+    <MakeDir Directories="$(MSBuildProjectDirectory)\..\..\SubmersedVR\build\BepInEx\plugins" />
+    <Copy SourceFiles="@(InstallPlugin)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\SubmersedVR\build\BepInEx\plugins" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>
