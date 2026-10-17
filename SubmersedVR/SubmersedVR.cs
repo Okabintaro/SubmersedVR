@@ -53,6 +53,7 @@ namespace SubmersedVR
             logger = Logger;
             Harmony harmony = new Harmony(PluginInfo.PLUGIN_GUID);
             harmony.PatchAll();
+            SnapBuilderCompat.TryInit(harmony);
             Logger.LogInfo($"{PluginInfo.PLUGIN_NAME} loaded and patches applied!");
             VROptions.gazeBasedCursor = true;
 

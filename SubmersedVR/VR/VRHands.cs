@@ -511,11 +511,13 @@ namespace SubmersedVR
     {
         public static Camera GetAimCamera()
         {
-            return VRCameraRig.instance?.laserPointer.eventCamera;
+            LaserPointer pointer = VRCameraRig.instance?.laserPointer;
+            return pointer != null ? pointer.eventCamera : MainCamera.camera;
         }
         public static Transform GetAimTransform()
         {
-            return VRCameraRig.instance?.laserPointer.transform;
+            LaserPointer pointer = VRCameraRig.instance?.laserPointer;
+            return pointer != null ? pointer.transform : MainCamera.camera?.transform;
         }
     }
 

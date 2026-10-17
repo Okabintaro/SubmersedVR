@@ -1,0 +1,313 @@
+{
+  "actions": [
+    {
+      "name": "/actions/subnautica/in/Jump",
+      "type": "boolean",
+      "requirement": "suggested"
+    },
+    {
+      "name": "/actions/subnautica/in/PDA",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/Deconstruct",
+      "type": "boolean",
+      "requirement": "suggested"
+    },
+    {
+      "name": "/actions/subnautica/in/Exit",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/LeftHand",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/RightHand",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/AltTool",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/TakePicture",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/Reload",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/subnautica/in/MoveForward",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/MoveBackward",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/MoveLeft",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/subnautica/in/MoveRight",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/subnautica/in/Sprint",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/LookUp",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/LookDown",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/LookLeft",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/LookRight",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/CycleNext",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/CyclePrev",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UISubmit",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/UICancel",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/UIMenu",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UIAssign",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UIAdjustLeft",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UIAdjustRight",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UIPrevTab",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UINextTab",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UILeft",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UIRight",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UIUp",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UIDown",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UIClear",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/UIScroll",
+      "type": "vector2"
+    },
+    {
+      "name": "/actions/subnautica/in/OpenQuickSlotWheel",
+      "type": "boolean",
+      "requirement": "suggested"
+    },
+    {
+      "name": "/actions/subnautica/in/LeftHandPose",
+      "type": "pose",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/RightHandPose",
+      "type": "pose",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/LeftHandSkeleton",
+      "type": "skeleton",
+      "skeleton": "/skeleton/hand/left",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/RightHandSkeleton",
+      "type": "skeleton",
+      "skeleton": "/skeleton/hand/right",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/in/Move",
+      "type": "vector2",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/Look",
+      "type": "vector2",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/MoveDown",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/MoveUp",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/subnautica/in/BuilderRotateRight",
+      "type": "boolean",
+      "requirement": "suggested"
+    },
+    {
+      "name": "/actions/subnautica/in/BuilderRotateLeft",
+      "type": "boolean",
+      "requirement": "suggested"
+    },
+    {
+      "name": "/actions/subnautica/in/DebugToggle",
+      "type": "boolean",
+      "requirement": "optional"
+    },
+    {
+      "name": "/actions/subnautica/out/HapticsRight",
+      "type": "vibration"
+    },
+    {
+      "name": "/actions/subnautica/out/HapticsLeft",
+      "type": "vibration"
+    }
+  ],
+  "action_sets": [
+    {
+      "name": "/actions/subnautica",
+      "usage": "leftright"
+    }
+  ],
+  "default_bindings": [
+    {
+      "controller_type": "oculus_touch",
+      "binding_url": "bindings_oculus_touch.json"
+    },
+    {
+      "controller_type": "knuckles",
+      "binding_url": "bindings_knuckles.json"
+    },
+    {
+      "controller_type": "holographic_controller",
+      "binding_url": "bindings_holographic.json"
+    }
+  ],
+  "localization": [
+    {
+      "language_tag": "en_US",
+      "/actions/subnautica/in/Jump": "Jump",
+      "/actions/subnautica/in/PDA": "Open PDA",
+      "/actions/subnautica/in/Deconstruct": "Deconstruct",
+      "/actions/subnautica/in/Exit": "Exit/Cancel",
+      "/actions/subnautica/in/LeftHand": "Left Hand / Interact",
+      "/actions/subnautica/in/RightHand": "Right Hand / Tool Interact",
+      "/actions/subnautica/in/AltTool": "Second/Alt Tool Action",
+      "/actions/subnautica/in/TakePicture": "Take Screenshot/Picture",
+      "/actions/subnautica/in/Reload": "Reload / Swap Batteries",
+      "/actions/subnautica/in/MoveForward": "Move Forward",
+      "/actions/subnautica/in/MoveBackward": "Move Backward",
+      "/actions/subnautica/in/MoveLeft": "Move Left (also prev Battery/Item)",
+      "/actions/subnautica/in/MoveRight": "Move Right (also next Battery/Item)",
+      "/actions/subnautica/in/Sprint": "Sprint",
+      "/actions/subnautica/in/LookUp": "Look Up",
+      "/actions/subnautica/in/LookDown": "Look Down",
+      "/actions/subnautica/in/LookLeft": "Look Left",
+      "/actions/subnautica/in/LookRight": "Look Right",
+      "/actions/subnautica/in/CycleNext": "Cycle Next Tool/Upgrade/Battery",
+      "/actions/subnautica/in/CyclePrev": "Cycle Previous Tool/Upgrade/Battery",
+      "/actions/subnautica/in/UICancel": "Cancel(UI)",
+      "/actions/subnautica/in/UIMenu": "Open Pause Menu (There is a button in PDA too)",
+      "/actions/subnautica/in/UIAssign": "Assign to Quick Slot(UI)",
+      "/actions/subnautica/in/UIAdjustLeft": "Adjust Left (UI)",
+      "/actions/subnautica/in/UIAdjustRight": "Adjust Right (UI)",
+      "/actions/subnautica/in/UIPrevTab": "Previous Tab (UI)",
+      "/actions/subnautica/in/UINextTab": "Next Tab (UI)",
+      "/actions/subnautica/out/HapticsRight": "Right Hand Haptics",
+      "/actions/subnautica/out/HapticsLeft": "Left Hand Haptics",
+      "/actions/subnautica/in/OpenQuickSlotWheel": "Open VR Wheel Menu (for Tools/Vehicle Upgrades)",
+      "/actions/subnautica/in/LeftHandPose": "Left Hand Pose",
+      "/actions/subnautica/in/RightHandPose": "Right Hand Pose",
+      "/actions/subnautica/in/LeftHandSkeleton": "Left Hand Skeleton/Fingers",
+      "/actions/subnautica/in/RightHandSkeleton": "Right Hand Skeleton/Fingers",
+      "/actions/subnautica/in/Move": "Move Player",
+      "/actions/subnautica/in/Look": "Look Around",
+      "/actions/subnautica/in/UISubmit": "Submit(UI)",
+      "/actions/subnautica/in/MoveUp": "Move Up",
+      "/actions/subnautica/in/MoveDown": "Move Down",
+      "/actions/subnautica/in/UILeft": "UI Go Left",
+      "/actions/subnautica/in/UIRight": "UI Go Right",
+      "/actions/subnautica/in/UIUp": "UI Go Up",
+      "/actions/subnautica/in/UIDown": "UI Go Down",
+      "/actions/subnautica/in/UIClear": "Pin Recipe/Throw item away(UIClear)",
+      "/actions/subnautica/in/BuilderRotateRight": "Rotate Bulding Right",
+      "/actions/subnautica/in/BuilderRotateLeft": "Rotate Bulding Left",
+      "/actions/subnautica/in/UIScroll": "Scrolling (UI)",
+      "/actions/subnautica/in/DebugToggle": "[Debug Toggle]"
+    }
+  ]
+}
