@@ -20,6 +20,11 @@ namespace SubmersedVR
         private static Canvas staticHudCanvas = null;
         // private static OffsetCalibrationTool calibrationTool;
 
+        // Last reticle root a mode was applied to; the VRCameraRig watchdog
+        // re-applies the mode when a new reticle instance appears
+        // (save/level load recreates it after VRHud.Setup already ran)
+        public static Transform SetupReticle;
+
         // TODO: Hud Distance needs dedicated canvas, since the Pips seem to assume the 1 meter canvas distance.
 #if false
         public static float hudDistance = 1.0f;
@@ -40,45 +45,89 @@ namespace SubmersedVR
         }
 #endif
 
-        public static void SetupHandReticle(bool onLaserPointer, Camera uiCamera, Transform rightControllerUI)
+        public static void SetupHandReticle(string mode)
         {
-            if (onLaserPointer)
+            if (HandReticle.main == null) return;
+            if (mode == HandReticleModes.PointerEnd)
             {
-                SetupHandReticleLaserPointer(uiCamera, rightControllerUI);
+                SetupHandReticleOnPointerDot();
+            }
+            else if (mode == HandReticleModes.TargetInfo)
+            {
+                SetupHandReticleLaserPointer();
             }
             else
             {
-                SetupHandReticleOnHand(uiCamera, rightControllerUI);
+                SetupHandReticleOnHand();
             }
+            SetupReticle = HandReticle.main.transform;
+            // Laser pointer modes: the target canvas is projected on the hit
+            // point per frame (target info), or the whole reticle is kept
+            // readable on the dot (dot)
+            HandReticle.main.gameObject.GetOrAddComponent<ReticleBillboard>().enabled = mode == HandReticleModes.TargetInfo || mode == HandReticleModes.PointerEnd;
         }
 
-        public static void SetupHandReticleOnHand(Camera uiCamera, Transform rightControllerUI)
+        public static void SetupHandReticleOnHand()
         {
-            // Steal Reticle and attach to the right hand
-            var handReticle = HandReticle.main.gameObject.WithParent(rightControllerUI.transform);
-            handReticle.GetOrAddComponent<Canvas>().worldCamera = uiCamera;
-            handReticle.transform.localEulerAngles = new Vector3(90, 0, 0);
-            handReticle.transform.localPosition = new Vector3(0, 0, 0.05f);
-            handReticle.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
-        }
-
-        public static void SetupHandReticleLaserPointer(Camera uiCamera, Transform rightControllerUI)
-        {
-            var handReticle = HandReticle.main.gameObject.WithParent(VRCameraRig.instance.laserPointerUI.pointerDot.transform);
-            handReticle.transform.LookAt(uiCamera.transform.position);
-            handReticle.transform.localRotation = Quaternion.Euler(40, 0, 0);
-            handReticle.transform.localPosition = new Vector3(0, -5, VRCameraRig.instance.laserPointerUI.pointerDot.transform.localPosition.z);//new Vector3(0, 0, 0.05f);
-            handReticle.transform.localScale = VRCameraRig.instance.laserPointerUI.pointerDot.transform.localScale * 2;//new Vector3(0.001f, 0.001f, 0.001f);
-        }
-
-        public static void OnHandReticleSettingChanged(bool onLaserPointer)
-        {
+            ReticleSplit.Unsplit();
             var rig = VRCameraRig.instance;
-            if (!rig)
+            // Steal Reticle and attach to the right hand
+            var handReticle = HandReticle.main.gameObject.WithParent(rig.rightControllerUI.transform);
+            handReticle.GetOrAddComponent<Canvas>().worldCamera = rig.uiCamera;
+            handReticle.transform.localEulerAngles = new Vector3(90, 0, 0);
+            handReticle.transform.localPosition = ReticleBillboard.AnchorOffset;
+            handReticle.transform.localScale = ReticleBillboard.AnchorScale;
+        }
+
+        // The original WIP layout: the whole reticle follows the laser
+        // pointer dot; ReticleBillboard keeps it readable per frame
+        public static void SetupHandReticleOnPointerDot()
+        {
+            ReticleSplit.Unsplit();
+            var rig = VRCameraRig.instance;
+            // The laser pointer may not be set up yet (the VRCameraRig
+            // watchdog retries until it is)
+            var dot = rig.laserPointerUI?.pointerDot?.transform;
+            if (dot == null)
             {
                 return;
             }
-            SetupHandReticle(onLaserPointer, rig.uiCamera, rig.rightControllerUI.transform);
+            var handReticle = HandReticle.main.gameObject.WithParent(dot);
+            handReticle.GetOrAddComponent<Canvas>().worldCamera = rig.uiCamera;
+            handReticle.transform.localPosition = new Vector3(0, -5, dot.localPosition.z);
+            handReticle.transform.localScale = dot.localScale * 2;
+        }
+
+        public static void SetupHandReticleLaserPointer()
+        {
+            var rig = VRCameraRig.instance;
+            // Same anchor, size and fixed orientation as hand mode: the
+            // reticle stays attached to the tool and rotates with it (legacy
+            // layout). ReticleBillboard only projects the split target canvas
+            // on the laser hit point per frame.
+            var handReticle = HandReticle.main.gameObject.WithParent(rig.rightControllerUI.transform);
+            handReticle.transform.localEulerAngles = new Vector3(90, 0, 0);
+            handReticle.transform.localPosition = ReticleBillboard.AnchorOffset;
+            handReticle.transform.localScale = ReticleBillboard.AnchorScale;
+            var canvas = handReticle.GetComponent<Canvas>();
+            if (canvas == null)
+            {
+                canvas = handReticle.AddComponent<Canvas>();
+            }
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.worldCamera = rig.uiCamera;
+            handReticle.layer = LayerID.UI;
+            ReticleSplit.Split(rig.uiCamera);
+        }
+
+        public static void OnHandReticleModeChanged(string mode)
+        {
+            var rig = VRCameraRig.instance;
+            if (rig == null || rig.uiCamera == null || rig.rightControllerUI == null)
+            {
+                return;
+            }
+            SetupHandReticle(mode);
         }
 
         public static Canvas CreateWorldCanvas(this GameObject go)
@@ -114,9 +163,9 @@ namespace SubmersedVR
             screenCanvas.SetParent(uiCamera.transform, true);
             overlayCanvas.SetParent(uiCamera.transform, true);
 
-            SetupHandReticle(Settings.PutHandReticleOnLaserPointer, uiCamera, rightControllerUI);
-            Settings.PutHandReticleOnLaserPointerChanged -= OnHandReticleSettingChanged;
-            Settings.PutHandReticleOnLaserPointerChanged += OnHandReticleSettingChanged;
+            SetupHandReticle(Settings.HandReticleMode);
+            Settings.HandReticleModeChanged -= OnHandReticleModeChanged;
+            Settings.HandReticleModeChanged += OnHandReticleModeChanged;
 
             WristHud.Setup();
 

@@ -106,6 +106,9 @@ namespace SubmersedVR
             var worldHitRelativeTime = Time.unscaledTime - worldTargetTime;
             var worldWasHit = doWorldRaycasts && worldTarget != null && worldHitRelativeTime < hideTimeout;
 
+            // The target info reticle replaces the dot at the hit point
+            bool showDot = worldWasHit && Settings.HandReticleMode != HandReticleModes.TargetInfo;
+
             float length = defaultLength;
             if (uiWasHit)
             {
@@ -116,10 +119,10 @@ namespace SubmersedVR
             }
             else if (worldWasHit)
             {
-                pointerDot.SetActive(true);
+                pointerDot.SetActive(showDot);
                 length = this.worldTargetDistance;
             }
-            Show(Settings.ShowLaserPointer == "Always" || (Settings.ShowLaserPointer == "Default" && (uiWasHit || worldWasHit)), worldWasHit);
+            Show(Settings.ShowLaserPointer == "Always" || (Settings.ShowLaserPointer == "Default" && (uiWasHit || worldWasHit)), showDot);
             if (Settings.ShowLaserPointer == "Never")
             {
                 pointerDot.SetActive(false);

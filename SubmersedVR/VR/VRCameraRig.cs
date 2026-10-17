@@ -48,6 +48,7 @@ namespace SubmersedVR
         public Camera uiCamera = null;
         public GameObject worldTarget;
         public float worldTargetDistance;
+        public float worldTargetTime;
         public Transform rigParentTarget;
 
         public Camera UIControllerCamera
@@ -357,6 +358,24 @@ namespace SubmersedVR
                                 }  
                 */
             }
+
+            // HandReticle is recreated on save/level load, possibly after
+            // VRHud.Setup already ran (it skipped a missing reticle):
+            // re-apply the configured mode whenever a new reticle instance
+            // shows. Target info additionally waits for the split to have
+            // succeeded (the game lays the reticle out a few frames after
+            // the load, the split must not freeze its zero state)
+            var handReticle = HandReticle.main;
+            if (handReticle != null)
+            {
+                bool applied = Settings.HandReticleMode == HandReticleModes.TargetInfo
+                    ? ReticleSplit.SplitRoot == handReticle.transform
+                    : VRHud.SetupReticle == handReticle.transform;
+                if (!applied)
+                {
+                    VRHud.SetupHandReticle(Settings.HandReticleMode);
+                }
+            }
         }
 
         void DebugRaycasts()
@@ -373,7 +392,15 @@ namespace SubmersedVR
         {
             this.worldTarget = activeTarget;
             this.worldTargetDistance = activeHitDistance;
+            this.worldTargetTime = Time.unscaledTime;
             this.laserPointerUI.SetWorldTarget(worldTarget, worldTargetDistance);
+        }
+
+        // True while the aim is on a targetable object, with the same 0.5 s
+        // timeout the laser pointer uses for its dot
+        public bool HasWorldTarget()
+        {
+            return worldTarget != null && Time.unscaledTime - worldTargetTime < 0.5f;
         }
     }
 

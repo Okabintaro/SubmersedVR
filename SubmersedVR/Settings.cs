@@ -10,6 +10,7 @@ namespace SubmersedVR
     {
         public delegate void BooleanChanged(bool newValue);
         public delegate void FloatChanged(float newValue);
+        public delegate void StringChanged(string newValue);
         public delegate void VoidChanged();
 
         public static bool IsSnapTurningEnabled;
@@ -32,8 +33,10 @@ namespace SubmersedVR
         //public static bool AlwaysShowLaserPointer;
         //public static event BooleanChanged AlwaysShowLaserPointerChanged;
 
-        public static bool PutHandReticleOnLaserPointer;
-        public static event BooleanChanged PutHandReticleOnLaserPointerChanged;
+        // Hand reticle mode: legacy (all info at the hand), the whole reticle on the laser pointer dot,
+        // or only the target action info projected on the laser hit point while aiming
+        public static string HandReticleMode = HandReticleModes.Legacy;
+        public static event StringChanged HandReticleModeChanged;
 
         public static bool PutBarsOnWrist;
         public static event BooleanChanged PutBarsOnWristChanged;
@@ -135,7 +138,7 @@ namespace SubmersedVR
             });
 
             panel.AddHeading(tab, "Experimental");
-            panel.AddToggleOption(tab, "Put hand reticle on laserpointer end", PutHandReticleOnLaserPointer, (value) => { PutHandReticleOnLaserPointer = value; PutHandReticleOnLaserPointerChanged(value); });
+            panel.AddChoiceOption<string>(tab, "Hand reticle mode", new string[] { HandReticleModes.Legacy, HandReticleModes.PointerEnd, HandReticleModes.TargetInfo }, HandReticleMode, (value) => { HandReticleMode = value; HandReticleModeChanged?.Invoke(value); }, "Legacy hand reticle: all reticle info at the hand, original layout. Put hand reticle on laserpointer end: the whole reticle follows the laser pointer dot (hidden with it when there is no target). Put target info on laserpointer end: while aiming, the target action texts, icon and progress are projected on the laser hit point, the rest stays at the hand.");
             panel.AddToggleOption(tab, "Invert Y Axis in Seamoth/Cameras", InvertYAxis, (value) => { InvertYAxis = value; InvertYAxisChanged(value); }, "Enables Y axis inversion for Seamoth and Cameras.");
             //panel.AddToggleOption(tab, "Enable Particle Fix", EnableParticleFix, (value) => { EnableParticleFix = value; }, "Enables Particle Optimizations.");
 
@@ -262,6 +265,16 @@ namespace SubmersedVR
         public static void Postfix(GameSettings.ISerializer serializer)
         {
             Settings.Serialize(serializer);
+            // One-shot migration: the old experimental WIP toggle (upstream)
+            // mapped to the whole-reticle-on-pointer-end mode. On a load
+            // with that key set the mode is migrated; on a save it
+            // re-writes the orphan key to false (harmless, and only while
+            // the mode is still Legacy)
+            if (Settings.HandReticleMode == HandReticleModes.Legacy
+                && serializer.Serialize("SubmersedVR/PutHandReticleOnLaserPointer", false))
+            {
+                Settings.HandReticleMode = HandReticleModes.PointerEnd;
+            }
         }
     }
 
@@ -379,6 +392,15 @@ namespace SubmersedVR
         {
             __instance.SetAO(0);
         }
+    }
+
+    // Hand reticle mode labels; kept out of Settings, whose public static
+    // fields are all persisted by the reflection-based serializer
+    static class HandReticleModes
+    {
+        public const string Legacy = "Legacy hand reticle";
+        public const string PointerEnd = "Put hand reticle on laserpointer end";
+        public const string TargetInfo = "Put target info on laserpointer end";
     }
 
     #endregion
